@@ -4,13 +4,13 @@ Presentation about Continuous Delivery for Gophercon AU
 
 ## Approaches detailed
 
- * [ ] table-driven integration tests; fixtures, assertions, chaining together calls:
+ * Table-driven integration tests; fixtures, assertions, chaining together calls:
   - [ ] Using httptest or go-mocks - example provided 
  * Managing database definitions with ‘migrations’:
   - [X] go-migrate. See [cooler](./cooler/main.go)
  * Bundling resources with your app (Docker or go-bindata):
   - [ ] docker in this case
- * [ ] Mitigating risk of changes:
+ * Mitigating risk of changes:
   - [ ] Feature Flags implemented via config, shared config, and db
   - [ ] Versioning your APIs 
  * Zero-downtime deploys:
@@ -20,4 +20,4 @@ Presentation about Continuous Delivery for Gophercon AU
  * Tooling for your build system: 
   - [ ] Containerising build steps 
   - Deployment and confirmation (ECS/K8S) 
-  - [ ] `go list -deps` for granular version checking
+  - [X] `go list -deps` for granular version checking. See [last_commit.sh](./scripts/last_commit.sh)
