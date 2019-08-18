@@ -1,3 +1,17 @@
 module github.com/laher/toasties-galore
 
 go 1.12
+
+require (
+	github.com/Microsoft/go-winio v0.4.14 // indirect
+	github.com/docker/distribution v2.7.1+incompatible // indirect
+	github.com/docker/docker v1.13.1 // indirect
+	github.com/docker/go-connections v0.4.0 // indirect
+	github.com/docker/go-units v0.4.0 // indirect
+	github.com/golang-migrate/migrate v3.5.4+incompatible
+	github.com/jmoiron/sqlx v1.2.0 // indirect
+	github.com/lib/pq v1.2.0 // indirect
+	github.com/opencontainers/go-digest v1.0.0-rc1 // indirect
+	golang.org/x/net v0.0.0-20190813141303-74dc4d7220e7 // indirect
+	gopkg.in/yaml.v2 v2.2.2 // indirect
+)
