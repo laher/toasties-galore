@@ -1,20 +1,21 @@
 package main
 
 import (
-	"flag"
 	"log"
 	"net/http"
+	"os"
 
 	"github.com/laher/toasties-galore/tpi"
 )
 
 func main() {
 	var (
-		listenAddr string
+		listenAddr = os.Getenv("ADDR")
 		done       = make(chan bool)
 	)
-	flag.StringVar(&listenAddr, "addr", ":7000", "listener address")
-	flag.Parse()
+	if listenAddr == "" {
+		listenAddr = ":7000"
+	}
 	server := newServer(listenAddr)
 	go func() {
 		tpi.GracefulShutdownOSInterrupt(server)
