@@ -1,4 +1,4 @@
-# The Cooler
+# The Chilly Bin
 
  * Check Stock
     curl http://localhost:7001/

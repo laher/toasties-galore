@@ -7,7 +7,7 @@ Presentation about Continuous Delivery for Gophercon AU
  * Table-driven integration tests; fixtures, assertions, chaining together calls:
   - [ ] Using httptest or go-mocks - example provided 
  * Managing database definitions with ‘migrations’:
-  - [X] go-migrate. See [cooler](./cooler/main.go)
+  - [X] go-migrate. See [chillybin](./chillybin/main.go)
  * Bundling resources with your app (Docker or go-bindata):
   - [ ] docker in this case
  * Mitigating risk of changes:
