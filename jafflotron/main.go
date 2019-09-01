@@ -3,23 +3,16 @@ package main
 import (
 	"log"
 	"net/http"
-	"os"
 
 	"github.com/laher/toasties-galore/tpi"
 )
 
 func main() {
 	var (
-		listenAddr    = os.Getenv("ADDR")
+		listenAddr    = tpi.Getenv("ADDR", ":7000")
+		chillybinAddr = tpi.Getenv("CHILLYBIN_ADDR", "http://127.0.0.1:7000")
 		done          = make(chan bool)
-		chillybinAddr = os.Getenv("CHILLYBIN_ADDR")
 	)
-	if listenAddr == "" {
-		listenAddr = ":7000"
-	}
-	if chillybinAddr == "" {
-		chillybinAddr = "http://127.0.0.1:7001"
-	}
 	h := &handler{
 		client: chillybinClient{chillybinAddr},
 	}

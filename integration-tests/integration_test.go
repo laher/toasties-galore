@@ -10,8 +10,8 @@ import (
 )
 
 var (
-	chillybinAddr  = tpi.Env("CHILLYBIN_ADDR", "http://localhost:7011")
-	jafflotronAddr = tpi.Env("JAFFLOTRON_ADDR", "http://localhost:7010")
+	chillybinAddr  = tpi.Getenv("CHILLYBIN_ADDR", "http://localhost:7011")
+	jafflotronAddr = tpi.Getenv("JAFFLOTRON_ADDR", "http://localhost:7010")
 )
 
 func TestHappyPath(t *testing.T) {

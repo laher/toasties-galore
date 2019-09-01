@@ -14,17 +14,11 @@ import (
 
 func main() {
 	var (
-		listenAddr = os.Getenv("ADDR")
-		dsn        = os.Getenv("DB_DSN")
+		listenAddr = tpi.Getenv("ADDR", ":7001")
+		dsn        = tpi.Getenv("DB_DSN", "postgres://root:secure@localhost:5432/postgres?sslmode=disable")
 		version    = os.Getenv("VERSION")
 		done       = make(chan bool)
 	)
-	if dsn == "" {
-		dsn = "postgres://root:secure@localhost:5432/postgres?sslmode=disable"
-	}
-	if listenAddr == "" {
-		listenAddr = ":7001"
-	}
 	db, err := connect(dsn)
 	if err != nil {
 		log.Fatalf("could not connect: %v", err)
