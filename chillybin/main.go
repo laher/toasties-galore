@@ -34,7 +34,8 @@ func main() {
 	}
 	log.Println("done migrations")
 
-	router := routes(db, version)
+	h := &handler{db}
+	router := routes(h, version)
 
 	server := newServer(listenAddr, router)
 	go func() {
