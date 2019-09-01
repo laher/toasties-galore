@@ -8,3 +8,29 @@ services:
       POSTGRES_DB: postgres
       POSTGRES_USER: root
       POSTGRES_PASSWORD: secure
+
+  chillybin:
+    build:
+      context: .
+      dockerfile: ./chillybin/Dockerfile
+    ports:
+      - 7011:7001
+    depends_on:
+      - postgres
+    environment:
+      DB_DSN: "postgres://root:secure@postgres:5432/postgres?sslmode=disable"
+      VERSION: "1.1"
+      ADDR: ":7001"
+
+  jafflotron:
+    build:
+      context: .
+      dockerfile: ./jafflotron/Dockerfile
+    ports:
+      - 7010:7000
+    depends_on:
+      - chillybin
+    environment:
+      VERSION: "1.1.2.3"
+      ADDR: ":7000"
+      CHILLYBIN_ADDR: "http://chillybin:7001"

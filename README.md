@@ -15,12 +15,12 @@ There are 2 services, `jafflotron` and the `chillybin`. Crucially, `jafflotron` 
  * chillybin:
   - [X] `/pick?name=cheese&quantity=1` - pick stock from chillybin
   - [X] `/` - show current stock
-  - [ ] `/restock` - restock
+  - [X] `/restock` - restock
   - [X] `/health` - health check
  * jafflotron:
-  - [ ] `/toastie?filling[]=cheese&filling[]=vegemite` - make a toastie 
+  - [X] `/toastie?i=cheese&i=vegemite` - make a toastie 
    * this invokes chillybin 
-  - [ ] `/` retrieves status (toasting/available)
+  - [X] `/` retrieves status (toasting/available)
   - [X] `/health` - health check
 
 ## Approaches detailed
@@ -33,10 +33,18 @@ There are 2 services, `jafflotron` and the `chillybin`. Crucially, `jafflotron` 
   - [X] docker in this case
  * Mitigating risk of changes:
   - [ ] Feature Flags implemented via config, shared config, and db
+    - 3 steps:
+      1. Release something cross-compatible.
+      2. Switch client over to the new API
+      3. Delete old endpoint (for 3rd parties this gets more complicated)
   - [ ] Versioning your APIs 
+      1. Could be a path `/v2/`
+      2. Could be version headers
+      3. GraphQL supports `deprecated fields`
+      4. gRPC, Twirp [Protocol Buffers] support deprecations and field renaming
  * Zero-downtime deploys:
-  - [X] graceful restart. See [sandwich-press](./sandwich-press/main.go)
-  - [ ] healthchecks
+  - [X] HTTP - graceful restart. See [jafflotron](./jafflotron/main.go)
+  - [X] healthchecks
  * Metrics and alerting
  * Tooling for your build system: 
   - [X] Containerising build steps 
