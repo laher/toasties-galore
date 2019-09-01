@@ -1,6 +1,7 @@
 package main
 
 import (
+	"encoding/json"
 	"fmt"
 	"io/ioutil"
 	"net/http"
@@ -24,16 +25,10 @@ func TestHappyPath(t *testing.T) {
 		body, _ := ioutil.ReadAll(resp.Body)
 		t.Fatalf("error restocking chillybin (%s): %s", resp.Status, body)
 	}
-
-	resp, err = http.Get(fmt.Sprintf("%s/", chillybinAddr))
-	if err != nil {
-		t.Fatalf("error fetching status: %v", err)
+	m := getChillybinStats(t)
+	if m["cheese"] != float64(10) {
+		t.Fatalf("wrong amount of cheese after restocking: %v, %T", m, m["cheese"])
 	}
-	if resp.StatusCode != http.StatusOK {
-		body, _ := ioutil.ReadAll(resp.Body)
-		t.Fatalf("error fetching status (%s): %s", resp.Status, body)
-	}
-
 	resp, err = http.Get(fmt.Sprintf("%s/toastie?i=cheese&i=vegemite", jafflotronAddr))
 	if err != nil {
 		t.Fatalf("error fetching toastie: %v", err)
@@ -42,4 +37,27 @@ func TestHappyPath(t *testing.T) {
 		body, _ := ioutil.ReadAll(resp.Body)
 		t.Fatalf("error fetching toastie (%s): %s", resp.Status, body)
 	}
+	m = getChillybinStats(t)
+	if m["cheese"] != float64(9) {
+		t.Fatalf("wrong amount of cheese after grilling toastie: %v", m)
+	}
+}
+
+func getChillybinStats(t *testing.T) map[string]interface{} {
+	resp, err := http.Get(fmt.Sprintf("%s/", chillybinAddr))
+	if err != nil {
+		t.Fatalf("error fetching status: %v", err)
+	}
+	if resp.StatusCode != http.StatusOK {
+		body, _ := ioutil.ReadAll(resp.Body)
+		t.Fatalf("error fetching status (%s): %s", resp.Status, body)
+	}
+
+	var m = map[string]interface{}{}
+	err = json.NewDecoder(resp.Body).Decode(&m)
+	if err != nil {
+		t.Fatalf("error decoding body: %v", err)
+	}
+	t.Logf("Amounts: %v", m)
+	return m
 }
