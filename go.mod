@@ -12,7 +12,7 @@ require (
 	github.com/golang-migrate/migrate v3.5.4+incompatible
 	github.com/google/uuid v1.1.1 // indirect
 	github.com/jmoiron/sqlx v1.2.0 // indirect
-	github.com/lib/pq v1.2.0 // indirect
+	github.com/lib/pq v1.2.0
 	github.com/opencontainers/go-digest v1.0.0-rc1 // indirect
 	golang.org/x/net v0.0.0-20190813141303-74dc4d7220e7 // indirect
 	gopkg.in/yaml.v2 v2.2.2 // indirect

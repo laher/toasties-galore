@@ -1,7 +1,6 @@
 package main
 
 import (
-	"errors"
 	"log"
 	"net/http"
 	"os"
@@ -11,13 +10,24 @@ import (
 
 func main() {
 	var (
-		listenAddr = os.Getenv("ADDR")
-		done       = make(chan bool)
+		listenAddr    = os.Getenv("ADDR")
+		done          = make(chan bool)
+		chillybinAddr = os.Getenv("CHILLYBIN_ADDR")
 	)
 	if listenAddr == "" {
 		listenAddr = ":7000"
 	}
-	server := newServer(listenAddr)
+	if chillybinAddr == "" {
+		chillybinAddr = "http://127.0.0.1:7001"
+	}
+	h := &handler{
+		client: chillybinClient{chillybinAddr},
+	}
+	router := newRouter(h)
+	server := &http.Server{
+		Addr:    listenAddr,
+		Handler: router,
+	}
 	go func() {
 		tpi.GracefulShutdownOSInterrupt(server)
 		close(done)
@@ -30,42 +40,13 @@ func main() {
 	log.Println("Shutdown complete - stop")
 }
 
-func newServer(listenAddr string) *http.Server {
+func newRouter(h *handler) http.Handler {
 	router := http.NewServeMux()
-	router.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
+	router.HandleFunc("/health", func(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusOK)
 		w.Write([]byte("done"))
 	})
-	router.HandleFunc("/toastit", func(w http.ResponseWriter, r *http.Request) {
-
-		var (
-			values      = r.URL.Query()
-			ingredients = values["i"]
-		)
-		if err := validate(ingredients); err != nil {
-			log.Printf("Error toasting toastie: %v", err)
-			w.WriteHeader(http.StatusBadRequest)
-			w.Write([]byte("input error - bad toastie"))
-			return
-		}
-		w.WriteHeader(http.StatusOK)
-		w.Write([]byte("done"))
-	})
-	return &http.Server{
-		Addr:    listenAddr,
-		Handler: router,
-	}
-}
-
-func validate(ingredients []string) error {
-	if len(ingredients) < 3 {
-		return errors.New("Not enough ingredients")
-	}
-	if ingredients[0] != "bread" || ingredients[len(ingredients)-1] != "bread" {
-		return errors.New("Wot no bread")
-	}
-	if ingredients[1] != "cheese" {
-		return errors.New("Cheese comes after first bread")
-	}
-	return nil
+	router.HandleFunc("/toastie", h.makeToastie)
+	router.HandleFunc("/", h.status)
+	return router
 }
