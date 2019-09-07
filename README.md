@@ -29,6 +29,7 @@ There are 2 services, `jafflotron` and the `chillybin`. Crucially, `jafflotron` 
   - [ ] Using httptest - example provided 
  * Managing database definitions with ‘migrations’:
   - [X] go-migrate. See [chillybin](./chillybin/main.go)
+  - With mongodb this can be as simple as "EnsureIndex()":w
  * Bundling resources with your app (Docker or go-bindata):
   - [X] docker in this case
  * Mitigating risk of changes:
