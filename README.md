@@ -33,7 +33,7 @@ There are 2 services, `jafflotron` and the `chillybin`. Crucially, `jafflotron` 
  * Bundling resources with your app (Docker or go-bindata):
   - [X] docker in this case
  * Mitigating risk of changes:
-  - [ ] Feature Flags implemented via config, shared config, and db
+  - [ ] Feature Flags implemented via ENV or db
     - 3 steps:
       1. Release something cross-compatible.
       2. Switch client over to the new API

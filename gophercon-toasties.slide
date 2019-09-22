@@ -31,15 +31,16 @@ _More_on_that_later..._
 
 * What is Continuous Delivery?
 
+	cd := ci + autoDeploy
+
 From [[https://continuousdelivery.com]]:
 
 .caption Continuous Delivery is the ability to get changes of all types — including new features, configuration changes, bug fixes and experiments — into production, or into the hands of users, safely and quickly in a sustainable way.
 
-In practical terms:
+An interpretation:
 
-- CD := CI + auto-deploy
-- A PR should trigger tests. 
-- A merge [to master] should trigger a redeploy.
+- A PR triggers tests.  ← _CI_
+- A merge [to master] should trigger a redeploy. ← _CD_
 
 * Why? 
 
@@ -51,11 +52,11 @@ In practical terms:
 
 * Better, faster, stronger
 
-_I'm_not_really_here_to_talk_about_"why",_but_please_read_the_following_slide_and_links_at_your_leisure._
+_I'm_not_really_here_to_talk_about_"why",_but_plenty_of_research_has_been_done_on_this._
 
 - Low-risk releases: _The_primary_goal_of_continuous_delivery_is_to_make_software_deployments_painless,_low-risk_events_that_can_be_performed_at_any_time,_on_demand._
 
-- Faster time to market: _It’s_not_uncommon_for_the_integration_and_test/fix_phase_of_the_traditional_phased_software_delivery_lifecycle_to_consume_weeks_or_even_months.__..._just_automate_it._
+- Faster time to market: _It’s_not_uncommon_for_the_integration_and_test/fix_phase_of_the_traditional_phased_software_delivery_lifecycle_to_consume_weeks_or_even_months._..._just_automate_it._
 
 - Higher quality: _When_developers_have_automated_tools_that_discover_regressions_within_minutes,_teams_are_freed_to_focus_their_effort_on_user_research_and_higher_level_testing_activities._
 
@@ -68,6 +69,7 @@ _Continuous_Delivery_measurably_reduces_both_deployment_pain_and_team_burnout._
 - Eliminate the cognitive load of deployment, and the human-error aspect of repetitive tasks.
 - Manual deployment of complex systems (e.g. microservices) -> cognitive overload.
 - Make deployment a non-thing, so you can think in terms of features.
+- Get on with building stuff.
 
 -> with CD, teams become [[https://papers.ssrn.com/sol3/papers.cfm?abstract_id=2681909][provably happier]].
 
@@ -83,16 +85,27 @@ _"OMG_if_I_merge_this_then_everything_might_break_and_we'll_all_die."_
 
 .image https://media.giphy.com/media/PxgaV6F5gMJSo/giphy.gif
 
-Maybe this all sounds scary, and for sure, CD forces you to think about some things up-front. 
+Maybe this all sounds scary, and for sure, CD forces you to think about some things up-front.
+
+* Won't this take a lot of maintenance?
+
+Sure, there's some time cost to setting up automation - but once you're relying on those tests, it feels like it's for free.
+
+* Approaches
+
+- Testing
+- Downtimeless Deploys
+- Breaking changes
+- Tooling
 
 * Testing
 
-The main thing is all about automated testing - _you_need_to_trust_those_tests._
+CD is all about automated testing - _you_need_to_trust_those_tests._
 
-- Repeatable, non-racy, non-flaky
+- Repeatable and reliable - non-racy, non-flaky.
 - Test environment - prod-like? Docker/docker-compose? k8s?
-- Integration tests - test those interactions
-- Don't assume state
+- Write some integration tests - test those interactions.
+- Don't assume state.
 
 So, let's look at an example ...
 
@@ -111,16 +124,51 @@ For this presentation, let's look at the software for an imaginary food truck "T
 
 .image https://media.giphy.com/media/3o6nV7z9RdhddK9bBC/giphy.gif
 
-
-* Tests
+* Integration Tests
 
 .code -edit ./integration-tests/integration_test.go 
 
-* Chilly bin
+* Downtimeless Deploys
 
-.code ./chillybin/main.go /^func main/,/^}/
+- Graceful restarts.
+- Automated DB migrations.
+- Healthchecks.
+- State.
+
+* Graceful Restarts
+
+Stop listening on a port, while continuing to serve existing connections. 
+Allow other [new] instances to listen instead.
+
+.code -edit ./tpi/http.go /^func GracefulShutdownOSInterrupt/,/^}/
+
+* DB migrations
+
+Changes to DB schema, usually in line with code changes.
+
+- There's plenty of options - goose, dbmate, go-migrate.
+- Let's try go-migrate.
+- Let's apply migrations at startup.
+
+* Chilly bin - migrations
+
+.code ./chillybin/main.go /^func runMigrationsSource/,/^}/
+
+* Sustainable change
+
+Oh breaking changes
+
+- Migrations (see above!)
+- Feature Flags
+- API versioning
+- The 3-step release
 
 * Jafflotron
 
 .play ./jafflotron/main.go /^func main/,/^}/
+
+* Tooling
+
+* Conclusions
+
 
