@@ -22,10 +22,10 @@ services:
       VERSION: "1.1"
       ADDR: ":7001"
 
-  jafflotron:
+  jafflr:
     build:
       context: .
-      dockerfile: ./jafflotron/Dockerfile
+      dockerfile: ./jafflr/Dockerfile
     ports:
       - 7010:7000
     depends_on:

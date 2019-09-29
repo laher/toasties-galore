@@ -17,23 +17,28 @@ I've been a fanboy since I first tried [[https://golang.org/doc/devel/release.ht
 
 I've been using Go as my primary language @ work since 2014, and working with CD approaches for a similar timeframe.
 
-- Hapara, Inc ← _Some_CD_(gated)_
-- Movio Ltd ← _Some_more_CD_(gated)_
-- Vend ← *ALL*THE*CD*
+: Hapara, Inc ← _Some_CD_(gated)_
+: Movio Ltd ← _Some_more_CD_(gated)_
+: Vend ← *ALL*THE*CD*
 
-* About Me
+Also, I love melted cheese.
 
-I love melted cheese.
 
 .image https://media.giphy.com/media/VH8QBcXLrfz1u/giphy.gif
 
+: Apologies to vegans
+
 _More_on_that_later..._
+
+
 
 * What is Continuous Delivery?
 
+Releasing software seamlessly.
+
 	cd := ci + autoDeploy
 
-From [[https://continuousdelivery.com]]:
+Definition from [[https://continuousdelivery.com]]:
 
 .caption Continuous Delivery is the ability to get changes of all types — including new features, configuration changes, bug fixes and experiments — into production, or into the hands of users, safely and quickly in a sustainable way.
 
@@ -44,23 +49,19 @@ An interpretation:
 
 * Why? 
 
+_I'm_not_really_here_to_talk_about_"why",_but_plenty_of_research_has_shown_..._
+
 - Low-risk, high quality releases.
 - Faster time-to-market.
 - Lower costs.
 - Better products.
 - Happier Teams.
 
-* Better, faster, stronger
-
-_I'm_not_really_here_to_talk_about_"why",_but_plenty_of_research_has_been_done_on_this._
-
-- Low-risk releases: _The_primary_goal_of_continuous_delivery_is_to_make_software_deployments_painless,_low-risk_events_that_can_be_performed_at_any_time,_on_demand._
-
-- Faster time to market: _It’s_not_uncommon_for_the_integration_and_test/fix_phase_of_the_traditional_phased_software_delivery_lifecycle_to_consume_weeks_or_even_months._..._just_automate_it._
-
-- Higher quality: _When_developers_have_automated_tools_that_discover_regressions_within_minutes,_teams_are_freed_to_focus_their_effort_on_user_research_and_higher_level_testing_activities._
-
-- Better products: _CD_enables_techniques_like_[[http://ai.stanford.edu/~ronnyk/ExPThinkWeek2009Public.pdf][__A/B_testing_]],__to_test_ideas_with_users,_avoiding_the_2/3_of_features_we_build_which_deliver_no_value._
+: Low-risk releases: _The_primary_goal_of_continuous_delivery_is_to_make_software_deployments_painless,_low-risk_events_that_can_be_performed_at_any_time,_on_demand._
+: Faster time to market: _It’s_not_uncommon_for_the_integration_and_test/fix_phase_of_the_traditional_phased_software_delivery_lifecycle_to_consume_weeks_or_even_months._..._just_automate_it._
+: Higher quality: _When_developers_have_automated_tools_that_discover_regressions_within_minutes,_teams_are_freed_to_focus_their_effort_on_user_research_and_higher_level_testing_activities._
+: Better products: _CD_enables_techniques_like_[[http://ai.stanford.edu/~ronnyk/ExPThinkWeek2009Public.pdf][__A/B_testing_]],__to_test_ideas_with_users,_avoiding_the_2/3_of_features_we_build_which_deliver_no_value._
+: This is all backing info. Please read in your own time.
 
 * Happier Teams.
 
@@ -68,8 +69,8 @@ _Continuous_Delivery_measurably_reduces_both_deployment_pain_and_team_burnout._
 
 - Eliminate the cognitive load of deployment, and the human-error aspect of repetitive tasks.
 - Manual deployment of complex systems (e.g. microservices) -> cognitive overload.
-- Make deployment a non-thing, so you can think in terms of features.
-- Get on with building stuff.
+- Make deployment a non-thing, so you can focus on features and fixes.
+- Get on with creating.
 
 -> with CD, teams become [[https://papers.ssrn.com/sol3/papers.cfm?abstract_id=2681909][provably happier]].
 
@@ -77,7 +78,7 @@ _Continuous_Delivery_measurably_reduces_both_deployment_pain_and_team_burnout._
 
 .image https://media.giphy.com/media/5b5OU7aUekfdSAER5I/giphy.gif
 
-Too good to be true??
+: Too good to be true??
 
 * If I merge will I ded?
 
@@ -85,26 +86,32 @@ _"OMG_if_I_merge_this_then_everything_might_break_and_we'll_all_die."_
 
 .image https://media.giphy.com/media/PxgaV6F5gMJSo/giphy.gif
 
-Maybe this all sounds scary, and for sure, CD forces you to think about some things up-front.
+: Maybe this all sounds scary, and for sure, CD forces you to think about some things up-front.
 
-* Won't this take a lot of maintenance?
+* Effort?
 
-Sure, there's some time cost to setting up automation - but once you're relying on those tests, it feels like it's for free.
+Won't this take a lot of maintenance?
+
+.image https://lunarlincoln.com/wp-content/uploads/2016/04/200-1-1.gif
+
+: Sure, there's some time cost to setting up automation - but once you're relying on those tests, it feels like it's for free.
 
 * Approaches
 
-- Testing
+I'm going to cover ...
+
+- Approaches for Testing 
 - Downtimeless Deploys
-- Breaking changes
+- Managing 'breaking' changes
 - Tooling
 
 * Testing
 
 CD is all about automated testing - _you_need_to_trust_those_tests._
 
-- Repeatable and reliable - non-racy, non-flaky.
-- Test environment - prod-like? Docker/docker-compose? k8s?
-- Write some integration tests - test those interactions.
+- Repeatable and reliable - non-racy, non-flaky ... fast
+- Environment - prod-like? Docker/docker-compose? k8s?
+- Write a few integration tests - test those interactions.
 - Don't assume state.
 
 So, let's look at an example ...
@@ -113,7 +120,7 @@ So, let's look at an example ...
 
 For this presentation, let's look at the software for an imaginary food truck "Toasties Galore".
 
-- 2 services - chillybin & jafflotron.
+- 2 services - chillybin & jafflr.
 - Both serve HTTP APIs. One connects to a Postgres database. 
 - Per-service tests work on each service in isolation.
 - Integration tests invoke the APIs and test the interactions.
@@ -163,12 +170,45 @@ Oh breaking changes
 - API versioning
 - The 3-step release
 
-* Jafflotron
+* jafflr
 
-.play ./jafflotron/main.go /^func main/,/^}/
+.play ./jafflr/main.go /^func main/,/^}/
 
 * Tooling
 
+Conditional builds for Monorepos ... in Movio we used something like this.
+
+.code ./scripts/last_commit.sh
+
+* Tooling
+
+@Overlord ...
+
+At Vend we wrote a slackbot which handles a number of CD-related utilities.
+
+For example: 
+ - canary deploys
+ - rollbacks
+ - feature flagging
+ - service status
+
+* Tooling
+
+
+At Movio we had scripts to check 'current version of a service'. 
+
+ - Allows us to run regression tests at the right time.
+ - Report that the deploy was really successful
+
+: This was really just a bash script parsing the json output of `kubectl get pod`. 
+: To me this kind of thing is crucial for regression testing.
+
 * Conclusions
+
+I've just tried to show you some go-specific hints about the CI/CD toolchain.
+
+I didn't even try to recommend a CI system
+
+It can take some time to redesign your software for Continuous Deployment - after seeing this talk, I hope you’ll begin or complete that journey.
 
 

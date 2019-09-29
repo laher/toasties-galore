@@ -1,2 +1,2 @@
-SVC = jafflotron
+SVC = jafflr
 include ../scripts/go.make

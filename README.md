@@ -4,11 +4,11 @@ Presentation about Continuous Delivery for Gophercon AU
 
 ## Services
 
-The Jafflotron is an imaginary machine which assembles and cooks toasted sandwiches.
+The jafflr is an imaginary machine which assembles and cooks toasted sandwiches.
 
 It attaches onto a chilly bin ('Chilly bin' is NZ English parlance - aka Esky, in Australian).
 
-There are 2 services, `jafflotron` and the `chillybin`. Crucially, `jafflotron` depends on `chillybin`.
+There are 2 services, `jafflr` and the `chillybin`. Crucially, `jafflr` depends on `chillybin`.
 
 ## Endpoints
 
@@ -17,7 +17,7 @@ There are 2 services, `jafflotron` and the `chillybin`. Crucially, `jafflotron` 
   - [X] `/` - show current stock
   - [X] `/restock` - restock
   - [X] `/health` - health check
- * jafflotron:
+ * jafflr:
   - [X] `/toastie?i=cheese&i=vegemite` - make a toastie 
    * this invokes chillybin 
   - [X] `/` retrieves status (toasting/available)
@@ -44,7 +44,7 @@ There are 2 services, `jafflotron` and the `chillybin`. Crucially, `jafflotron` 
       3. GraphQL supports `deprecated fields`
       4. gRPC, Twirp [Protocol Buffers] support deprecations and field renaming
  * Zero-downtime deploys:
-  - [X] HTTP - graceful restart. See [jafflotron](./jafflotron/main.go)
+  - [X] HTTP - graceful restart. See [jafflr](./jafflr/main.go)
   - [X] healthchecks
  * Metrics and alerting
  * Tooling for your build system: 

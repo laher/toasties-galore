@@ -11,13 +11,13 @@ RUN GO111MODULES=on CGO_ENABLED=0 go mod download
 # Above gets cached. Below is not.
 
 COPY . .
-RUN cd jafflotron && GO111MODULES=on CGO_ENABLED=0 go build -a .
+RUN cd jafflr && GO111MODULES=on CGO_ENABLED=0 go build -a .
 
 FROM alpine:3.9
 RUN apk add --update ca-certificates tzdata && \
     rm -rf /var/cache/apk/* /tmp/*
 RUN update-ca-certificates
 
-COPY --from=build /toasties-galore/jafflotron /
+COPY --from=build /toasties-galore/jafflr /
 
-ENTRYPOINT ["/jafflotron"]
+ENTRYPOINT ["/jafflr"]

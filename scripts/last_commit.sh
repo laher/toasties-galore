@@ -1,4 +1,5 @@
 #!/bin/sh
+
 if [ -z $1 ]; then
     echo '"$1" should be service-name' >&2
     exit 1

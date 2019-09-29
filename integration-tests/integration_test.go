@@ -11,8 +11,8 @@ import (
 )
 
 var (
-	chillybinAddr  = tpi.Getenv("CHILLYBIN_ADDR", "http://localhost:7011")
-	jafflotronAddr = tpi.Getenv("JAFFLOTRON_ADDR", "http://localhost:7010")
+	chillybinAddr = tpi.Getenv("CHILLYBIN_ADDR", "http://localhost:7011")
+	jafflrAddr    = tpi.Getenv("JAFFLR_ADDR", "http://localhost:7010")
 )
 
 func TestHappyPath(t *testing.T) {
@@ -29,7 +29,7 @@ func TestHappyPath(t *testing.T) {
 	if m["cheese"] != float64(10) {
 		t.Fatalf("wrong amount of cheese after restocking: %v, %T", m, m["cheese"])
 	}
-	resp, err = http.Get(fmt.Sprintf("%s/toastie?i=cheese&i=vegemite", jafflotronAddr))
+	resp, err = http.Get(fmt.Sprintf("%s/toastie?i=cheese&i=vegemite", jafflrAddr))
 	if err != nil {
 		t.Fatalf("error fetching toastie: %v", err)
 	}
