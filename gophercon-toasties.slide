@@ -20,17 +20,10 @@ I've been using Go as my primary language @ work since 2014, and working with CD
 : Hapara, Inc ← _Some_CD_(gated)_
 : Movio Ltd ← _Some_more_CD_(gated)_
 : Vend ← *ALL*THE*CD*
-
-Also, I love melted cheese.
-
-
-.image https://media.giphy.com/media/VH8QBcXLrfz1u/giphy.gif
-
+: Also, I like melted cheese.
+: .image https://media.giphy.com/media/VH8QBcXLrfz1u/giphy.gif
 : Apologies to vegans
-
-_More_on_that_later..._
-
-
+: _More_on_that_later..._
 
 * What is Continuous Delivery?
 
@@ -46,6 +39,38 @@ An interpretation:
 
 - A PR triggers tests.  ← _CI_
 - A merge [to master] should trigger a redeploy. ← _CD_
+
+* It's a Huge Topic
+
+I could talk about rationales, about CI tools, about pipelines and environments.
+
+.image https://i.imgur.com/XRuosfH.gif
+
+I could talk for 30 minutes on any of these topics.
+
+But this is Gophercon AU.
+
+* I'm gonna talk about Go
+
+: CD can and should influence the way you write code.
+: In the same way that a unit test can help you refactor some awkward code, CD can help you out too.
+: CDDD, if you like.
+: I'm going to try to explain that using Go tools.
+
+* .. and Toasties Galore
+
+* Approaches
+
+I'm going to cover ...
+
+- Approaches for Testing 
+- Downtimeless Deploys
+- Sustainable change and 'breaking' changes
+- Tooling to help with CD
+- Tooling enabled by CD
+- Configuration
+
+* But first, ...
 
 * Why? 
 
@@ -74,11 +99,64 @@ _Continuous_Delivery_measurably_reduces_both_deployment_pain_and_team_burnout._
 
 -> with CD, teams become [[https://papers.ssrn.com/sol3/papers.cfm?abstract_id=2681909][provably happier]].
 
-* ORLY
+* Rethinking our code ...
+
+* Rethinking Configuration
+
+Knobs and twiddles - bake them in:
+
+- Where possible, compile it in - simplify your code.
+- In other cases, it can live in the artifact (file in docker image)
+- To reconfigure, change your code - redeploy is as fast as a config change.
+
+* CD does what?
+
+Mainly - less config
+
+* Per-environment config
+
+Things we need to configure boil down to env-specific params 
+
+- Database DSNs
+- scale-dependent variables
+- Feature flags?
+
+* Tooling
+
+@overlord ...
+
+At Vend we [they] wrote a slackbot which handles a number of CD-related utilities.
+
+For example: 
+ - canary deploys
+ - rollbacks
+ - feature flagging
+ - service status
+
+* Tooling
+
+In a monorepo, it's real useful to know which services are affected by a commit.
+
+Or put another way, which services have been affected since current production.
+
+* Current version
+
+Check 'current version of a service'.
+
+.code ./scripts/last_commit.sh
+
+- calls `go list -deps` and eventually `| git rev-list`
+- Allows us to run regression tests at the right time.
+- Report that the deploy was really successful.
+
+: This was really just a bash script parsing the json output of `kubectl get pod`. 
+: To me this kind of thing is crucial for regression testing.
+
+* Wait, but ...
 
 .image https://media.giphy.com/media/5b5OU7aUekfdSAER5I/giphy.gif
 
-: Too good to be true??
+is this too good to be true?
 
 * If I merge will I ded?
 
@@ -96,14 +174,22 @@ Won't this take a lot of maintenance?
 
 : Sure, there's some time cost to setting up automation - but once you're relying on those tests, it feels like it's for free.
 
-* Approaches
+* CI tools
 
-I'm going to cover ...
+Travis, Jenkins, Drone, Concourse, Bazel, Github Actions...
 
-- Approaches for Testing 
-- Downtimeless Deploys
-- Managing 'breaking' changes
-- Tooling
+- So many great tools. 
+- Pick one.
+
+* But ...
+
+I'm not really here to talk about that.
+
+I'm also not here to talk about platforms like travis, jenkins, drone...
+
+I'm here to talk about your code.
+
+TODO
 
 * Testing
 
@@ -161,6 +247,7 @@ Changes to DB schema, usually in line with code changes.
 
 .code ./chillybin/main.go /^func runMigrationsSource/,/^}/
 
+
 * Sustainable change
 
 Oh breaking changes
@@ -173,35 +260,6 @@ Oh breaking changes
 * jafflr
 
 .play ./jafflr/main.go /^func main/,/^}/
-
-* Tooling
-
-Conditional builds for Monorepos ... in Movio we used something like this.
-
-.code ./scripts/last_commit.sh
-
-* Tooling
-
-@Overlord ...
-
-At Vend we wrote a slackbot which handles a number of CD-related utilities.
-
-For example: 
- - canary deploys
- - rollbacks
- - feature flagging
- - service status
-
-* Tooling
-
-
-At Movio we had scripts to check 'current version of a service'. 
-
- - Allows us to run regression tests at the right time.
- - Report that the deploy was really successful
-
-: This was really just a bash script parsing the json output of `kubectl get pod`. 
-: To me this kind of thing is crucial for regression testing.
 
 * Conclusions
 
