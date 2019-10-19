@@ -1,6 +1,7 @@
 package main
 
 import (
+	"bytes"
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
@@ -40,6 +41,19 @@ func TestHappyPath(t *testing.T) {
 	m = getChillybinStats(t)
 	if m["cheese"] != float64(9) {
 		t.Fatalf("wrong amount of cheese after grilling toastie: %v", m)
+	}
+}
+
+func TestPickV2(t *testing.T) {
+	p := []byte(`{"ingredient": "cheese", "quantity": 2, "customer": "gita"}`)
+	// reset environment
+	resp, err := http.Post(fmt.Sprintf("%s/v2/pick", chillybinAddr), "application/json", bytes.NewBuffer(p))
+	if err != nil {
+		t.Fatalf("error running /v2/pick: %v", err)
+	}
+	if resp.StatusCode != http.StatusOK {
+		body, _ := ioutil.ReadAll(resp.Body)
+		t.Fatalf("error restocking chillybin (%s): %s", resp.Status, body)
 	}
 }
 
