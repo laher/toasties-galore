@@ -18,6 +18,7 @@ RUN apk add --update ca-certificates tzdata && \
     rm -rf /var/cache/apk/* /tmp/*
 RUN update-ca-certificates
 
-COPY --from=build /toasties-galore/jafflr /
+WORKDIR /jafflr
+COPY --from=build /toasties-galore/jafflr /jafflr
 
-ENTRYPOINT ["/jafflr"]
+ENTRYPOINT ["/jafflr/jafflr"]
