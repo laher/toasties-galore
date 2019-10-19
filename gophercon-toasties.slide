@@ -7,15 +7,15 @@ Am Laher
 Lead Engineer (API), Vend POS
 @amfastic
 
-* About Me
+: * About Me
 
-I've been a fanboy since I first tried [[https://golang.org/doc/devel/release.html#go1][Go1.0 in 2012]] . I helped start the GoAKL meetups in 2013.
+:I've been a fanboy since I first tried [[https://golang.org/doc/devel/release.html#go1][Go1.0 in 2012]] . I helped start the GoAKL meetups in 2013.
 
-.image ./kiwi-gopher-with-text.png
+:.image ./kiwi-gopher-with-text.png
 
-* About Me
+:* About Me
 
-I've been using Go as my primary language @ work since 2014, and working with CD approaches for a similar timeframe.
+:I've been using Go as my primary language @ work since 2014, and working with CD approaches for a similar timeframe.
 
 : Hapara, Inc ← _Some_CD_(gated)_
 : Movio Ltd ← _Some_more_CD_(gated)_
@@ -40,6 +40,14 @@ An interpretation:
 - A PR triggers tests.  ← _CI_
 - A merge [to master] should trigger a redeploy. ← _CD_
 
+* My premise
+
+> CD will change the  way you write software, in subtle but significant ways.
+
+In the same way that testable code has numerous benefits, CD can enable many benefits too.
+
+_So much of software development confronts the path of least resistance. CD breaks down some barriers of resistance._
+
 * It's a Huge Topic
 
 I could talk about rationales, about CI tools, about pipelines and environments.
@@ -56,6 +64,11 @@ But this is Gophercon AU.
 : In the same way that a unit test can help you refactor some awkward code, CD can help you out too.
 : CDDD, if you like.
 : I'm going to try to explain that using Go tools.
+
+* My focus
+
+- I'll try to highlight some areas where CD enables or encourages some changes to your Go code
+- I'll also confront some areas where CD makes you to take some choices up front.
 
 * .. and Toasties Galore
 
@@ -94,12 +107,15 @@ _Continuous_Delivery_measurably_reduces_both_deployment_pain_and_team_burnout._
 
 - Eliminate the cognitive load of deployment, and the human-error aspect of repetitive tasks.
 - Manual deployment of complex systems (e.g. microservices) -> cognitive overload.
+- Unreleased code is full of risk. Release it!
 - Make deployment a non-thing, so you can focus on features and fixes.
 - Get on with creating.
 
 -> with CD, teams become [[https://papers.ssrn.com/sol3/papers.cfm?abstract_id=2681909][provably happier]].
 
 * Rethinking our code ...
+
+What can we do differently once deployment becomes a non-thing?
 
 * Rethinking Configuration
 
