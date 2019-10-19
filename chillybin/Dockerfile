@@ -19,7 +19,8 @@ RUN apk add --update ca-certificates tzdata && \
     rm -rf /var/cache/apk/* /tmp/*
 RUN update-ca-certificates
 
-COPY chillybin/resources /resources
-COPY --from=build /toasties-galore/chillybin /
+WORKDIR /chillybin
+COPY chillybin/resources /chillybin/resources
+COPY --from=build /toasties-galore/chillybin /chillybin
 
-ENTRYPOINT ["/chillybin"]
+ENTRYPOINT ["/chillybin/chillybin"]

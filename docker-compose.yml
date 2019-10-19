@@ -10,9 +10,10 @@ services:
       POSTGRES_PASSWORD: secure
 
   chillybin:
-    build:
-      context: .
-      dockerfile: ./chillybin/Dockerfile
+    image: chillybin:latest
+    #build:
+    #  context: .
+    #  dockerfile: ./chillybin/Dockerfile
     ports:
       - 7011:7001
     depends_on:
@@ -21,11 +22,14 @@ services:
       DB_DSN: "postgres://root:secure@postgres:5432/postgres?sslmode=disable"
       VERSION: "1.1"
       ADDR: ":7001"
+    volumes:
+      - ./chillybin:/chillybin
 
   jafflr:
-    build:
-      context: .
-      dockerfile: ./jafflr/Dockerfile
+    image: jafflr:latest
+    #build:
+    #  context: .
+    #  dockerfile: ./jafflr/Dockerfile
     ports:
       - 7010:7000
     depends_on:
@@ -34,3 +38,5 @@ services:
       VERSION: "1.1.2.3"
       ADDR: ":7000"
       CHILLYBIN_ADDR: "http://chillybin:7001"
+    volumes:
+      - ./jafflr:/jafflr
