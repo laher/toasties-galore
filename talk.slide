@@ -1,0 +1,192 @@
+Designing go services for CD
+Gophercon AU
+10:00 1 Nov 2019
+Tags: go, cd, tools, gophercon
+
+Am Laher
+Lead Engineer (API), Vend 
+@amfastic
+
+* My Bold Premise
+
+Continuous Deployment can influence the design of your code, in subtle, but significant ways.
+
+Your life, and your code, will be better.
+
+
+* What is CD?
+
+_So_many_interpretations._ 
+
+From [[https://continuousdelivery.com]]:
+
+.caption Continuous Delivery is the ability to get changes of all types — including new features, configuration changes, bug fixes and experiments — into production, or into the hands of users, safely and quickly in a sustainable way.
+
+: But honestly, there are so many interpretations out there, that I'm going to pick one and talk about that. Apologies in advance if this definition doesn't ring true...
+
+* What is Continuous Deployment?
+
+_For_the_purposes_of_this_talk_..._
+
+	CD == autoBuild + autoDeploy
+
+- A PR triggers tests.  ← *CI*
+- A merge [to master] triggers tests, rebuild + redeploy. ← *CD*
+
+* Touted Benefits of CD
+
+- Lowers risk 
+- Faster time-to-market
+- Higher quality software
+- Better products
+- Happier teams
+
+: See [[https://continuousdelivery.com]] again
+: I mentioned this site because it has great business cases for CD. Go take a look, there's compelling cases for why you should do this...
+
+* First TDD, then BDD, now ... CDDD
+
+: In the same way that testable code benefits, CD can provide many benefits too.
+: The biggest change is how you change your code.
+
+* ORLY
+
+.image https://media.giphy.com/media/5b5OU7aUekfdSAER5I/giphy.gif
+
+* I'm scared, Rick
+
+.image https://media.giphy.com/media/WrK9dwj8TNPr2/giphy.gif
+
+* What the?
+
+- If I make a mistake, will everything break?
+- What about PM approval? Design reviews?
+- Breaking changes? I'm so ded
+
+: Maybe you deploy on a Monday. US is asleep, right?
+: Maybe you don't have time for this
+: Maybe your legacy software has tricky manual steps, I don't know
+
+* Don't worry, Morty
+
+- Manage risk up-front.
+- Smaller Increments make the heart grow calmer.
+- Re-think your change procedure.
+- Unreleased code is risk.
+
+: ... 
+
+* Topics to cover
+
+I'll provide code examples to help with ...
+
+- Managing change
+- Things you'll need to do
+- Changes you'll be able to make
+
+* Enter, Toasties Galore
+
+.image https://cdn.imgbin.com/25/17/2/imgbin-ham-and-cheese-sandwich-toast-cheese-and-tomato-sandwich-grilled-cheese-sandwiches-grilled-cheese-sandwich-illustration-xVCJhHSVh7M9C2Lg3VsZKgZye.jpg _ 500
+
+Meet our heroes - a ragtag band of gophers, and their new cheese-grilling establishment...
+
+* Toasties Galore walkthrough
+
+: For this presentation, let's look at the software for an imaginary food truck "Toasties Galore".
+: - 2 services - chillybin & jafflr.
+: - Both serve HTTP APIs. One connects to a Postgres database. 
+: - Per-service tests work on each service in isolation.
+: - Integration tests invoke the APIs and test the interactions.
+: - A test environment with docker-compose
+: - Supporting scripts
+: - Downtimeless deploys
+
+* Oh no, breaking changes
+
+- API signature needs to change
+- DB structure changes
+- HaLp!
+
+* Problems
+
+- Downtime?
+- Rollbacks?!
+- Migrations can take time
+- Code ready now but need to wait for a slot?!
+
+* The foxtrot
+
+'The Foxtrot' - a 3-step deploy dance
+
+- PR1 - Add new endpoint
+- PR2 - Invoke new endpoint
+- PR3 - Delete old endpoint
+
+: What has this got to do with CD?
+: You could do it without CD, but you really need to with CD
+: Furthermore, the easier your deploy is, the safer you need your practice
+
+* Rethinking our code ...
+
+What can we do differently once deployment becomes a non-thing?
+
+* Rethinking Configuration
+
+Just edit the code instead of a config file
+
+: Knobs and twiddles - bake them in:
+: - Where possible, compile it in - simplify your code.
+: - In other cases, it can live in the artifact (file in docker image)
+: - To reconfigure, change your code - redeploy is as fast as a config change.
+: * CD does what?
+: 12-Factor Apps 'Environment Variables are enough'
+
+: * Per-environment config
+: Things we need to configure boil down to env-specific params 
+: - Database DSNs
+: - scale-dependent variables
+: - Feature flags?
+
+* Tooling
+
+@overlord ...
+
+At Vend we [they] wrote a slackbot which handles a number of CD-related utilities.
+
+For example: 
+ - canary deploys
+ - rollbacks
+ - feature flagging
+ - service status
+
+* Tooling
+
+Calculate changes affecting a service [in a monorepo]
+
+: In a monorepo, it's real useful to know which services are affected by a commit.
+: Or put another way, which services have been affected since current production.
+: * Current version
+: Check 'current version of a service'.
+
+.code ./scripts/last_commit.sh
+
+: - calls `go list -deps` and eventually `| git rev-list`
+: - Allows us to run regression tests at the right time.
+: - Report that the deploy was really successful.
+: This was really just a bash script parsing the json output of `kubectl get pod`. 
+: To me this kind of thing is crucial for regression testing.
+
+* Why last_commit.sh ?
+
+- Deploy only affected services.
+- Run relevant integration tests, post-deploy
+
+* Conclusions
+
+: I've just tried to show you some go-specific hints about the CI/CD toolchain.
+: I didn't even try to recommend a CI system
+: It can take some time to redesign your software for Continuous Deployment - after seeing this talk, I hope you’ll begin or complete that journey.
+
+
+
+
