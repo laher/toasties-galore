@@ -61,6 +61,7 @@ func (h *handler) pickV1(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	if err := h.doPick(w, r, h.db, n, quantity); err != nil {
+		log.Printf("Error picking: %v", err)
 		w.WriteHeader(http.StatusInternalServerError)
 		w.Write([]byte("error fetching ingredient"))
 	}
@@ -90,37 +91,35 @@ func (h *handler) pickV2(w http.ResponseWriter, r *http.Request) {
 	}
 	var (
 		query = "INSERT INTO orders (customer, ingredient, quantity, created_at) VALUES ($1, $2, $3, NOW()) RETURNING id"
+		id    int64
 	)
-	res, err := tx.Exec(query, m.Customer, m.Ingredient, m.Quantity)
-	if err != nil {
+
+	if err := tx.QueryRow(query, m.Customer, m.Ingredient, m.Quantity).Scan(&id); err != nil {
 		switch e := err.(type) {
 		case *pq.Error:
 			log.Printf("pq error: %s", e.Code.Name())
 		}
 		log.Printf("Error creating order: '%+v', %v", m, err)
 		w.WriteHeader(http.StatusInternalServerError)
-		w.Write([]byte("error fetching ingredient"))
+		w.Write([]byte("error creating order"))
 		return
 	}
 	if err := h.doPick(w, r, tx, m.Ingredient, m.Quantity); err != nil {
 		tx.Rollback()
+		log.Printf("Error picking ingredient: '%+v', %v", m, err)
 		w.WriteHeader(http.StatusInternalServerError)
 		w.Write([]byte("error fetching ingredient"))
 		return
 	}
 	if err := tx.Commit(); err != nil {
-		w.WriteHeader(http.StatusInternalServerError)
-		w.Write([]byte("error fetching ingredient"))
-		return
-	}
-	id, err := res.LastInsertId()
-	if err != nil {
+		log.Printf("Error committing transaction: '%+v', %v", m, err)
 		w.WriteHeader(http.StatusInternalServerError)
 		w.Write([]byte("error fetching ingredient"))
 		return
 	}
 	b, err := json.Marshal(map[string]int64{"id": id})
 	if err != nil {
+		log.Printf("Error marshaling response with id: '%+v', %v", id, err)
 		w.WriteHeader(http.StatusInternalServerError)
 		w.Write([]byte("error fetching ingredient"))
 		return
