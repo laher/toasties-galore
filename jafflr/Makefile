@@ -1,2 +1,2 @@
 SVC = jafflr
-include ../scripts/go.make
+include ../scripts/go.Makefile
