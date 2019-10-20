@@ -30,16 +30,19 @@ func TestHappyPath(t *testing.T) {
 	if m["cheese"] != float64(10) {
 		t.Fatalf("wrong amount of cheese after restocking: %v, %T", m, m["cheese"])
 	}
-	resp, err = http.Get(fmt.Sprintf("%s/toastie?i=cheese&i=vegemite", jafflrAddr))
-	if err != nil {
-		t.Fatalf("error fetching toastie: %v", err)
+	customers := []string{"gordon", "gwyn"}
+	for _, customer := range customers {
+		resp, err = http.Get(fmt.Sprintf("%s/toastie?i=cheese&i=vegemite&customer=%s", jafflrAddr, customer))
+		if err != nil {
+			t.Fatalf("error fetching toastie: %v", err)
+		}
 	}
 	if resp.StatusCode != http.StatusOK {
 		body, _ := ioutil.ReadAll(resp.Body)
 		t.Fatalf("error fetching toastie (%s): %s", resp.Status, body)
 	}
 	m = getChillybinStats(t)
-	if m["cheese"] != float64(9) {
+	if m["cheese"] != float64(8) {
 		t.Fatalf("wrong amount of cheese after grilling toastie: %v", m)
 	}
 }
