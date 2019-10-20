@@ -101,7 +101,9 @@ Meet our heroes - a ragtag band of gophers, and their new cheese-grilling establ
 : - Supporting scripts
 : - Downtimeless deploys
 
-* Oh no, breaking changes
+* Oh noes, breaking changes
+
+Toastie orders are getting lost, we need to track customers.
 
 - API signature needs to change
 - DB structure changes
@@ -122,20 +124,19 @@ A 3-step deployment dance
 - STEP-2 - Invoke new endpoint
 - STEP-3 - Delete old endpoint
 
-: What has this got to do with CD?
 : You could do it without CD, but you should try it with CD. It can be completed in a short time, and lined up just like this. 
 : Furthermore, the easier your deploy is, the more you can plan for releases
 : Part of the problem with the foxtrot is the 'planning ahead': 
 : When releasing is hard, people try to do all this in a single deploy
 : When less hard, people tend to aim for Step 2. Step 3 may never happen.
-: NOTE: variants include 
+: NOTE: variants include shadowing, t
 
 * The Foxtrot
 
-When deployment is a non-thing
+When deployment is a non-thing:
 
 - you can make your releases safer
-- you code can stay cleaner
+- you code remains cleaner
 
 * Step 4: Feature Flags
 
