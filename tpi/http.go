@@ -9,11 +9,53 @@ import (
 	"time"
 )
 
+var (
+	version = Getenv("VERSION", "v0.?")
+)
+
 func Middleware(in http.Handler) http.Handler {
-	return http.HandlerFunc(func(resp http.ResponseWriter, req *http.Request) {
-		log.Printf("request: %s to %v", req.Method, req.URL)
-		in.ServeHTTP(resp, req)
-		log.Printf("response: %s to %v", req.Method, req.URL)
+	//	return TracingMiddleware(LoggingMiddleware(in))
+	return LoggingMiddleware(in)
+}
+
+type responseStatusRecorder struct {
+	http.ResponseWriter // embedded member already satisfies the interface
+	status              int
+	size                int
+}
+
+func (w *responseStatusRecorder) WriteHeader(code int) {
+	w.status = code
+	w.ResponseWriter.WriteHeader(code)
+}
+
+func (rw *responseStatusRecorder) Write(b []byte) (int, error) {
+	if !rw.written() {
+		// always trigger this
+		rw.WriteHeader(http.StatusOK)
+	}
+	size, err := rw.ResponseWriter.Write(b)
+	rw.size += size
+	return size, err
+}
+
+func (rw *responseStatusRecorder) written() bool {
+	return rw.status != 0
+}
+
+func TracingMiddleware(in http.Handler) http.Handler {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		// TODO insert statsd/prometheus/graphite thing here
+		in.ServeHTTP(w, r)
+	})
+}
+
+func LoggingMiddleware(in http.Handler) http.Handler {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		log.Printf("[%s] request: [%s:%v]", version, r.Method, r.URL)
+		wsr := &responseStatusRecorder{ResponseWriter: w}
+		in.ServeHTTP(wsr, r)
+		log.Printf("[%s] response: [%d, %d b] for [%s:%v]", version, wsr.size, wsr.status, r.Method, r.URL)
 	})
 }
 
