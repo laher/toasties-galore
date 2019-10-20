@@ -198,7 +198,6 @@ func routes(h *handler, version string) http.Handler {
 	router.HandleFunc("/v2/pick", h.pickV2) // Updated route
 
 	// restock all ingredients
-
 	router.HandleFunc("/restock", h.restock)
 
 	return router
