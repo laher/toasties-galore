@@ -25,6 +25,10 @@ run-all: start-postgres
 test: ## Run tests
 	CHILLYBIN_ADDR=http://localhost:7001 JAFFLR_ADDR=http://localhost:7000 go test -v ./integration-tests 
 
+dot: ## Generate dotfile image
+	#unflatten -l 2 "toasties.dot" | dot -Tpng -o "toasties.png"
+	cat "toasties.dot" | dot -s144 -Tsvg -o "toasties.svg"
+
 help:
 	@grep -E -h '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) | sort | awk 'BEGIN {FS = ":.*?## "}; {printf "\033[36m%-30s\033[0m %s\n", $$1, $$2}'
 
