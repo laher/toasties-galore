@@ -9,6 +9,14 @@ import (
 	"time"
 )
 
+func Middleware(in http.Handler) http.Handler {
+	return http.HandlerFunc(func(resp http.ResponseWriter, req *http.Request) {
+		log.Printf("request: %s to %v", req.Method, req.URL)
+		in.ServeHTTP(resp, req)
+		log.Printf("response: %s to %v", req.Method, req.URL)
+	})
+}
+
 func GracefulShutdownOSInterrupt(server *http.Server) {
 	osInterrupt := make(chan os.Signal)
 	signal.Notify(osInterrupt, os.Interrupt)

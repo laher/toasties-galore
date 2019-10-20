@@ -80,9 +80,9 @@ _For_the_purposes_of_this_talk_..._
 
 I'll provide code examples to help with ...
 
-- Managing change
 - Things you'll need to do
 - Changes you'll be able to make
+- Managing changes
 
 * Enter, Toasties Galore
 
@@ -114,33 +114,50 @@ Meet our heroes - a ragtag band of gophers, and their new cheese-grilling establ
 - Migrations can take time
 - Code ready now but need to wait for a slot?!
 
-* The foxtrot
+* The Foxtrot
 
-'The Foxtrot' - a 3-step deploy dance
+A 3-step deployment dance
 
-- PR1 - Add new endpoint
-- PR2 - Invoke new endpoint
-- PR3 - Delete old endpoint
+- STEP-1 - Add new endpoint
+- STEP-2 - Invoke new endpoint
+- STEP-3 - Delete old endpoint
 
 : What has this got to do with CD?
-: You could do it without CD, but you really need to with CD
-: Furthermore, the easier your deploy is, the safer you need your practice
+: You could do it without CD, but you should try it with CD. It can be completed in a short time, and lined up just like this. 
+: Furthermore, the easier your deploy is, the more you can plan for releases
+: Part of the problem with the foxtrot is the 'planning ahead': 
+: When releasing is hard, people try to do all this in a single deploy
+: When less hard, people tend to aim for Step 2. Step 3 may never happen.
+: NOTE: variants include 
 
-* Rethinking our code ...
+* The Foxtrot
 
-What can we do differently once deployment becomes a non-thing?
+When deployment is a non-thing
 
-* Rethinking Configuration
+- you can make your releases safer
+- you code can stay cleaner
 
-Just edit the code instead of a config file
+* Step 4: Feature Flags
 
-: Knobs and twiddles - bake them in:
+* Other concerns ...
+
+What else can we do differently once deployment becomes a non-thing?
+
+* Configuration 
+
+- Extensive configs tend to be a popular pattern - for 'easier reconfiguration'
+
+* Simpler Configuration
+
+- CD allows us to simplify. Just bake it in.
+- 12-factor Apps: 'just use ENV variables'.
+
+: Knobs and twiddles - why not bake them in:
 : - Where possible, compile it in - simplify your code.
-: - In other cases, it can live in the artifact (file in docker image)
+: - In other cases, it can live in the artifact (file in docker image).
 : - To reconfigure, change your code - redeploy is as fast as a config change.
 : * CD does what?
 : 12-Factor Apps 'Environment Variables are enough'
-
 : * Per-environment config
 : Things we need to configure boil down to env-specific params 
 : - Database DSNs
@@ -149,9 +166,13 @@ Just edit the code instead of a config file
 
 * Tooling
 
+What other tools will we want to build?
+
+* Canaries, Rollbacks
+
 @overlord ...
 
-At Vend we [they] wrote a slackbot which handles a number of CD-related utilities.
+At Vend we have a slackbot which handles a number of CD-related utilities.
 
 For example: 
  - canary deploys
@@ -186,7 +207,3 @@ Calculate changes affecting a service [in a monorepo]
 : I've just tried to show you some go-specific hints about the CI/CD toolchain.
 : I didn't even try to recommend a CI system
 : It can take some time to redesign your software for Continuous Deployment - after seeing this talk, I hope you’ll begin or complete that journey.
-
-
-
-

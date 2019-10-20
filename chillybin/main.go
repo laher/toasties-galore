@@ -31,7 +31,7 @@ func main() {
 	h := &handler{db}
 	router := routes(h, version)
 
-	server := newServer(listenAddr, router)
+	server := newServer(listenAddr, tpi.Middleware(router))
 	go func() {
 		tpi.GracefulShutdownOSInterrupt(server)
 		close(done)

@@ -10,7 +10,7 @@ import (
 func main() {
 	var (
 		listenAddr    = tpi.Getenv("ADDR", ":7000")
-		chillybinAddr = tpi.Getenv("CHILLYBIN_ADDR", "http://127.0.0.1:7000")
+		chillybinAddr = tpi.Getenv("CHILLYBIN_ADDR", "http://127.0.0.1:7001")
 		done          = make(chan bool)
 	)
 	h := &handler{
@@ -19,7 +19,7 @@ func main() {
 	router := newRouter(h)
 	server := &http.Server{
 		Addr:    listenAddr,
-		Handler: router,
+		Handler: tpi.Middleware(router),
 	}
 	go func() {
 		tpi.GracefulShutdownOSInterrupt(server)
