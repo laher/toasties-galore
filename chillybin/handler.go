@@ -89,7 +89,7 @@ func (h *handler) pickV2(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	var (
-		query = "INSERT INTO orders (customer, ingredient, quantity, date) VALUES ($1, $2, $3, NOW()) RETURNING id"
+		query = "INSERT INTO orders (customer, ingredient, quantity, created_at) VALUES ($1, $2, $3, NOW()) RETURNING id"
 	)
 	res, err := tx.Exec(query, m.Customer, m.Ingredient, m.Quantity)
 	if err != nil {
