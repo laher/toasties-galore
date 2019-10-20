@@ -56,7 +56,7 @@ func TestPickV2(t *testing.T) {
 	}
 	if resp.StatusCode != http.StatusOK {
 		body, _ := ioutil.ReadAll(resp.Body)
-		t.Fatalf("error restocking chillybin (%s): %s", resp.Status, body)
+		t.Fatalf("error picking v2 (%s): %s", resp.Status, body)
 	}
 }
 
