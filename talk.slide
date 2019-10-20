@@ -81,7 +81,7 @@ _For_the_purposes_of_this_talk_..._
 I'll provide code examples to help with ...
 
 - Things you'll need to do
-- Changes you'll be able to make
+- Things you'll be empowered to do
 - Managing changes
 
 * Enter, Toasties Galore
@@ -92,6 +92,8 @@ Meet our heroes - a ragtag band of gophers, and their new cheese-grilling establ
 
 * Toasties Galore walkthrough
 
+.image toasties.svg _ 600
+
 : For this presentation, let's look at the software for an imaginary food truck "Toasties Galore".
 : - 2 services - chillybin & jafflr.
 : - Both serve HTTP APIs. One connects to a Postgres database. 
@@ -100,6 +102,23 @@ Meet our heroes - a ragtag band of gophers, and their new cheese-grilling establ
 : - A test environment with docker-compose
 : - Supporting scripts
 : - Downtimeless deploys
+
+* jafflr
+
+.play ./jafflr/main.go /^func main/,/^}/
+
+* Graceful Restarts
+
+Stop listening on a port, while continuing to serve existing connections. 
+Allow other [new] instances to listen instead.
+
+.code -edit ./tpi/http.go /^func GracefulShutdownOSInterrupt/,/^}/
+
+* Chilly bin - migrations
+
+.code ./chillybin/main.go /^func runMigrationsSource/,/^}/
+
+
 
 * Oh noes, breaking changes
 

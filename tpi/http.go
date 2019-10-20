@@ -45,17 +45,18 @@ func (rw *responseStatusRecorder) written() bool {
 
 func TracingMiddleware(in http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		// TODO insert statsd/prometheus/graphite thing here
+		// TODO insert statsd/prometheus/honeycomb thing here
 		in.ServeHTTP(w, r)
 	})
 }
 
 func LoggingMiddleware(in http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		t := time.Now().UTC()
 		log.Printf("[%s] request: [%s:%v]", version, r.Method, r.URL)
 		wsr := &responseStatusRecorder{ResponseWriter: w}
 		in.ServeHTTP(wsr, r)
-		log.Printf("[%s] response: [%d, %d b] for [%s:%v]", version, wsr.size, wsr.status, r.Method, r.URL)
+		log.Printf("[%s] response: [%d, %db in %s] for [%s:%v]", version, wsr.status, wsr.size, time.Since(t), r.Method, r.URL)
 	})
 }
 
