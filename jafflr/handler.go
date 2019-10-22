@@ -34,6 +34,7 @@ func (h *handler) makeToastie(w http.ResponseWriter, r *http.Request) {
 	var (
 		values      = r.URL.Query()
 		ingredients = values["i"]
+		doneness    = values.Get("doneness")
 	)
 	if err := validate(ingredients); err != nil {
 		log.Printf("Error toasting toastie: %v", err)
@@ -50,15 +51,33 @@ func (h *handler) makeToastie(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 	}
-	h.cook(ingredients)
+	if err := h.cook(ingredients, doneness); err != nil {
+		w.WriteHeader(http.StatusBadRequest)
+		w.Write([]byte("Doneness error"))
+		return
+	}
 	w.WriteHeader(http.StatusOK)
 	w.Write([]byte("done"))
 }
 
-func (h *handler) cook(ingredients []string) {
+func (h *handler) cook(ingredients []string, doneness string) error {
 	h.setStatus(true)
 	defer h.setStatus(false)
-	time.Sleep(time.Second * 10)
+	var duration int
+	switch doneness {
+	case "light", "": // light is default
+		duration = 1000
+	case "medium":
+		duration = 2000
+	case "well-done":
+		duration = 5000
+	case "burnt":
+		duration = 10000
+	default:
+		return errors.New("Invalid doneness")
+	}
+	time.Sleep(time.Millisecond * time.Duration(duration))
+	return nil
 }
 
 func validate(ingredients []string) error {

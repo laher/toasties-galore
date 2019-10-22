@@ -25,6 +25,15 @@ run-all: start-postgres
 test: ## Run tests
 	CHILLYBIN_ADDR=http://localhost:7001 JAFFLR_ADDR=http://localhost:7000 go test -v ./integration-tests 
 
+test-restock: ## Run tests
+	CHILLYBIN_ADDR=http://localhost:7001 JAFFLR_ADDR=http://localhost:7000 go test -v ./integration-tests -run Restock
+
+test-burnt: ## Run tests
+	CHILLYBIN_ADDR=http://localhost:7001 JAFFLR_ADDR=http://localhost:7000 DONENESS=burnt go test -v ./integration-tests -run Burnt
+
+test-medium-done: ## Run tests
+	CHILLYBIN_ADDR=http://localhost:7001 JAFFLR_ADDR=http://localhost:7000 DONENESS=medium go test -v ./integration-tests -run Burnt
+
 dot: ## Generate dotfile image
 	#unflatten -l 2 "toasties.dot" | dot -Tpng -o "toasties.png"
 	cat "toasties.dot" | dot -s144 -Tsvg -o "toasties.svg"

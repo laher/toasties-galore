@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"io/ioutil"
 	"net/http"
+	"os"
 	"testing"
 
 	"github.com/laher/toasties-galore/tpi"
@@ -40,6 +41,35 @@ func TestHappyPath(t *testing.T) {
 	m = getChillybinStats(t)
 	if m["cheese"] != float64(9) {
 		t.Fatalf("wrong amount of cheese after grilling toastie: %v", m)
+	}
+}
+
+func TestRestock(t *testing.T) {
+	// reset environment
+	resp, err := http.Get(fmt.Sprintf("%s/restock", chillybinAddr))
+	if err != nil {
+		t.Fatalf("error restocking chillybin: %v", err)
+	}
+	if resp.StatusCode != http.StatusOK {
+		body, _ := ioutil.ReadAll(resp.Body)
+		t.Fatalf("error restocking chillybin (%s): %s", resp.Status, body)
+	}
+}
+
+func TestBurnt(t *testing.T) {
+	doneness := os.Getenv("DONENESS")
+	if doneness == "" {
+		t.Skip()
+	}
+	url := fmt.Sprintf("%s/toastie?i=cheese&i=vegemite&doneness=%s", jafflrAddr, doneness)
+	t.Logf("GETting %s", url)
+	resp, err := http.Get(url)
+	if err != nil {
+		t.Fatalf("error fetching toastie: %v", err)
+	}
+	if resp.StatusCode != http.StatusOK {
+		body, _ := ioutil.ReadAll(resp.Body)
+		t.Fatalf("error fetching toastie (%s): %s", resp.Status, body)
 	}
 }
 
