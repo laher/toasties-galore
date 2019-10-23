@@ -5,7 +5,6 @@ import (
 	"encoding/json"
 	"log"
 	"net/http"
-	"strconv"
 
 	"github.com/lib/pq"
 )
@@ -44,28 +43,6 @@ func (h *handler) checkStock(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	w.Write(b)
-}
-
-func (h *handler) pickV1(w http.ResponseWriter, r *http.Request) {
-	var (
-		values   = r.URL.Query()
-		n        = values.Get("name")
-		q        = values.Get("quantity")
-		quantity = 0
-		err      error
-	)
-	if quantity, err = strconv.Atoi(q); err != nil {
-		log.Printf("Error fetching ingredient %s with quantity '%s': %v", n, q, err)
-		w.WriteHeader(http.StatusBadRequest)
-		w.Write([]byte("input error - quantity must be integer"))
-		return
-	}
-	if err := h.doPick(w, r, h.db, n, quantity); err != nil {
-		log.Printf("Error picking: %v", err)
-		w.WriteHeader(http.StatusInternalServerError)
-		w.Write([]byte("error fetching ingredient"))
-	}
-	w.Write([]byte("ok"))
 }
 
 type PickRequest struct {
@@ -193,7 +170,6 @@ func routes(h *handler, version string) http.Handler {
 	router.HandleFunc("/", h.checkStock)
 
 	// pick ingredient by name and quantity
-	router.HandleFunc("/pick", h.pickV1)    // DEPRECATED route
 	router.HandleFunc("/v2/pick", h.pickV2) // Updated route
 
 	// restock all ingredients
