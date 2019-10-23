@@ -44,20 +44,11 @@ func (h *handler) makeToastie(w http.ResponseWriter, r *http.Request) {
 	}
 	ingredients = append(ingredients, "bread", "bread")
 	for _, ingredient := range ingredients {
-		if isChillybinV2(customer) {
-			if err := h.client.pickV2(ingredient, 1, customer); err != nil {
-				log.Printf("Error fetching ingredient: %v", err)
-				w.WriteHeader(http.StatusInternalServerError)
-				w.Write([]byte("Ingredient error"))
-				return
-			}
-		} else {
-			if err := h.client.pick(ingredient, 1); err != nil {
-				log.Printf("Error fetching ingredient: %v", err)
-				w.WriteHeader(http.StatusInternalServerError)
-				w.Write([]byte("Ingredient error"))
-				return
-			}
+		if err := h.client.pickV2(ingredient, 1, customer); err != nil {
+			log.Printf("Error fetching ingredient: %v", err)
+			w.WriteHeader(http.StatusInternalServerError)
+			w.Write([]byte("Ingredient error"))
+			return
 		}
 	}
 	h.cook(ingredients)
