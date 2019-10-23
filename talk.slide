@@ -93,12 +93,25 @@ Meet our heroes - a ragtag band of gophers, and their new cheese-grilling establ
 
 * Getting going with the basics ...
 
+- Integration Tests
 - Downtimeless Deploys
 - Observability
 
 * jafflr
 
 .play ./jafflr/main.go /^func main/,/^}/
+
+* Integration Tests
+
+CD is all about automated testing - _you_need_to_trust_those_tests._
+
+.code -edit ./integration-tests/integration_test.go 
+
+: - Repeatable and reliable - non-racy, non-flaky ... fast
+: - Environment - prod-like? Docker/docker-compose? k8s?
+: - Write a few integration tests - test those interactions.
+: - "Happy Path and some error handling"
+: - Don't assume state.
 
 * Graceful Restarts
 
