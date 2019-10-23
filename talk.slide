@@ -114,11 +114,23 @@ Allow other [new] instances to listen instead.
 
 .code -edit ./tpi/http.go /^func GracefulShutdownOSInterrupt/,/^}/
 
+: switch to code view. Show the tests in action and explain how K8s or ECS would work.
+
 * Chilly bin - migrations
 
 .code ./chillybin/main.go /^func runMigrationsSource/,/^}/
 
+: note how it's all gone well
 
+* Success
+
+Toasties Galore was highly successful. ...
+
+But ...
+
+* Too many Toasties
+
+Gita noticed that there are a lot of orders, and some of these are getting lost.
 
 * Oh noes, breaking changes
 
