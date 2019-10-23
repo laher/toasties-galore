@@ -53,10 +53,6 @@ _For_the_purposes_of_this_talk_..._
 
 .image https://media.giphy.com/media/5b5OU7aUekfdSAER5I/giphy.gif
 
-* I'm scared, Rick
-
-.image https://media.giphy.com/media/WrK9dwj8TNPr2/giphy.gif
-
 * What the?
 
 - If I make a mistake, will everything break?
@@ -76,14 +72,6 @@ _For_the_purposes_of_this_talk_..._
 
 : ... 
 
-* Topics to cover
-
-I'll provide code examples to help with ...
-
-- Things you'll need to do
-- Things you'll be empowered to do
-- Managing changes
-
 * Enter, Toasties Galore
 
 .image https://cdn.imgbin.com/25/17/2/imgbin-ham-and-cheese-sandwich-toast-cheese-and-tomato-sandwich-grilled-cheese-sandwiches-grilled-cheese-sandwich-illustration-xVCJhHSVh7M9C2Lg3VsZKgZye.jpg _ 500
@@ -92,7 +80,7 @@ Meet our heroes - a ragtag band of gophers, and their new cheese-grilling establ
 
 * Toasties Galore walkthrough
 
-.image toasties.svg _ 600
+.image diagrams/toasties.svg _ 600
 
 : For this presentation, let's look at the software for an imaginary food truck "Toasties Galore".
 : - 2 services - chillybin & jafflr.
@@ -102,6 +90,11 @@ Meet our heroes - a ragtag band of gophers, and their new cheese-grilling establ
 : - A test environment with docker-compose
 : - Supporting scripts
 : - Downtimeless deploys
+
+* Getting going with the basics ...
+
+- Downtimeless Deploys
+- Observability
 
 * jafflr
 
@@ -116,11 +109,11 @@ Allow other [new] instances to listen instead.
 
 : switch to code view. Show the tests in action and explain how K8s or ECS would work.
 
-* Chilly bin - migrations
+* Observability
 
-.code ./chillybin/main.go /^func runMigrationsSource/,/^}/
+- Middleware, metrics
 
-: note how it's all gone well
+.code -edit ./tpi/http.go /^func TracingMiddleware/,/^}/
 
 * Success
 
@@ -140,27 +133,67 @@ Toastie orders are getting lost, we need to track customers.
 - DB structure changes
 - HaLp!
 
-* Problems
+* Planned changes
 
-- Downtime?
-- Rollbacks?!
-- Migrations can take time
-- Code ready now but need to wait for a slot?!
+.image diagrams/toasties-changes.svg _ 600
+
+* Obstacles
+
+- Changes ready now but ... let's to wait for a quiet Monday?! ... changes mount
+- How to co-ordinate changes - downtime?!
+- How to rollback once other changes come in?!
+- DB migrations can take time. 
+
+Phew.
+
+* I'm scared, Rick
+
+.image https://media.giphy.com/media/WrK9dwj8TNPr2/giphy.gif
 
 * The Foxtrot
 
-A 3-step deployment dance
+So, let's do a dance.
+
+.image https://media.giphy.com/media/BiA0154sSljkA/giphy.gif
+
+A 3-step dance.
+
+* The 3-step deployment dance
 
 - STEP-1 - Add new endpoint
 - STEP-2 - Invoke new endpoint
 - STEP-3 - Delete old endpoint
 
-: You could do it without CD, but you should try it with CD. It can be completed in a short time, and lined up just like this. 
+: You could do it without CD, but you should try it with CD. 
+: It can be completed in a short time, and lined up just like this. 
 : Furthermore, the easier your deploy is, the more you can plan for releases
 : Part of the problem with the foxtrot is the 'planning ahead': 
 : When releasing is hard, people try to do all this in a single deploy
 : When less hard, people tend to aim for Step 2. Step 3 may never happen.
-: NOTE: variants include shadowing, t
+: NOTE: variants include shadowing, canaries, blue-green
+
+* Step 1 - add new feature implementation
+
+- Different URL? Headers? Parameters?
+- Behind Feature Flag?
+- 2 versions of code in 'master'
+
+* Step 2 - invoke new implementation
+
+- Just switch over?
+- Feature Flag?
+- Canary/Shadowing/Blue-Green
+
+* Step 3 - delete old implementation
+
+- Do it soon - Tidy Kiwis
+- Maybe line it up in advance
+
+It's the easy part, but easy to dismiss. 
+
+* Chilly bin - migrations
+
+.code ./chillybin/main.go /^func runMigrationsSource/,/^}/
 
 * The Foxtrot
 
@@ -169,7 +202,9 @@ When deployment is a non-thing:
 - you can make your releases safer
 - you code remains cleaner
 
-* Step 4: Feature Flags
+* On Feature Flags
+
+: TODO
 
 * Other concerns ...
 
@@ -177,11 +212,18 @@ What else can we do differently once deployment becomes a non-thing?
 
 * Configuration 
 
-- Extensive configs tend to be a popular pattern - for 'easier reconfiguration'
+Extensive config files?
 
-* Simpler Configuration
+- a popular pattern
+- Easy to reconfigure when supporting
+- Knobs and twiddles are nice
 
-- CD allows us to simplify. Just bake it in.
+* But, with CD ...
+
+We can simplify. 
+
+- Just use constants into your code.
+- Deployment is fast. Just edit code/artifact
 - 12-factor Apps: 'just use ENV variables'.
 
 : Knobs and twiddles - why not bake them in:
@@ -212,7 +254,13 @@ For example:
  - feature flagging
  - service status
 
-* Tooling
+* On Monorepos
+
+Monorepos offer an additional challenge. 
+
+ - Do we redeploy everything on every change?
+ 
+* Last relevant commit
 
 Calculate changes affecting a service [in a monorepo]
 

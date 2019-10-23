@@ -6,6 +6,7 @@ import (
 	"net/http"
 	"os"
 	"os/signal"
+	"strconv"
 	"time"
 )
 
@@ -43,10 +44,21 @@ func (rw *responseStatusRecorder) written() bool {
 	return rw.status != 0
 }
 
+func someTracingObserve(duration time.Duration, labelsMap map[string]string) {
+	// TODO insert statsd/prometheus/honeycomb thing here
+}
+
 func TracingMiddleware(in http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		// TODO insert statsd/prometheus/honeycomb thing here
-		in.ServeHTTP(w, r)
+		t := time.Now().UTC()
+		wsr := &responseStatusRecorder{ResponseWriter: w}
+		in.ServeHTTP(wsr, r)
+		labelsMap := map[string]string{
+			"method":  r.Method,
+			"status":  strconv.Itoa(wsr.status),
+			"version": version,
+		}
+		someTracingObserve(time.Since(t), labelsMap)
 	})
 }
 
