@@ -1,5 +1,6 @@
 digraph G {
   rankdir=LR;
+  edge [dir="back"];
   label="Toasties Galore";
   //ratio="0.35";
 

@@ -25,8 +25,8 @@
 <!-- Request&#45;&gt;Jafflr -->
 <g id="edge1" class="edge">
 <title>Request&#45;&gt;Jafflr</title>
-<path fill="none" stroke="black" d="M77.25,-64.14C85.62,-64.14 94.47,-64.14 102.79,-64.14"/>
-<polygon fill="black" stroke="black" points="102.95,-67.64 112.95,-64.14 102.95,-60.64 102.95,-67.64"/>
+<path fill="none" stroke="black" d="M87.46,-64.14C96.24,-64.14 105.11,-64.14 112.95,-64.14"/>
+<polygon fill="black" stroke="black" points="87.25,-60.64 77.25,-64.14 87.25,-67.64 87.25,-60.64"/>
 </g>
 <!-- Chillybin -->
 <g id="node3" class="node">
@@ -37,8 +37,8 @@
 <!-- Jafflr&#45;&gt;Chillybin -->
 <g id="edge2" class="edge">
 <title>Jafflr&#45;&gt;Chillybin</title>
-<path fill="none" stroke="black" d="M167.28,-73.43C175.38,-76.32 184.55,-79.58 193.5,-82.77"/>
-<polygon fill="black" stroke="black" points="192.46,-86.12 203.06,-86.18 194.81,-79.52 192.46,-86.12"/>
+<path fill="none" stroke="black" d="M176.71,-76.79C185.33,-79.86 194.53,-83.14 203.06,-86.18"/>
+<polygon fill="black" stroke="black" points="177.87,-73.49 167.28,-73.43 175.52,-80.08 177.87,-73.49"/>
 </g>
 <!-- Toastie -->
 <g id="node5" class="node">
@@ -54,8 +54,8 @@
 <!-- Jafflr&#45;&gt;Toastie -->
 <g id="edge4" class="edge">
 <title>Jafflr&#45;&gt;Toastie</title>
-<path fill="none" stroke="black" d="M167.28,-55.12C176.3,-52 186.64,-48.43 196.52,-45.01"/>
-<polygon fill="black" stroke="black" points="197.89,-48.24 206.2,-41.67 195.6,-41.63 197.89,-48.24"/>
+<path fill="none" stroke="black" d="M176.98,-51.77C186.59,-48.44 196.9,-44.88 206.2,-41.67"/>
+<polygon fill="black" stroke="black" points="175.58,-48.55 167.28,-55.12 177.87,-55.16 175.58,-48.55"/>
 </g>
 <!-- DB -->
 <g id="node4" class="node">
@@ -67,8 +67,8 @@
 <!-- Chillybin&#45;&gt;DB -->
 <g id="edge3" class="edge">
 <title>Chillybin&#45;&gt;DB</title>
-<path fill="none" stroke="black" d="M272.28,-98.14C280.29,-98.14 289.05,-98.14 297.79,-98.14"/>
-<polygon fill="black" stroke="black" points="297.98,-101.64 307.98,-98.14 297.98,-94.64 297.98,-101.64"/>
+<path fill="none" stroke="black" d="M282.54,-98.14C290.85,-98.14 299.57,-98.14 307.98,-98.14"/>
+<polygon fill="black" stroke="black" points="282.28,-94.64 272.28,-98.14 282.28,-101.64 282.28,-94.64"/>
 </g>
 </g>
 </svg>

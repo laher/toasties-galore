@@ -9,18 +9,21 @@ Lead Engineer (API), Vend
 
 * My Bold Premise
 
-Continuous Deployment can influence the design of your code, in subtle, but significant ways.
+Continuous Deployment can influence the design of your code, in subtle, but hugely beneficial ways.
 
 Your life, and your code, will be better.
 
-
 * What is CD?
 
-_So_many_interpretations._ 
+So many interpretations. Many of them long. 
 
-From [[https://continuousdelivery.com]]:
+_From_ [[https://continuousdelivery.com]]_:_
 
 .caption Continuous Delivery is the ability to get changes of all types — including new features, configuration changes, bug fixes and experiments — into production, or into the hands of users, safely and quickly in a sustainable way.
+
+* But ...
+
+How about Continuous Integration, Continuous Delivery, Continuous Fish ...?
 
 : But honestly, there are so many interpretations out there, that I'm going to pick one and talk about that. Apologies in advance if this definition doesn't ring true...
 
@@ -28,7 +31,15 @@ From [[https://continuousdelivery.com]]:
 
 _For_the_purposes_of_this_talk_..._
 
-	CD == autoBuild + autoDeploy
+	CI := auto(test + build)
+
+_and_
+
+	CD := auto(test + build + deploy)
+
+* What is Continuous Deployment?
+
+_Another_way..._
 
 - A PR triggers tests.  ← *CI*
 - A merge [to master] triggers tests, rebuild + redeploy. ← *CD*
@@ -53,30 +64,34 @@ _For_the_purposes_of_this_talk_..._
 
 .image https://media.giphy.com/media/5b5OU7aUekfdSAER5I/giphy.gif
 
-* What the?
-
-- If I make a mistake, will everything break?
-- What about PM approval? Design reviews?
-- Breaking changes? I'm so ded
-
+: * What the?
+: - If I make a mistake, will everything break?
+: - What about PM approval? Design reviews?
+: - Breaking changes? I'm so ded
 : Maybe you deploy on a Monday. US is asleep, right?
 : Maybe you don't have time for this
 : Maybe your legacy software has tricky manual steps, I don't know
+: * Don't worry, Morty
+: - Manage risk up-front.
+: - Smaller Increments make the heart grow calmer.
+: - Re-think your change procedure.
+: - Unreleased code is risk.
 
-* Don't worry, Morty
+* Real world example
 
-- Manage risk up-front.
-- Smaller Increments make the heart grow calmer.
-- Re-think your change procedure.
-- Unreleased code is risk.
+* Toasties Galore
 
-: ... 
+.image ./diagrams/toasties-galore-bw.jpg _ 600
 
-* Enter, Toasties Galore
+: .image https://cdn.imgbin.com/25/17/2/imgbin-ham-and-cheese-sandwich-toast-cheese-and-tomato-sandwich-grilled-cheese-sandwiches-grilled-cheese-sandwich-illustration-xVCJhHSVh7M9C2Lg3VsZKgZye.jpg _ 500
 
-.image https://cdn.imgbin.com/25/17/2/imgbin-ham-and-cheese-sandwich-toast-cheese-and-tomato-sandwich-grilled-cheese-sandwiches-grilled-cheese-sandwich-illustration-xVCJhHSVh7M9C2Lg3VsZKgZye.jpg _ 500
+Meet our heroine, Gita the Gopher
 
-Meet our heroes - a ragtag band of gophers, and their new cheese-grilling establishment...
+_A_gopher_and_her_dream,_to_make_toasties_for_the_world_..._
+
+* State of the art Techmology 
+
+.image ./diagrams/jafflr-chillybin-bw.jpg _ 800
 
 * Toasties Galore walkthrough
 
@@ -84,10 +99,15 @@ Meet our heroes - a ragtag band of gophers, and their new cheese-grilling establ
 
 : For this presentation, let's look at the software for an imaginary food truck "Toasties Galore".
 : - 2 services - chillybin & jafflr.
-: - Both serve HTTP APIs. One connects to a Postgres database. 
+: - Chillybin is where we store the ingredients. Chillybins (NZ), also known as an Esky in Australia
+: - Jafflr is a state of the art grilling machine.
+:   - It harnesses laser technology to melt the cheese ... 
+:   - and a mechanical arm to fetch ingredients from the chillybin
+: - Both components serve HTTP APIs. chillybin connects to a Postgres database. 
+: Testing:
 : - Per-service tests work on each service in isolation.
 : - Integration tests invoke the APIs and test the interactions.
-: - A test environment with docker-compose
+:   - test environment with docker-compose
 : - Supporting scripts
 : - Downtimeless deploys
 
@@ -97,9 +117,23 @@ Meet our heroes - a ragtag band of gophers, and their new cheese-grilling establ
 - Downtimeless Deploys
 - Observability
 
+: .image https://media.npr.org/assets/img/2012/07/03/rubegoldberg_photo_gal_4153_photo_846993380_lr-1-_custom-ecf7c547a1f17966a258fa8bd21286bc9b6d3619-s1100-c15.jpg
+
 * jafflr
 
 .play ./jafflr/main.go /^func main/,/^}/
+
+* Jafflr schematic
+
+.image ./diagrams/jafflr-schematic-diagram.jpg _ 700
+
+* Jafflr arm
+
+.image ./diagrams/jafflr-arm.jpg _ 600
+
+* Chillybin
+
+.image ./diagrams/chillybin.jpg _ 500
 
 * Integration Tests
 
