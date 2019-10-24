@@ -291,21 +291,22 @@ What other tools will we want to build?
 
 * Canaries, Rollbacks
 
-@overlord ...
-
-At Vend we have a slackbot which handles a number of CD-related utilities.
+At Vend we have a slackbot, @overlord, which provides a number of CD-related utilities.
 
 For example: 
- - canary deploys
- - rollbacks
- - feature flagging
- - service status
+- canary deploys
+- rollbacks
+- feature flagging
+- service status
 
 * On Monorepos
 
-Monorepos offer an additional challenge. 
+Monorepos offer some challenges and some advantages
 
- - Do we redeploy everything on every change?
+- Easier to adjust CI/CD across all services.
+- Harder to identify what to build.
+
+Do we redeploy everything on every change?
  
 * Last relevant commit
 
