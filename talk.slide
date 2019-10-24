@@ -89,19 +89,15 @@ Meet our heroine, Gita the Gopher
 
 _A_gopher_and_her_dream,_to_make_toasties_for_the_world_..._
 
-* State of the art Techmology 
-
-.image ./diagrams/jafflr-chillybin-bw.jpg _ 800
-
 * Toasties Galore walkthrough
 
 .image diagrams/toasties.svg _ 600
 
-: For this presentation, let's look at the software for an imaginary food truck "Toasties Galore".
+: For this presentation, let's look at the software for an imaginary food stall, "Toasties Galore".
 : - 2 services - chillybin & jafflr.
 : - Chillybin is where we store the ingredients. Chillybins (NZ), also known as an Esky in Australia
 : - Jafflr is a state of the art grilling machine.
-:   - It harnesses laser technology to melt the cheese ... 
+:   - It harnesses laser technology to melt the cheese to precisely 6.3 kilogoos ... 
 :   - and a mechanical arm to fetch ingredients from the chillybin
 : - Both components serve HTTP APIs. chillybin connects to a Postgres database. 
 : Testing:
@@ -110,6 +106,10 @@ _A_gopher_and_her_dream,_to_make_toasties_for_the_world_..._
 :   - test environment with docker-compose
 : - Supporting scripts
 : - Downtimeless deploys
+
+* State of the art Techmology 
+
+.image ./diagrams/jafflr-chillybin-bw.jpg _ 800
 
 * Getting going with the basics ...
 
@@ -123,18 +123,6 @@ _A_gopher_and_her_dream,_to_make_toasties_for_the_world_..._
 
 .play ./jafflr/main.go /^func main/,/^}/
 
-* Jafflr schematic
-
-.image ./diagrams/jafflr-schematic-diagram.jpg _ 700
-
-* Jafflr arm
-
-.image ./diagrams/jafflr-arm.jpg _ 600
-
-* Chillybin
-
-.image ./diagrams/chillybin.jpg _ 500
-
 * Integration Tests
 
 CD is all about automated testing - _you_need_to_trust_those_tests._
@@ -147,6 +135,10 @@ CD is all about automated testing - _you_need_to_trust_those_tests._
 : - "Happy Path and some error handling"
 : - Don't assume state.
 
+* Jafflr schematic
+
+.image ./diagrams/jafflr-schematic-diagram.jpg _ 700
+
 * Graceful Restarts
 
 Stop listening on a port, while continuing to serve existing connections. 
@@ -156,11 +148,19 @@ Allow other [new] instances to listen instead.
 
 : switch to code view. Show the tests in action and explain how K8s or ECS would work.
 
+* Chillybin
+
+.image ./diagrams/chillybin.jpg _ 500
+
 * Observability
 
 - Middleware, metrics
 
 .code -edit ./tpi/http.go /^func TracingMiddleware/,/^}/
+
+* Jafflr arm
+
+.image ./diagrams/jafflr-arm.jpg _ 600
 
 * Success
 
