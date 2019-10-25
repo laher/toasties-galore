@@ -1,4 +1,7 @@
 #!/bin/bash
+
+echo "deploy"
+
 echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
 
 function docker_tag_exists() {
@@ -6,6 +9,7 @@ function docker_tag_exists() {
 }
 
 export JAFFLR_COMMIT=$(./scripts/last_commit.sh jafflr)
+echo "checking jafflr tag $JAFFLR_COMMIT"
 if docker_tag_exists "$DOCKER_USERNAME/jafflr" "$JAFFLR_COMMIT"; then
     echo "Tag exists for $DOCKER_USERNAME/jafflr: $JAFFLR_COMMIT"
 else
@@ -17,6 +21,7 @@ else
 fi
 
 export CHILLYBIN_COMMIT=$(./scripts/last_commit.sh chillybin)
+echo "checking chillybin tag $JAFFLR_COMMIT"
 if docker_tag_exists "$DOCKER_USERNAME/chillybin" "$CHILLYBIN_COMMIT"; then
     echo "Tag exists for $DOCKER_USERNAME/chillybin: $CHILLYBIN_COMMIT"
 else
