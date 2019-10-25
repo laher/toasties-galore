@@ -1,6 +1,6 @@
 module github.com/laher/toasties-galore
 
-go 1.12
+go 1.11
 
 require (
 	github.com/Masterminds/squirrel v1.1.0 // indirect
