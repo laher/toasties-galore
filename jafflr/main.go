@@ -14,7 +14,7 @@ func main() {
 		done          = make(chan bool)
 	)
 	h := &handler{
-		client: chillybinClient{chillybinAddr},
+		client: chillybinClient{chillybinAddr}, // <- oh, teh arm // HL
 	}
 	router := newRouter(h)
 	server := &http.Server{

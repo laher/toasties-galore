@@ -1,0 +1,25 @@
+digraph G {
+  rankdir=LR;
+
+  node[shape=circle];
+  Commit;
+  Test;
+  Build;
+
+  node[style=filled,shape="box"];
+  Me;
+  Github;
+  Travis;
+  Production;
+
+
+  Me -> Commit[label="git-commit"];
+  Commit -> Github[label="merge PR"];
+  Github -> Travis[label="Webhook"];
+  Travis -> Test[label="verify"];
+  Travis -> Build[label="docker-push"];
+  Travis -> Production[label="deploy"];
+
+  labelloc=t;
+  fontsize=24;
+}

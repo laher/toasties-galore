@@ -89,9 +89,17 @@ Meet our heroine, Gita the Gopher
 
 _A_gopher_and_her_dream,_to_make_toasties_for_the_world_..._
 
-* Toasties Galore walkthrough
+* Toasties Galore codebase
 
-.image diagrams/toasties.svg _ 600
+An overview
+
+- A monorepo
+- 2 HTTP services, which interact
+- Tests
+- A CI/CD pipeline
+
+See
+.link https://github.com/laher/toasties-galore
 
 : For this presentation, let's look at the software for an imaginary food stall, "Toasties Galore".
 : - 2 services - chillybin & jafflr.
@@ -111,17 +119,41 @@ _A_gopher_and_her_dream,_to_make_toasties_for_the_world_..._
 
 .image ./diagrams/jafflr-chillybin-bw.jpg _ 800
 
+* Invoking jafflr
+
+The toastie network
+
+.image diagrams/toasties.svg _ 600
+
 * Getting going with the basics ...
 
+- The Pipeline
+- Jafflr
 - Integration Tests
 - Downtimeless Deploys
 - Observability
 
+* The Pipeline
+
+.image ./diagrams/pipeline.svg
+
+* Travis pipeline
+
+.code ./.travis.yml
+
 : .image https://media.npr.org/assets/img/2012/07/03/rubegoldberg_photo_gal_4153_photo_846993380_lr-1-_custom-ecf7c547a1f17966a258fa8bd21286bc9b6d3619-s1100-c15.jpg
 
-* jafflr
+* Jafflr schematic
+
+.image ./diagrams/jafflr-schematic-diagram.jpg _ 700
+
+* Jafflr
 
 .play ./jafflr/main.go /^func main/,/^}/
+
+* Jafflr arm
+
+.image ./diagrams/jafflr-arm.jpg _ 600
 
 * Integration Tests
 
@@ -135,10 +167,6 @@ CD is all about automated testing - _you_need_to_trust_those_tests._
 : - "Happy Path and some error handling"
 : - Don't assume state.
 
-* Jafflr schematic
-
-.image ./diagrams/jafflr-schematic-diagram.jpg _ 700
-
 * Graceful Restarts
 
 Stop listening on a port, while continuing to serve existing connections. 
@@ -148,19 +176,11 @@ Allow other [new] instances to listen instead.
 
 : switch to code view. Show the tests in action and explain how K8s or ECS would work.
 
-* Chillybin
-
-.image ./diagrams/chillybin.jpg _ 500
-
 * Observability
 
 - Middleware, metrics
 
 .code -edit ./tpi/http.go /^func TracingMiddleware/,/^}/
-
-* Jafflr arm
-
-.image ./diagrams/jafflr-arm.jpg _ 600
 
 * Success
 
@@ -205,11 +225,16 @@ So, let's do a dance.
 
 A 3-step dance.
 
-* The 3-step deployment dance
+* The 3-step release dance
 
-- STEP-1 - Add new endpoint
-- STEP-2 - Invoke new endpoint
-- STEP-3 - Delete old endpoint
+Three steps, or _stages_ ...
+
+- 1. Add new endpoint
+- 2. Invoke new endpoint
+- 3. Delete old endpoint
+
+See ...
+.link https://github.com/laher/toasties-galore/pulls Pull Requests
 
 : You could do it without CD, but you should try it with CD. 
 : It can be completed in a short time, and lined up just like this. 
@@ -243,11 +268,7 @@ A 3-step dance.
 
 .link https://github.com/laher/toasties-galore/pull/3/files
 
-It's the easy part, but easy to dismiss. 
-
-* Chilly bin - migrations
-
-.code ./chillybin/main.go /^func runMigrationsSource/,/^}/
+It's the easy part, but it's also easy to forget or fear it. 
 
 * The Foxtrot
 
@@ -255,6 +276,14 @@ When deployment is a non-thing:
 
 - you can make your releases safer
 - you code remains cleaner
+
+* Chillybin
+
+.image ./diagrams/chillybin.jpg _ 500
+
+* Chilly bin - migrations
+
+.code ./chillybin/main.go /^func runMigrationsSource/,/^}/
 
 * On Feature Flags
 
@@ -301,6 +330,7 @@ What other tools will we want to build?
 At Vend we have a slackbot, @overlord, which provides a number of CD-related utilities.
 
 For example: 
+
 - canary deploys
 - rollbacks
 - feature flagging
@@ -311,7 +341,7 @@ For example:
 Monorepos offer some challenges and some advantages
 
 - Easier to adjust CI/CD across all services.
-- Harder to identify what to build.
+- Challenge: identify what to build,test,deploy on each commit.
 
 Do we redeploy everything on every change?
  
