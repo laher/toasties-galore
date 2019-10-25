@@ -1,8 +1,15 @@
 language: generic
 sudo: required
 services:
-  - docker
-
+- docker
 script:
-  - docker-compose -f docker-compose.yml up -d
-  - docker-compose -f docker-compose.yml -f docker-compose.test.yml run test
+- docker-compose -f docker-compose.yml up -d
+- docker-compose -f docker-compose.yml -f docker-compose.test.yml run test
+deploy:
+  provider: script
+  script: bash ./scripts/deploy.sh
+  on:
+    branch: master
+env:
+  global:
+    secure: bZ5k4u/sMF74DH0sdGGp1XUBOJ/tL2SpQj00USVXXtzduCoOmYVKLwgU3qUf7X6b0ofjVDIcfSGFFMbqAdUClJteGkZPn+QvUbrTy84PUmeCpOpTWBZn5XyffhkbvosaztXb4z6vnSD/XL2sCReKO+qIGcigM2qatx3Dxy9yFVTeBXcUMUpcLyrJ4d/seTU5apO3YC8Ci+IucGDMkQEBnlQ+tVAowYSrXdK51FlQy5h7ykDANLXzHPH3Z6bnHP+vIX1+qEwtZ300HRnInZOeTmeRZ2NCCe4syuXHkJeMYjqPKaDp6TpvFMue/lrPnJbD0pstJp16wWgq2yS5LLQY22Q5vF4c7Et3dSwpJs10zFEYThs4PeVbUCtTiN6mfL0Gej0MXGWR81SZdqP/FFCHsbyu0xeBgrhXItpMZGtd1+SVyjAqE3ZcrPcoy/zePMY4IehVLWd7P9s6eJDwbZs41UjmPPTBpl8fC1WVptd2UYGgnMr080gKTe0V59EP3H37Ae8jbsbHhkujUnfzRwC7eYt0M4imTgN7LJiGBdZCtf55gL64i92rhOCAUsSC0Q5REIMaIWWVnrlXjSnz1f1fz0NMhLKmPN3gvEdvLSAN7r6+t4VIpfLS9dsxc5puM+cuuGaf+MAgMx64h9/KFgYDUZ7H/E9YVII4FggtXw/fWIw=
