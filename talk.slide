@@ -44,6 +44,15 @@ _Another_way..._
 - A PR triggers tests.  ← *CI*
 - A merge [to master] triggers tests, rebuild + redeploy. ← *CD*
 
+* On Tools
+
+So many tools for CI/CD, so many deployment scenarios
+
+They all work, and they're all different. 
+
+_My_examples_are_only_chosen_to_communicate_some_ideas._
+
+
 * Touted Benefits of CD
 
 - Lowers risk 
