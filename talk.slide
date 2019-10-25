@@ -221,9 +221,12 @@ A 3-step dance.
 
 * Step 1 - add new feature implementation
 
-- Different URL? Headers? Parameters?
-- Behind Feature Flag?
-- 2 versions of code in 'master'
+- Don't affect real users yet
+- Serve it under a different URL? Special Headers / Parameters?
+- Behind a Feature Flag?
+- Now 2 versions of code in 'master'
+
+.link https://github.com/laher/toasties-galore/pull/1/files
 
 * Step 2 - invoke new implementation
 
@@ -231,10 +234,14 @@ A 3-step dance.
 - Feature Flag?
 - Canary/Shadowing/Blue-Green
 
+.link https://github.com/laher/toasties-galore/pull/2/files
+
 * Step 3 - delete old implementation
 
 - Do it soon - Tidy Kiwis
 - Maybe line it up in advance
+
+.link https://github.com/laher/toasties-galore/pull/3/files
 
 It's the easy part, but easy to dismiss. 
 
