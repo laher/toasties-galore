@@ -7,6 +7,7 @@ env:
 script:
 - go test ./chillybin ./jafflr ./tpi # <- run unit/functional tests // HL
 - docker-compose up -d # <- prepare for integration tests
+- docker-compose ps
 - sleep 5
 - docker-compose ps
 - go test -v ./integration-tests # <- run integration tests // HL
