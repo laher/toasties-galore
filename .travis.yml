@@ -7,6 +7,7 @@ env:
 script:
 - go test ./chillybin ./jafflr ./tpi # <- run unit/functional tests // HL
 - docker-compose -f docker-compose.yml up -d # <- prepare for integration tests
+- sleep 5
 - go test -v ./integration-tests # <- run integration tests // HL
   # alternative: - docker-compose -f docker-compose.yml -f docker-compose.test.yml run test # <- run integration tests // HL
 deploy:
