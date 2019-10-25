@@ -1,0 +1,15 @@
+version: '3'
+services:
+  test:
+    build:
+      context: .
+      dockerfile: ./integration-tests/Dockerfile
+    depends_on:
+      - chillybin
+      - jafflr
+    environment:
+      VERSION: "1.1.2.3"
+      GO111MODULES: "on"
+      CGO_ENABLED: 0
+      CHILLYBIN_ADDR: "http://chillybin:7001"
+      JAFFLR_ADDR: "http://jafflr:7000"
