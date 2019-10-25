@@ -80,14 +80,19 @@ func (h *handler) cook(ingredients []string, doneness string) error {
 	return nil
 }
 
+var (
+	notEnoughIngredients = errors.New("Not enough ingredients")
+	noCheese             = errors.New("No cheese on this toastie")
+)
+
 func validate(ingredients []string) error {
 	if len(ingredients) < 1 {
-		return errors.New("Not enough ingredients")
+		return notEnoughIngredients
 	}
 	for _, c := range ingredients {
 		if c == "cheese" {
 			return nil
 		}
 	}
-	return errors.New("No cheese on this toastie ")
+	return noCheese
 }

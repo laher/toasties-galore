@@ -3,8 +3,9 @@ sudo: required
 services:
 - docker
 script:
-- docker-compose -f docker-compose.yml up -d
-- docker-compose -f docker-compose.yml -f docker-compose.test.yml run test
+- go test ./chillybin ./jafflr ./tpi # <- run unit/functional tests
+- docker-compose -f docker-compose.yml up -d # <- prepare for integration tests
+- docker-compose -f docker-compose.yml -f docker-compose.test.yml run test # <- run integration tests
 deploy:
   provider: script
   script: bash ./scripts/deploy.sh
