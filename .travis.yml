@@ -3,9 +3,6 @@ sudo: required
 services:
   - docker
 
-env:
-  - COMPOSE_FILE=docker-compose.yml:docker-compose.override.travis.yml
-
 script:
-  - ls -lah
+  - docker-compose -f docker-compose.yml up -d
   - docker-compose -f docker-compose.yml -f docker-compose.test.yml run test
