@@ -23,16 +23,16 @@ run-all: start-postgres
 	cd jafflr && $(MAKE) reflex-nohup
 
 test: ## Run tests
-	CHILLYBIN_ADDR=http://localhost:7001 JAFFLR_ADDR=http://localhost:7000 go test -v ./integration-tests 
+	CHILLYBIN_ADDR=http://localhost:7001 JAFFLR_ADDR=http://localhost:7000 go test -mod=vendor -v ./integration-tests 
 
 test-restock: ## Run tests
-	CHILLYBIN_ADDR=http://localhost:7001 JAFFLR_ADDR=http://localhost:7000 go test -v ./integration-tests -run Restock
+	CHILLYBIN_ADDR=http://localhost:7001 JAFFLR_ADDR=http://localhost:7000 go test -v -mod=vendor ./integration-tests -run Restock
 
 test-burnt: ## Run tests
-	CHILLYBIN_ADDR=http://localhost:7001 JAFFLR_ADDR=http://localhost:7000 DONENESS=burnt go test -v ./integration-tests -run Burnt
+	CHILLYBIN_ADDR=http://localhost:7001 JAFFLR_ADDR=http://localhost:7000 DONENESS=burnt go test -v -mod=vendor ./integration-tests -run Burnt
 
 test-medium-done: ## Run tests
-	CHILLYBIN_ADDR=http://localhost:7001 JAFFLR_ADDR=http://localhost:7000 DONENESS=medium go test -v ./integration-tests -run Burnt
+	CHILLYBIN_ADDR=http://localhost:7001 JAFFLR_ADDR=http://localhost:7000 DONENESS=medium go test -v -mod=vendor ./integration-tests -run Burnt
 
 dot: ## Generate dotfile image
 	#unflatten -l 2 "toasties.dot" | dot -Tpng -o "toasties.png"
