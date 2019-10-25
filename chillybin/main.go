@@ -5,6 +5,7 @@ import (
 	"log"
 	"net/http"
 	"os"
+	"time"
 
 	"github.com/golang-migrate/migrate"
 	"github.com/golang-migrate/migrate/database/postgres"
@@ -19,7 +20,7 @@ func main() {
 		version    = os.Getenv("VERSION")
 		done       = make(chan bool)
 	)
-	db, err := connect(dsn)
+	db, err := connectRetry(dsn)
 	if err != nil {
 		log.Fatalf("could not connect: %v", err)
 	}
@@ -49,6 +50,21 @@ func newServer(listenAddr string, router http.Handler) *http.Server {
 		Addr:    listenAddr,
 		Handler: router,
 	}
+}
+
+func connectRetry(url string) (*sql.DB, error) {
+	var ret error
+	for i := 0; i < 5; i++ {
+		db, err := connect(url)
+		if err != nil {
+			log.Printf("Error connecting: %v", err)
+			time.Sleep(5 * time.Second)
+			ret = err
+			continue
+		}
+		return db, nil
+	}
+	return nil, ret
 }
 
 func connect(url string) (*sql.DB, error) {
