@@ -11,15 +11,6 @@ Lead Engineer (API), Vend
 
 Continuous Deployment can benefit the design of your code, in subtle, but remarkable ways.
 
-* How?
-
-_More_than_anything_else,_CD_changes_how_you_ *change* _your_code._
-
-- CD forces you to deal with Important Things, up front.
-- CD enables safe and easy changes.-
-
-: Important things - maybe these are things you already do, but it forces you to straighten up early, and to keep them straight.
-
 * What is Continuous Deployment?
 
 _For_the_purposes_of_this_talk_..._
@@ -78,6 +69,22 @@ Who has worked in an envirnment which used:
 : * First TDD, then BDD, now ... CDDD
 : In the same way that testable code benefits, CD can provide many benefits too.
 : The biggest change is how you change your code.
+
+* How will it change my code?
+
+_More_than_anything_else,_CD_changes_how_you_ *change* _your_code._
+
+- CD forces you to deal with Important Things, up front.
+- CD enables safe and easy changes.
+
+: Important things - maybe these are things you already do, but it forces you to straighten up early, and to keep them straight.
+
+* Results
+
+- Simpler: fewer contraptions in the code
+- Tidyier: fewer cobwebby corners
+- More dynamic: change is easy -> more change
+
 
 * ORLY
 
@@ -142,11 +149,11 @@ See
 
 The toastie network
 
-.image diagrams/toasties.svg _ 600
+.image diagrams/toasties.dot.svg _ 600
 
 * The Pipeline
 
-.image ./diagrams/pipeline.svg
+.image ./diagrams/pipeline.dot.svg
 
 * Travis pipeline
 
@@ -211,30 +218,40 @@ Avoids interrupting requests in-flight
 
 Toasties Galore was highly successful. ...
 
+- So many toasties
+- Several staff
+- jafflr is working 24-7
+
 But ...
 
 * Too many Toasties
 
-Gita noticed that there are a lot of orders, and some of these are getting lost.
+Gita's team some of these are getting lost.
 
-* Oh noes, breaking changes
+*Decision:* Track orders with customer's names
 
-Toastie orders are getting lost, we need to track customers.
+*Decision:* change the Chillybin API to support richer data
+
+* Planned changes
+
+.image diagrams/before.dot.svg _ 600
+
+.image diagrams/after.dot.svg _ 600
+
+
+* Oh noes, Breaking Changes
 
 - API signature needs to change
 - DB structure changes
 - HaLp!
 
-* Planned changes
-
-.image diagrams/toasties-changes.svg _ 600
-
 * Obstacles
 
-- Changes ready now but ... let's to wait for a quiet Monday?! ... changes mount
-- How to co-ordinate changes - downtime?!
+- Changes ready now but ... let's to wait for a quiet Monday?! 
+- Monday - other changes incoming, things get complicated
+- How to co-ordinate breaking changes - downtime?!
+- DB migrations - can take a long time, can interfere. 
 - How to rollback once other changes come in?!
-- DB migrations can take time. 
 
 Phew.
 
@@ -244,7 +261,7 @@ Phew.
 
 * The Foxtrot
 
-So, let's do a dance.
+So, let's dance.
 
 .image https://media.giphy.com/media/BiA0154sSljkA/giphy.gif
 

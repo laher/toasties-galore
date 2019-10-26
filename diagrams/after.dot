@@ -1,6 +1,6 @@
 digraph G {
   rankdir=LR;
-  label="Breaking Changes";
+  label="After";
 
   node[style=filled];
   Jafflr[label="Jafflr",fillcolor="aliceblue",shape=box];
@@ -9,10 +9,9 @@ digraph G {
   node[shape=cylinder,illcolor="#fee8e7",style=filled];
   DB[label="DB"];
 
-  Jafflr -> Chillybin [label="Old: GET", style=dotted];
-  Jafflr -> Chillybin [label="New: POST"];
-  Chillybin -> DB[label="Existing: UPDATE ingredients"];
-  Chillybin -> DB[label="New: INSERT orders"];
+  Jafflr -> Chillybin [label="POST", style=dashed];
+  Chillybin -> DB[label="INSERT orders", style=dashed];
+  Chillybin -> DB[label="UPDATE ingredients"];
 
   labelloc=t;
   fontsize=24;
