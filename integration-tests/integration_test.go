@@ -7,6 +7,7 @@ import (
 	"net/http"
 	"os"
 	"testing"
+	"time"
 
 	"github.com/laher/toasties-galore/tpi"
 )
@@ -15,6 +16,21 @@ var (
 	chillybinAddr = tpi.Getenv("CHILLYBIN_ADDR", "http://localhost:7011")
 	jafflrAddr    = tpi.Getenv("JAFFLR_ADDR", "http://localhost:7010")
 )
+
+func TestConnectivity(t *testing.T) {
+	d := 10
+	for i := 0; i < d; i++ {
+		_, err := http.Get(fmt.Sprintf("%s/", chillybinAddr))
+		if err != nil {
+			t.Logf("could not connect - wait 2s: %v", err)
+			time.Sleep(2 * time.Second)
+			continue
+		}
+		t.Logf("connected - continue")
+		return
+	}
+	t.Errorf("Could NOT connect after %d attempts. Fail", d)
+}
 
 func TestHappyPath(t *testing.T) {
 	// reset environment // HL
