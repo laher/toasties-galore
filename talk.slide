@@ -7,51 +7,63 @@ Am Laher
 Lead Engineer (API), Vend 
 @amfastic
 
-* My Bold Premise
+* Begin with a Premise
 
-Continuous Deployment can influence the design of your code, in subtle, but hugely beneficial ways.
+Continuous Deployment can benefit the design of your code, in subtle, but remarkable ways.
 
-Your life, and your code, will be better.
+* How?
 
-* What is CD?
+_More_than_anything_else,_CD_changes_how_you_ *change* _your_code._
 
-So many interpretations. Many of them long. 
+- CD forces you to deal with Important Things, up front.
+- CD enables safe and easy changes.-
 
-_From_ [[https://continuousdelivery.com]]_:_
-
-.caption Continuous Delivery is the ability to get changes of all types — including new features, configuration changes, bug fixes and experiments — into production, or into the hands of users, safely and quickly in a sustainable way.
-
-* But ...
-
-How about Continuous Integration, Continuous Delivery, Continuous Fish ...?
-
-: But honestly, there are so many interpretations out there, that I'm going to pick one and talk about that. Apologies in advance if this definition doesn't ring true...
+: Important things - maybe these are things you already do, but it forces you to straighten up early, and to keep them straight.
 
 * What is Continuous Deployment?
 
 _For_the_purposes_of_this_talk_..._
 
-	CI := auto(test + build)
-
-_and_
-
-	CD := auto(test + build + deploy)
 
 * What is Continuous Deployment?
 
-_Another_way..._
+*Continuous*Integration* and *Continuous*Delivery:* 
+Creating a Pull Request triggers a test, and usually generates a build artefact
 
-- A PR triggers tests.  ← *CI*
-- A merge [to master] triggers tests, rebuild + redeploy. ← *CD*
+	ci := auto(test + build)
 
-* On Tools
+*Continuous*Deployment:* 
+Pushing/merging to master triggers a test, build and deploy
 
-So many tools for CI/CD, so many deployment scenarios
+	cd := auto(test + build + deploy)
 
-They all work, and they're all different. 
+: _->_triggers_tests_and_maybe_build._ 
+: _->_triggers_tests,_rebuild_+_redeploy._
 
-_My_examples_are_only_chosen_to_communicate_some_ideas._
+* What does the internet say?
 
+So many interpretations and variants ...
+
+_From_ [[https://continuousdelivery.com]]_:_
+
+
+.caption Continuous Delivery is the ability to get changes of all types — including new features, configuration changes, bug fixes and experiments — into production, or into the hands of users, safely and quickly in a sustainable way.
+
+: (Continuous Delivery is a similar concept)
+: * But ...
+: How about Continuous Integration, Continuous Delivery, Continuous Fish ...?
+: But honestly, there are so many interpretations out there, that I'm going to pick one and talk about that. Apologies in advance if this definition doesn't ring true...
+: * On Tools
+: So many tools for CI/CD, so many deployment scenarios
+: They all work, and they're all different. 
+: _My_examples_are_only_chosen_to_communicate_some_ideas._
+
+* Show of hands
+
+Who has worked in an envirnment which used:
+
+- A Continuous Integration or a Continuous Delivery system.
+- A Continuous Deployment system.
 
 * Touted Benefits of CD
 
@@ -63,9 +75,7 @@ _My_examples_are_only_chosen_to_communicate_some_ideas._
 
 : See [[https://continuousdelivery.com]] again
 : I mentioned this site because it has great business cases for CD. Go take a look, there's compelling cases for why you should do this...
-
-* First TDD, then BDD, now ... CDDD
-
+: * First TDD, then BDD, now ... CDDD
 : In the same way that testable code benefits, CD can provide many benefits too.
 : The biggest change is how you change your code.
 
@@ -134,14 +144,6 @@ The toastie network
 
 .image diagrams/toasties.svg _ 600
 
-* Getting going with the basics ...
-
-- The Pipeline
-- Jafflr
-- Integration Tests
-- Downtimeless Deploys
-- Observability
-
 * The Pipeline
 
 .image ./diagrams/pipeline.svg
@@ -152,6 +154,36 @@ The toastie network
 
 : .image https://media.npr.org/assets/img/2012/07/03/rubegoldberg_photo_gal_4153_photo_846993380_lr-1-_custom-ecf7c547a1f17966a258fa8bd21286bc9b6d3619-s1100-c15.jpg
 
+* Eek, auto-deploy is scary
+
+
+* Some Important Things ...
+
+- Observability
+- Downtimeless Deploys
+- Integration Tests
+
+* Observability
+
+Using metrics for runtime monitoring ...
+
+.code -edit ./tpi/http.go /^func TracingMiddleware/,/^}/
+
+_There's_another_middleware_for_logging._
+
+* Playing nice with Rolling Restarts
+
+Stop listening, keep handling ...
+
+.code -edit ./tpi/http.go /^func GracefulShutdown/,/^}/
+
+Avoids interrupting requests in-flight
+
+: Stop listening on a port, while continuing to serve existing connections. 
+: Allow other [new] instances to listen instead.
+: Rolling Restarts
+: switch to code view. Show the tests in action and explain how K8s or ECS would work.
+
 * Jafflr schematic
 
 .image ./diagrams/jafflr-schematic-diagram.jpg _ 700
@@ -160,36 +192,20 @@ The toastie network
 
 .play ./jafflr/main.go /^func main/,/^}/
 
-* Jafflr arm
+* chillybinClient 
 
 .image ./diagrams/jafflr-arm.jpg _ 600
 
 * Integration Tests
 
-CD is all about automated testing - _you_need_to_trust_those_tests._
+.code -edit ./integration-tests/integration_test.go  /^func TestHappyPath/,/^}/
 
-.code -edit ./integration-tests/integration_test.go 
-
+: CD is all about automated testing - _you_need_to_trust_those_tests._
 : - Repeatable and reliable - non-racy, non-flaky ... fast
 : - Environment - prod-like? Docker/docker-compose? k8s?
 : - Write a few integration tests - test those interactions.
 : - "Happy Path and some error handling"
 : - Don't assume state.
-
-* Graceful Restarts
-
-Stop listening on a port, while continuing to serve existing connections. 
-Allow other [new] instances to listen instead.
-
-.code -edit ./tpi/http.go /^func GracefulShutdownOSInterrupt/,/^}/
-
-: switch to code view. Show the tests in action and explain how K8s or ECS would work.
-
-* Observability
-
-- Middleware, metrics
-
-.code -edit ./tpi/http.go /^func TracingMiddleware/,/^}/
 
 * Success
 

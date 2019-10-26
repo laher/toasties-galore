@@ -7,13 +7,10 @@ digraph G {
   Build;
 
   node[style=filled,shape="box"];
-  Me;
   Github;
   Travis;
   Production;
 
-
-  Me -> Commit[label="git-commit"];
   Commit -> Github[label="merge PR"];
   Github -> Travis[label="Webhook"];
   Travis -> Test[label="verify"];

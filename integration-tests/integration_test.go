@@ -17,40 +17,37 @@ var (
 )
 
 func TestHappyPath(t *testing.T) {
-	// reset environment
-	resp, err := http.Get(fmt.Sprintf("%s/restock", chillybinAddr))
+	// reset environment // HL
+	resp, err := http.Post(fmt.Sprintf("%s/restock", chillybinAddr), "text/plain", nil)
 	if err != nil {
 		t.Fatalf("error restocking chillybin: %v", err)
-	}
-	if resp.StatusCode != http.StatusOK {
+	} else if resp.StatusCode != http.StatusOK {
 		body, _ := ioutil.ReadAll(resp.Body)
 		t.Fatalf("error restocking chillybin (%s): %s", resp.Status, body)
 	}
 	m := getChillybinStats(t)
-	if m["cheese"] != float64(10) {
+	if m["cheese"] != float64(10) { // assert initial state // HL
 		t.Fatalf("wrong amount of cheese after restocking: %v, %T", m, m["cheese"])
 	}
-	resp, err = http.Get(fmt.Sprintf("%s/toastie?i=cheese&i=vegemite", jafflrAddr))
+	resp, err = http.Post(fmt.Sprintf("%s/toastie?i=cheese&i=vegemite", jafflrAddr), "text/plain", nil)
 	if err != nil {
 		t.Fatalf("error fetching toastie: %v", err)
-	}
-	if resp.StatusCode != http.StatusOK {
+	} else if resp.StatusCode != http.StatusOK {
 		body, _ := ioutil.ReadAll(resp.Body)
 		t.Fatalf("error fetching toastie (%s): %s", resp.Status, body)
 	}
 	m = getChillybinStats(t)
-	if m["cheese"] != float64(9) {
+	if m["cheese"] != float64(9) { // assert resulting state // HL
 		t.Fatalf("wrong amount of cheese after grilling toastie: %v", m)
 	}
 }
 
 func TestRestock(t *testing.T) {
 	// reset environment
-	resp, err := http.Get(fmt.Sprintf("%s/restock", chillybinAddr))
+	resp, err := http.Post(fmt.Sprintf("%s/restock", chillybinAddr), "text/plain", nil)
 	if err != nil {
 		t.Fatalf("error restocking chillybin: %v", err)
-	}
-	if resp.StatusCode != http.StatusOK {
+	} else if resp.StatusCode != http.StatusOK {
 		body, _ := ioutil.ReadAll(resp.Body)
 		t.Fatalf("error restocking chillybin (%s): %s", resp.Status, body)
 	}
@@ -77,8 +74,7 @@ func getChillybinStats(t *testing.T) map[string]interface{} {
 	resp, err := http.Get(fmt.Sprintf("%s/", chillybinAddr))
 	if err != nil {
 		t.Fatalf("error fetching status: %v", err)
-	}
-	if resp.StatusCode != http.StatusOK {
+	} else if resp.StatusCode != http.StatusOK {
 		body, _ := ioutil.ReadAll(resp.Body)
 		t.Fatalf("error fetching status (%s): %s", resp.Status, body)
 	}

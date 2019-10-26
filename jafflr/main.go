@@ -22,7 +22,7 @@ func main() {
 		Handler: tpi.Middleware(router),
 	}
 	go func() {
-		tpi.GracefulShutdownOSInterrupt(server)
+		tpi.GracefulShutdown(server)
 		close(done)
 	}()
 	log.Println("Server is ready to handle requests at", listenAddr)

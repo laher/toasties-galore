@@ -52,13 +52,13 @@ func TracingMiddleware(in http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		t := time.Now().UTC()
 		wsr := &responseStatusRecorder{ResponseWriter: w}
-		in.ServeHTTP(wsr, r)
+		in.ServeHTTP(wsr, r) // the wrapped handler is still invoked here // HL
 		labelsMap := map[string]string{
 			"method":  r.Method,
 			"status":  strconv.Itoa(wsr.status),
-			"version": version,
+			"version": version, // <- we can use this to compare error rates // HL
 		}
-		someTracingObserve(time.Since(t), labelsMap)
+		someTracingObserve(time.Since(t), labelsMap) // maybe honeycomb/prometheus/statsd ... // HL
 	})
 }
 
@@ -72,16 +72,15 @@ func LoggingMiddleware(in http.Handler) http.Handler {
 	})
 }
 
-func GracefulShutdownOSInterrupt(server *http.Server) {
+func GracefulShutdown(server *http.Server) {
 	osInterrupt := make(chan os.Signal)
 	signal.Notify(osInterrupt, os.Interrupt)
-	<-osInterrupt
-	log.Println("Received OS interrupt - shutting down...")
-	duration := 30 * time.Second
-	ctx, cancel := context.WithTimeout(context.Background(), duration)
+	<-osInterrupt // subscribe to Ctrl+C or kill/SIGTERM // HL
+	log.Println("Received OS interrupt - stop listening but avoid interrupting existing connections...")
+	ctx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
 	defer cancel()
 	server.SetKeepAlivesEnabled(false)
-	if err := server.Shutdown(ctx); err != nil {
+	if err := server.Shutdown(ctx); err != nil { // keeps existing connections open until ctx.Done() // HL
 		log.Fatalf("Server shutdown error: %v", err)
 	}
 }
