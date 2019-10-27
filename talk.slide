@@ -156,9 +156,10 @@ This simple deployment powers a 24-hour, high-throughput toasting service, with 
 
 .image ./diagrams/pipeline.dot.svg
 
+
 * The pipeline
 
-In this case, represented by a .travis.yml file
+In this case, we're using [[https://travis-ci.org/laher/toasties-galore/branches][Travis]]
 
 .code ./.travis.yml
 
@@ -273,8 +274,6 @@ Decisions ...
 
 *Gita*: s'all good. Let's dance.
 
-* I'm scar:d, Rick
-
 * The Foxtrot
 
 So, let's dance.
@@ -283,9 +282,9 @@ So, let's dance.
 
 A 3-step dance: 
 
-- Add
-- Migrate
-- Delete
+- Add new implementation 
+- Migrate comfortably
+- Delete old implementation
 
 * The 3-step release dance
 
