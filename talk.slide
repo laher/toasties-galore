@@ -184,7 +184,7 @@ Let's consider some Important Things in our code:
 
 * Observability & Instrumentation
 
-Use metrics to know what's happening in production.
+Use metrics to know what's happening in production. e.g.
 
 .code -edit ./tpi/http.go /^func TracingMiddleware/,/^}/
 
@@ -192,7 +192,7 @@ _There's_ [[https://github.com/laher/toasties-galore/blob/059053a/tpi/http.go#L6
 
 * Harnessing the Rolling Restart
 
-Stop listening, keep handling ...
+Stop listening, keep handling ... e.g.
 
 .code -edit ./tpi/http.go /^func GracefulShutdown/,/^}/
 
@@ -235,10 +235,10 @@ But ...
 
 We're super busy, and some orders are going to the wrong gophers. 
 
-- Cheese instead of Sheese (soy cheese)
-- Pineapple instead of vegemite 
+- Gary received cheese instead of Sheese (soy cheese)
+- Gwenda got pineapple instead of vegemite 
 
-No good.
+Not good.
 
 * What to do?
 
@@ -261,6 +261,8 @@ Decisions ...
 - DB structure changes
 - HaLp!
 
+.image https://media.giphy.com/media/WrK9dwj8TNPr2/giphy.gif
+
 * Obstacles
 
 *Us*: Changes ready now but ... let's to wait for a quiet Monday?! 
@@ -271,9 +273,7 @@ Decisions ...
 
 *Gita*: s'all good. Let's dance.
 
-* I'm scared, Rick
-
-.image https://media.giphy.com/media/WrK9dwj8TNPr2/giphy.gif
+* I'm scar:d, Rick
 
 * The Foxtrot
 
@@ -309,7 +309,7 @@ See [[https://github.com/laher/toasties-galore/pulls][Pull Requests]]
 - v2 doesn't affect real users [yet], but you can test it
 - Now there are 2 versions of `pick`, side-by-side
 
-.link https://github.com/laher/toasties-galore/pull/1/files
+See [[https://github.com/laher/toasties-galore/pull/1/files]]
 
 * Step 2 - Invoke new implementation
 
@@ -408,7 +408,12 @@ Monorepos offer some challenges and some advantages
 - Challenge: speed.
 - Challenge: identify what to build, test, deploy on each commit.
 
-Do we redeploy everything on every change?
+Q: Do we really redeploy everything on every change?
+A: Ideally, no.
+
+* deploy.sh
+
+.code -edit ./scripts/deploy.sh
  
 * Last relevant commit
 
@@ -444,5 +449,6 @@ At Vend we have a slackbot, @overlord, which offers a number of CD-related utili
 * Conclusions
 
 : I've just tried to show you some go-specific hints about the CI/CD toolchain.
+: I skipped whole areas - CI systems, rollbacks, cultural obstacles, ...
 : I didn't even try to recommend a CI system
 : It can take some time to redesign your software for Continuous Deployment - after seeing this talk, I hope you’ll begin or complete that journey.
