@@ -23,11 +23,23 @@ run-all: start-postgres
 	cd jafflr && $(MAKE) reflex-nohup
 
 test: ## Run tests
-	CHILLYBIN_ADDR=http://localhost:7001 JAFFLR_ADDR=http://localhost:7000 go test -v ./integration-tests 
+	CHILLYBIN_ADDR=http://localhost:7001 JAFFLR_ADDR=http://localhost:7000 go test -mod=vendor -v ./integration-tests 
+
+test-restock: ## Run tests
+	CHILLYBIN_ADDR=http://localhost:7001 JAFFLR_ADDR=http://localhost:7000 go test -v -mod=vendor ./integration-tests -run Restock
+
+test-burnt: ## Run tests
+	CHILLYBIN_ADDR=http://localhost:7001 JAFFLR_ADDR=http://localhost:7000 DONENESS=burnt go test -v -mod=vendor ./integration-tests -run Burnt
+
+test-medium-done: ## Run tests
+	CHILLYBIN_ADDR=http://localhost:7001 JAFFLR_ADDR=http://localhost:7000 DONENESS=medium go test -v -mod=vendor ./integration-tests -run Burnt
 
 dot: ## Generate dotfile image
 	#unflatten -l 2 "toasties.dot" | dot -Tpng -o "toasties.png"
-	cat "toasties.dot" | dot -s144 -Tsvg -o "toasties.svg"
+	cat "diagrams/toasties.dot" | dot -s144 -Tsvg -o "diagrams/toasties.dot.svg"
+	cat "diagrams/before.dot" | dot -Tsvg -o "diagrams/before.dot.svg"
+	cat "diagrams/after.dot" | dot -Tsvg -o "diagrams/after.dot.svg"
+	cat "diagrams/pipeline.dot" | dot -Tsvg -o "diagrams/pipeline.dot.svg"
 
 help:
 	@grep -E -h '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) | sort | awk 'BEGIN {FS = ":.*?## "}; {printf "\033[36m%-30s\033[0m %s\n", $$1, $$2}'

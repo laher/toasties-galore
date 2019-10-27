@@ -8,6 +8,6 @@ CREATE TABLE IF NOT EXISTS orders (
     created_at TIMESTAMP DEFAULT NOW() NOT NULL
 );
 
-CREATE INDEX orders_customer ON orders (customer);
+CREATE INDEX IF NOT EXISTS orders_customer ON orders (customer);
 
 COMMIT;

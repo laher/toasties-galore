@@ -1,10 +1,8 @@
 digraph G {
   rankdir=LR;
-  label="Toasties Galore";
-  //ratio="0.35";
 
   node[shape=circle];
-  Request;
+  Gita;
 
   node[style=filled];
   Jafflr[label="Jafflr",fillcolor="aliceblue",shape=box];
@@ -13,13 +11,10 @@ digraph G {
   node[shape=cylinder,illcolor="#fee8e7",style=filled];
   DB[label="Postgres (DB)"];
 
-  node[shape=Msquare,fillcolor="#f2ffcc",style=filled];
-  Toastie[label="Output: \nToastie"];
-
-  Request -> Jafflr;
+  Gita -> Jafflr [label="HTTP Request"];
   Jafflr -> Chillybin;
   Chillybin -> DB;
-  Jafflr -> Toastie;
+  Jafflr -> Gita [label="Toastie", style="dotted"];
 
   labelloc=t;
   fontsize=24;
