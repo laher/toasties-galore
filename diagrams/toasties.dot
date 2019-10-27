@@ -11,7 +11,7 @@ digraph G {
   node[shape=cylinder,illcolor="#fee8e7",style=filled];
   DB[label="Postgres (DB)"];
 
-  Gita -> Jafflr [label="Request"];
+  Gita -> Jafflr [label="HTTP Request"];
   Jafflr -> Chillybin;
   Chillybin -> DB;
   Jafflr -> Gita [label="Toastie", style="dotted"];

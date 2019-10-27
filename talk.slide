@@ -11,35 +11,46 @@ Lead Engineer (API), Vend
 
 Continuous Deployment can benefit the design of your code, in subtle, but remarkable ways.
 
+* Overview
+
+- 00:00 Bold Premise
+- 01:00 Defining terms
+- 07:00 *Set*a*scene*: Introduce Characters & Foundational Work
+- 17:00 *Conflict*and*Resolution*: Problematic Scenario -> Action 
+- 30:00 Various tidbits 
+- 38:00 Conclusion
+- 40:00 Questions
+
 * What is Continuous Deployment?
+
+Different things to different people.
 
 _For_the_purposes_of_this_talk_..._
 
-
 * What is Continuous Deployment?
 
-*Continuous*Integration* and *Continuous*Delivery:* 
-Creating a Pull Request triggers a test, and usually generates a build artefact
-
-	ci := auto(test + build)
-
-*Continuous*Deployment:* 
-Pushing/merging to master triggers a test, build and deploy
-
-	cd := auto(test + build + deploy)
-
-: _->_triggers_tests_and_maybe_build._ 
-: _->_triggers_tests,_rebuild_+_redeploy._
-
-* What does the internet say?
-
-So many interpretations and variants ...
-
-_From_ [[https://continuousdelivery.com]]_:_
+Continuous deployment is a release strategy: any main-branch commit that passes testing is automatically released into production.
 
 
-.caption Continuous Delivery is the ability to get changes of all types — including new features, configuration changes, bug fixes and experiments — into production, or into the hands of users, safely and quickly in a sustainable way.
+Pushing/merging to master will automatically put your working software, directly into production.
 
+* Some related concepts
+
+	ContinuousIntegration := auto(test + build)
+	ContinuousDelivery    := auto(test + build + publish) + easy(deploy)
+	ContinuousDeployment  := auto(test + build + publish + deploy)
+
+
+_Continuous_Delivery_implies_readiness_to_release_working_software_at_any_given_time._
+_Continuous_Deployment_implies_immediate_release._
+_We're_talking_about_the_latter._
+
+: Creating a Pull Request triggers a test, and usually generates a build artifact.
+: * What does the internet say?
+: So many interpretations and variants ...
+: _From_ [[https://continuousdelivery.com]]_:_
+: .caption Continuous Delivery is the ability to get changes of all types — including new features, configuration changes, bug fixes and experiments — into production, or into the hands of users, safely and quickly in a sustainable way.
+: Benefits: Lowers risk, faster time-to-market, higher quality, better products, *happier*teams* 
 : (Continuous Delivery is a similar concept)
 : * But ...
 : How about Continuous Integration, Continuous Delivery, Continuous Fish ...?
@@ -48,22 +59,12 @@ _From_ [[https://continuousdelivery.com]]_:_
 : So many tools for CI/CD, so many deployment scenarios
 : They all work, and they're all different. 
 : _My_examples_are_only_chosen_to_communicate_some_ideas._
-
-* Show of hands
-
-Who has worked in an envirnment which used:
-
-- A Continuous Integration or a Continuous Delivery system.
-- A Continuous Deployment system.
-
-* Touted Benefits of CD
-
-- Lowers risk 
-- Faster time-to-market
-- Higher quality software
-- Better products
-- Happier teams
-
+: * Touted Benefits of CD
+: - Lowers risk 
+: - Faster time-to-market
+: - Higher quality software
+: - Better products
+: - Happier teams
 : See [[https://continuousdelivery.com]] again
 : I mentioned this site because it has great business cases for CD. Go take a look, there's compelling cases for why you should do this...
 : * First TDD, then BDD, now ... CDDD
@@ -77,18 +78,17 @@ _More_than_anything_else,_CD_changes_how_you_ *change* _your_code._
 - CD forces you to deal with Important Things, up front.
 - CD enables safe and easy changes.
 
-: Important things - maybe these are things you already do, but it forces you to straighten up early, and to keep them straight.
+Impact:
 
-* Results
-
-- Simpler: fewer contraptions in the code
-- Tidyier: fewer cobwebby corners
-- More dynamic: change is easy -> more change
-
+- Simpler: fewer contraptions in the code.
+- Tidyier: fewer cobwebby corners.
+- More dynamic: change is simpler -> more options.
 
 * ORLY
 
 .image https://media.giphy.com/media/5b5OU7aUekfdSAER5I/giphy.gif
+
+OK, OK, there's a cost and some caveats... Let's explore
 
 : * What the?
 : - If I make a mistake, will everything break?
@@ -103,17 +103,17 @@ _More_than_anything_else,_CD_changes_how_you_ *change* _your_code._
 : - Re-think your change procedure.
 : - Unreleased code is risk.
 
-* Real world example
+* Let's set the scene  ...
 
 * Toasties Galore
 
+Meet our heroine, Gita the Gopher.
+
 .image ./diagrams/toasties-galore-bw.jpg _ 600
 
+_Gita_is_an_innovator,_with_a_passion_for_technology_and_melted_cheese._
+
 : .image https://cdn.imgbin.com/25/17/2/imgbin-ham-and-cheese-sandwich-toast-cheese-and-tomato-sandwich-grilled-cheese-sandwiches-grilled-cheese-sandwich-illustration-xVCJhHSVh7M9C2Lg3VsZKgZye.jpg _ 500
-
-Meet our heroine, Gita the Gopher
-
-_A_gopher_and_her_dream,_to_make_toasties_for_the_world_..._
 
 * Toasties Galore codebase
 
@@ -121,11 +121,10 @@ An overview
 
 - A monorepo
 - 2 HTTP services, which interact
-- Tests
+- Tests, tools, docker things ...
 - A CI/CD pipeline
 
-See
-.link https://github.com/laher/toasties-galore
+See [[https://github.com/laher/toasties-galore]]
 
 : For this presentation, let's look at the software for an imaginary food stall, "Toasties Galore".
 : - 2 services - chillybin & jafflr.
@@ -145,17 +144,21 @@ See
 
 .image ./diagrams/jafflr-chillybin-bw.jpg _ 800
 
-* Invoking jafflr
+* Invoking Jafflr
 
-The toastie network
+The Toasties Galore software architecture ...
 
 .image diagrams/toasties.dot.svg _ 600
+
+This simple deployment powers a 24-hour, high-throughput toasting service, with some agressive expectations. _Gophers_are_demanding._
 
 * The Pipeline
 
 .image ./diagrams/pipeline.dot.svg
 
-* Travis pipeline
+* The pipeline
+
+In this case, represented by a .travis.yml file
 
 .code ./.travis.yml
 
@@ -163,33 +166,13 @@ The toastie network
 
 * Eek, auto-deploy is scary
 
+* The Baseline
 
-* Some Important Things ...
+Let's consider some Important Things in our code:
 
 - Observability
-- Downtimeless Deploys
+- Seamless Deploys
 - Integration Tests
-
-* Observability
-
-Using metrics for runtime monitoring ...
-
-.code -edit ./tpi/http.go /^func TracingMiddleware/,/^}/
-
-_There's_another_middleware_for_logging._
-
-* Playing nice with Rolling Restarts
-
-Stop listening, keep handling ...
-
-.code -edit ./tpi/http.go /^func GracefulShutdown/,/^}/
-
-Avoids interrupting requests in-flight
-
-: Stop listening on a port, while continuing to serve existing connections. 
-: Allow other [new] instances to listen instead.
-: Rolling Restarts
-: switch to code view. Show the tests in action and explain how K8s or ECS would work.
 
 * Jafflr schematic
 
@@ -199,11 +182,34 @@ Avoids interrupting requests in-flight
 
 .play ./jafflr/main.go /^func main/,/^}/
 
+* Observability & Instrumentation
+
+Use metrics to know what's happening in production.
+
+.code -edit ./tpi/http.go /^func TracingMiddleware/,/^}/
+
+_There's_ [[https://github.com/laher/toasties-galore/blob/059053a/tpi/http.go#L65:L73][another middleware]] _for_logging._
+
+* Harnessing the Rolling Restart
+
+Stop listening, keep handling ...
+
+.code -edit ./tpi/http.go /^func GracefulShutdown/,/^}/
+
+Continues processing in-flight requests, while making way for a newer deployment.
+
+: Stop listening on a port, while continuing to serve existing connections. 
+: Allow other [new] instances to listen instead.
+: Rolling Restarts
+: switch to code view. Show the tests in action and explain how K8s or ECS would work.
+
 * chillybinClient 
 
 .image ./diagrams/jafflr-arm.jpg _ 600
 
 * Integration Tests
+
+Few tests - verify the interactions
 
 .code -edit ./integration-tests/integration_test.go  /^func TestHappyPath/,/^}/
 
@@ -216,21 +222,31 @@ Avoids interrupting requests in-flight
 
 * Success
 
-Toasties Galore was highly successful. ...
+Toasties Galore is now a highly successful operation ...
 
-- So many toasties
-- Several staff
-- jafflr is working 24-7
+- Gophers love the recipes.
+- Jafflr is busy 24-7
 
 But ...
 
-* Too many Toasties
+- Some users aren't happy
 
-Gita's team some of these are getting lost.
+* Design problems 
 
-*Decision:* Track orders with customer's names
+We're super busy, and some orders are going to the wrong gophers. 
 
-*Decision:* change the Chillybin API to support richer data
+- Cheese instead of Sheese (soy cheese)
+- Pineapple instead of vegemite 
+
+No good.
+
+* What to do?
+
+Decisions ...
+
+*Gita:* Track orders with customer's names
+
+*Gita:* change the Chillybin API to support richer request data
 
 * Planned changes
 
@@ -247,13 +263,13 @@ Gita's team some of these are getting lost.
 
 * Obstacles
 
-- Changes ready now but ... let's to wait for a quiet Monday?! 
-- Monday - other changes incoming, things get complicated
-- How to co-ordinate breaking changes - downtime?!
-- DB migrations - can take a long time, can interfere. 
-- How to rollback once other changes come in?!
+*Us*: Changes ready now but ... let's to wait for a quiet Monday?! 
+*Us*: Monday - other changes incoming, things be complicated
+*Us*: How to co-ordinate breaking changes - downtime?!
+*Us*: DB migrations - can take a long time, can interfere with deploys. 
+*Us*: How to rollback once other changes come in?!
 
-Phew.
+*Gita*: s'all good. Let's dance.
 
 * I'm scared, Rick
 
@@ -269,7 +285,7 @@ A 3-step dance.
 
 * The 3-step release dance
 
-Three steps, or _stages_ ...
+Three steps, or _stages_ ... with CD, it's easy. You'll consider it more often
 
 - 1. Add new endpoint
 - 2. Invoke new endpoint
@@ -288,20 +304,28 @@ See ...
 
 * Step 1 - add new feature implementation
 
-- Don't affect real users yet
-- Serve it under a different URL? Special Headers / Parameters?
-- Behind a Feature Flag?
+- Doesn't affect real users yet
+- Serve it under a different URL
 - Now 2 versions of code in 'master'
 
 .link https://github.com/laher/toasties-galore/pull/1/files
 
 * Step 2 - invoke new implementation
 
-- Just switch over?
-- Feature Flag?
-- Canary/Shadowing/Blue-Green
+- Use Feature Flags?
+
+	func isChillybinV2(customer string) bool { // My 1st Feature Toggle
+		if customer == "gita" {
+			return true
+		}
+		return false
+	}
 
 .link https://github.com/laher/toasties-galore/pull/2/files
+
+_This_could_be_a_service,_a_db,_or_config?_
+
+- More sophisticated: Canary, Shadowing, Blue-Green deploys
 
 * Step 3 - delete old implementation
 

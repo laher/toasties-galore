@@ -18,7 +18,6 @@ func main() {
 		listenAddr = tpi.Getenv("ADDR", ":7001")
 		dsn        = tpi.Getenv("DB_DSN", "postgres://root:secure@localhost:5432/postgres?sslmode=disable")
 		version    = os.Getenv("VERSION")
-		done       = make(chan bool)
 	)
 	db, err := connectRetry(dsn)
 	if err != nil {
@@ -29,27 +28,19 @@ func main() {
 	}
 	log.Println("done migrations")
 
-	h := &handler{db}
-	router := routes(h, version)
-
-	server := newServer(listenAddr, tpi.Middleware(router))
-	go func() {
-		tpi.GracefulShutdown(server)
-		close(done)
-	}()
+	var (
+		h      = &handler{db}
+		server = &http.Server{
+			Addr:    listenAddr,
+			Handler: tpi.Middleware(routes(h, version)),
+		}
+	)
+	go tpi.GracefulShutdown(server)
 	log.Println("Server is ready to handle requests at", listenAddr)
 	if err := server.ListenAndServe(); err != nil && err != http.ErrServerClosed {
 		log.Fatalf("Could not listen on %s: %v\n", listenAddr, err)
 	}
-	<-done // await done
 	log.Println("Shutdown complete - stop")
-}
-
-func newServer(listenAddr string, router http.Handler) *http.Server {
-	return &http.Server{
-		Addr:    listenAddr,
-		Handler: router,
-	}
 }
 
 func connectRetry(url string) (*sql.DB, error) {

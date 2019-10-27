@@ -2,7 +2,7 @@ digraph G {
   rankdir=LR;
 
   node[shape=circle];
-  Commit;
+  Changes;
   Test;
   Build;
 
@@ -11,11 +11,11 @@ digraph G {
   Travis;
   Production;
 
-  Commit -> Github[label="merge PR"];
+  Changes -> Github[label="merge PR"];
   Github -> Travis[label="Webhook"];
-  Travis -> Test[label="verify"];
-  Travis -> Build[label="docker-push"];
-  Travis -> Production[label="deploy"];
+  Travis -> Test[label="Verify"];
+  Travis -> Build[label="Build & publish artifact"];
+  Travis -> Production[headlabel="Redeploy"];
 
   labelloc=t;
   fontsize=24;

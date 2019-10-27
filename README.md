@@ -18,6 +18,8 @@ There are 2 services, `jafflr` and the `chillybin`. Crucially, `jafflr` depends 
 
 ## Endpoints
 
+Some of these endpoints use the wrong verb (GET instead of POST) - this has been left as "change needed":
+
  * chillybin:
   - [X] `/pick?name=cheese&quantity=1` - pick stock from chillybin
   - [X] `/` - show current stock
