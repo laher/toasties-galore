@@ -281,18 +281,19 @@ So, let's dance.
 
 .image https://media.giphy.com/media/BiA0154sSljkA/giphy.gif
 
-A 3-step dance.
+A 3-step dance: 
+
+- Add
+- Migrate
+- Delete
 
 * The 3-step release dance
 
-Three steps, or _stages_ ... with CD, it's easy. You'll consider it more often
+Three steps, or _stages_ ... with CD, it's easy, you'll consider it more often
 
-- 1. Add new endpoint
-- 2. Invoke new endpoint
-- 3. Delete old endpoint
+.image ./diagrams/pulls.png _ 600
 
-See ...
-.link https://github.com/laher/toasties-galore/pulls Pull Requests
+See [[https://github.com/laher/toasties-galore/pulls][Pull Requests]]
 
 : You could do it without CD, but you should try it with CD. 
 : It can be completed in a short time, and lined up just like this. 
@@ -302,37 +303,41 @@ See ...
 : When less hard, people tend to aim for Step 2. Step 3 may never happen.
 : NOTE: variants include shadowing, canaries, blue-green
 
-* Step 1 - add new feature implementation
+* Step 1 - Add new feature implementation
 
-- Doesn't affect real users yet
-- Serve it under a different URL
-- Now 2 versions of code in 'master'
+- Serve the new approach under a different URL, /v2/pick
+- v2 doesn't affect real users [yet], but you can test it
+- Now there are 2 versions of `pick`, side-by-side
 
 .link https://github.com/laher/toasties-galore/pull/1/files
 
-* Step 2 - invoke new implementation
+* Step 2 - Invoke new implementation
 
 - Use Feature Flags?
 
-	func isChillybinV2(customer string) bool { // My 1st Feature Toggle
-		if customer == "gita" {
-			return true
+	func Has(customer string, feature string) bool {
+		switch feature {
+		case "pick.v2":
+			if customer == "gita" {
+				return true
+			}
+			return false
+		default:
+			panic("unknown feature")
 		}
-		return false
 	}
 
-.link https://github.com/laher/toasties-galore/pull/2/files
+See [[https://github.com/laher/toasties-galore/pull/2/files]]
 
-_This_could_be_a_service,_a_db,_or_config?_
+- This function could be backed by a service, a db, or by configuration.
+- Alternatives: Canary Deploys, Shadowing, Blue-Green deploys
 
-- More sophisticated: Canary, Shadowing, Blue-Green deploys
+* Step 3 - Delete old implementation
 
-* Step 3 - delete old implementation
+- Do it soon
+- Line it up in advance. Plan for it otherwise you'll forget
 
-- Do it soon - Tidy Kiwis
-- Maybe line it up in advance
-
-.link https://github.com/laher/toasties-galore/pull/3/files
+See [[https://github.com/laher/toasties-galore/pull/3/files]]
 
 It's the easy part, but it's also easy to forget or fear it. 
 
@@ -343,6 +348,19 @@ When deployment is a non-thing:
 - you can make your releases safer
 - you code remains cleaner
 
+* On DB Migrations
+
+Migrations are Challenging 
+
+- big tables - time-consuming
+- rollbacks are complex
+
+Where possible:
+
+- make them idempotent (`if not exists`)
+- use transactions
+- run them in advance
+
 * Chillybin
 
 .image ./diagrams/chillybin.jpg _ 500
@@ -351,15 +369,7 @@ When deployment is a non-thing:
 
 .code ./chillybin/main.go /^func runMigrationsSource/,/^}/
 
-* On Feature Flags
-
-: TODO
-
-* Other concerns ...
-
-What else can we do differently once deployment becomes a non-thing?
-
-* Configuration 
+* On Configuration 
 
 Extensive config files?
 
@@ -386,28 +396,17 @@ We can simplify.
 : - Database DSNs
 : - scale-dependent variables
 : - Feature flags?
-
-* Tooling
-
-What other tools will we want to build?
-
-* Canaries, Rollbacks
-
-At Vend we have a slackbot, @overlord, which provides a number of CD-related utilities.
-
-For example: 
-
-- canary deploys
-- rollbacks
-- feature flagging
-- service status
+: * Tooling
+: What other tools will we want to build?
 
 * On Monorepos
 
 Monorepos offer some challenges and some advantages
 
-- Easier to adjust CI/CD across all services.
-- Challenge: identify what to build,test,deploy on each commit.
+- Benefit: easier to maintain CI/CD pipelines centrally.
+- Benefit: 1st party dependencies are all local.
+- Challenge: speed.
+- Challenge: identify what to build, test, deploy on each commit.
 
 Do we redeploy everything on every change?
  
@@ -432,6 +431,15 @@ Calculate changes affecting a service [in a monorepo]
 
 - Deploy only affected services.
 - Run relevant integration tests, post-deploy
+
+* Canaries, Rollbacks
+
+At Vend we have a slackbot, @overlord, which offers a number of CD-related utilities. e.g.
+
+- canary deploys
+- rollbacks
+- feature flagging
+- service status
 
 * Conclusions
 
