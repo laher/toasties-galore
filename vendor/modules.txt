@@ -1,0 +1,10 @@
+# github.com/golang-migrate/migrate v3.5.4+incompatible
+github.com/golang-migrate/migrate
+github.com/golang-migrate/migrate/database
+github.com/golang-migrate/migrate/database/postgres
+github.com/golang-migrate/migrate/source
+github.com/golang-migrate/migrate/source/file
+# github.com/lib/pq v1.2.0
+github.com/lib/pq
+github.com/lib/pq/oid
+github.com/lib/pq/scram

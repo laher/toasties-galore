@@ -1,0 +1,17 @@
+digraph G {
+  rankdir=LR;
+  label="Before";
+
+  node[style=filled];
+  Jafflr[label="Jafflr",fillcolor="aliceblue",shape=box];
+  Chillybin[label="Chillybin",fillcolor="aliceblue",shape=box];
+
+  node[shape=cylinder,illcolor="#fee8e7",style=filled];
+  DB[label="DB"];
+
+  Jafflr -> Chillybin [label="GET", style=dotted];
+  Chillybin -> DB[label="UPDATE ingredients"];
+
+  labelloc=t;
+  fontsize=24;
+}
