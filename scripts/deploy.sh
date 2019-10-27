@@ -18,7 +18,7 @@ function deploy() {
 for SVC in jafflr chillybin
 do
     export SVC_COMMIT=$(./scripts/last_commit.sh "$SVC")
-    if is_deployed_version "$SVC" "$SVC_COMMIT" "$ENVIRONMENT"; then
+    if is_deployed "$SVC" "$SVC_COMMIT" "$ENVIRONMENT"; then
         echo "SKIP: Service $SVC version is already deployed to version: $SVC_COMMIT"
     else
         echo "DEPLOY: Tag $DOCKER_USERNAME/$SVC as $ENVIRONMENT release"

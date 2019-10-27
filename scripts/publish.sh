@@ -1,7 +1,5 @@
 #!/bin/bash
-
 echo "BUILD/PUBLISH: begin"
-
 echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
 
 function docker_tag_exists() {
@@ -19,8 +17,7 @@ do
         docker build -t $SVC -f ./$SVC/Dockerfile . # rebuild just in case
         docker tag $SVC $DOCKER_USERNAME/$SVC
         docker tag $SVC $DOCKER_USERNAME/$SVC:$SVC_COMMIT
-        docker push $DOCKER_USERNAME/$SVC
+        docker push $DOCKER_USERNAME/$SVC:$SVC_COMMIT
     fi
 done
-
 echo "BUILD/PUBLISH: done"

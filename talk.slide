@@ -411,6 +411,10 @@ Monorepos offer some challenges and some advantages
 Q: Do we really redeploy everything on every change?
 A: Ideally, no.
 
+* publish.sh
+
+.code -edit ./scripts/publish.sh
+
 * deploy.sh
 
 .code -edit ./scripts/deploy.sh
