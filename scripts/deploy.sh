@@ -1,40 +1,39 @@
 #!/bin/bash
 
-echo "BUILD/DEPLOY: begin"
+export ENVIRONMENT=${1:-prod}
+echo "BUILD/DEPLOY: begin deploy to $ENVIRONMENT"
 
 echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
 
-function docker_tag_exists() {
-    echo "CHECK: does $1 docker tag exist for commit $2 ?"
-    curl --silent -f -lSL https://index.docker.io/v1/repositories/$1/tags/$2 > /dev/null
+function is_deployed() {
+    echo "TODO CHECK: is $1 deployed to $3 with version $2? checking K8S/ECS/..."
+    return 1
 }
 
-function is_deployed_version() {
-    # check k8s/ecs/... here
-    # e.g. aws blah check
-    # e.g. kubectl check thing
-    echo "CHECK: is $1 deployed with version $2? checking K8S/ECS/... for currently-running version"
-    return 1
+function deploy() {
+    echo "TODO DEPLOY: Service $1 deploy to $3 with version '$2' ... K8S/ECS/... "
+    return 0
 }
 
 for SVC in jafflr chillybin
 do
     export SVC_COMMIT=$(./scripts/last_commit.sh "$SVC")
-    if docker_tag_exists "$DOCKER_USERNAME/$SVC" "$SVC_COMMIT"; then
-        echo "SKIP: Docker tag already exists for $DOCKER_USERNAME/$SVC: $SVC_COMMIT"
-    else
-        echo "BUILD: building image for $DOCKER_USERNAME/$SVC: $SVC_COMMIT"
-        docker build -t $SVC -f ./$SVC/Dockerfile .
-        docker tag $SVC $DOCKER_USERNAME/$SVC
-        docker tag $SVC $DOCKER_USERNAME/$SVC:$SVC_COMMIT
-        docker push $DOCKER_USERNAME/$SVC
-    fi
-
-    if is_deployed_version "$SVC" "$SVC_COMMIT"; then
+    if is_deployed_version "$SVC" "$SVC_COMMIT" "$ENVIRONMENT"; then
         echo "SKIP: Service $SVC version is already deployed to version: $SVC_COMMIT"
     else
-        echo "DEPLOY: Service $SVC deploy to version '$SVC_COMMIT' goes here"
+        echo "DEPLOY: Tag $DOCKER_USERNAME/$SVC as $ENVIRONMENT release"
+        if docker inspect --type=image $DOCKER_USERNAME/$SVC:$SVC_COMMIT
+        then
+            echo "SKIP: image already built"
+        else
+            echo "BUILD: need to rebuild image"
+            docker build -t $SVC -f ./$SVC/Dockerfile .
+            docker tag $SVC "$DOCKER_USERNAME/$SVC:$SVC_COMMIT"
+        fi
+        docker tag "$DOCKER_USERNAME/$SVC:$SVC_COMMIT" "$DOCKER_USERNAME/$SVC:$ENVIRONMENT"
+        docker push "$DOCKER_USERNAME/$SVC:$ENVIRONMENT" # <- in lieu of actual deploy
+        deploy "$SVC" "$SVC_COMMIT" "$ENVIRONMENT"
     fi
 done
 
-echo "BUILD/DEPLOY: done"
+echo "BUILD/DEPLOY: done deploy to $ENVIRONMENT"

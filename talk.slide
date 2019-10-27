@@ -314,7 +314,7 @@ See [[https://github.com/laher/toasties-galore/pull/1/files]]
 
 - Use Feature Flags?
 
-	func Has(customer string, feature string) bool {
+	func HasFeature(customer string, feature string) bool {
 		switch feature {
 		case "pick.v2":
 			if customer == "gita" {
@@ -404,6 +404,7 @@ Monorepos offer some challenges and some advantages
 
 - Benefit: easier to maintain CI/CD pipelines centrally.
 - Benefit: 1st party dependencies are all local.
+- Benefit: testing component combinations is easier.
 - Challenge: speed.
 - Challenge: identify what to build, test, deploy on each commit.
 
@@ -436,7 +437,7 @@ Calculate changes affecting a service [in a monorepo]
 - Deploy only affected services.
 - Run relevant integration tests, post-deploy
 
-* Canaries, Rollbacks
+* Canaries, Rollbacks, Tooling
 
 At Vend we have a slackbot, @overlord, which offers a number of CD-related utilities. e.g.
 
@@ -446,6 +447,12 @@ At Vend we have a slackbot, @overlord, which offers a number of CD-related utili
 - service status
 
 * Conclusions
+
+* Advice
+
+Start with CD, you won't look back.
+
+If you don't have it early on, you may have a lot more work to do, but each of these efforts has a payoff.
 
 : I've just tried to show you some go-specific hints about the CI/CD toolchain.
 : I skipped whole areas - CI systems, rollbacks, cultural obstacles, ...
