@@ -5,6 +5,7 @@ import (
 	"log"
 	"net/http"
 	"os"
+	"time"
 
 	"github.com/golang-migrate/migrate"
 	"github.com/golang-migrate/migrate/database/postgres"
@@ -17,9 +18,8 @@ func main() {
 		listenAddr = tpi.Getenv("ADDR", ":7001")
 		dsn        = tpi.Getenv("DB_DSN", "postgres://root:secure@localhost:5432/postgres?sslmode=disable")
 		version    = os.Getenv("VERSION")
-		done       = make(chan bool)
 	)
-	db, err := connect(dsn)
+	db, err := connectRetry(dsn)
 	if err != nil {
 		log.Fatalf("could not connect: %v", err)
 	}
@@ -28,27 +28,34 @@ func main() {
 	}
 	log.Println("done migrations")
 
-	h := &handler{db}
-	router := routes(h, version)
-
-	server := newServer(listenAddr, tpi.Middleware(router))
-	go func() {
-		tpi.GracefulShutdownOSInterrupt(server)
-		close(done)
-	}()
+	var (
+		h      = &handler{db}
+		server = &http.Server{
+			Addr:    listenAddr,
+			Handler: tpi.Middleware(routes(h, version)),
+		}
+	)
+	go tpi.GracefulShutdown(server)
 	log.Println("Server is ready to handle requests at", listenAddr)
 	if err := server.ListenAndServe(); err != nil && err != http.ErrServerClosed {
 		log.Fatalf("Could not listen on %s: %v\n", listenAddr, err)
 	}
-	<-done // await done
 	log.Println("Shutdown complete - stop")
 }
 
-func newServer(listenAddr string, router http.Handler) *http.Server {
-	return &http.Server{
-		Addr:    listenAddr,
-		Handler: router,
+func connectRetry(url string) (*sql.DB, error) {
+	var ret error
+	for i := 0; i < 5; i++ {
+		db, err := connect(url)
+		if err != nil {
+			log.Printf("Error connecting: %v", err)
+			time.Sleep(5 * time.Second)
+			ret = err
+			continue
+		}
+		return db, nil
 	}
+	return nil, ret
 }
 
 func connect(url string) (*sql.DB, error) {

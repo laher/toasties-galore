@@ -12,10 +12,10 @@ docker-build: print-tag
 		${SUDO} docker tag "$(IMAGE):latest" "$(IMAGE):$(TAG)"
 
 build-linux: ## Build (linux) binary
-	GO111MODULES=on CGO_ENABLED=0 GOOS=linux go build -a .
+	GO111MODULES=on CGO_ENABLED=0 GOOS=linux go build -mod=vendor -a .
 
 run: ## Run locally
-	GO111MODULES=on go run .
+	GO111MODULES=on go run -mod=vendor .
 
 reflex: ## Run (file watcher)
 	reflex -s -g '*.go' -- sh -c "$(MAKE) run"

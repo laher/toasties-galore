@@ -1,6 +1,12 @@
 # toasties-galore 
 
-Presentation about Continuous Delivery for Gophercon AU
+Code and resources for a talk about Continuous Deployment for Gophercon AU [![Build Status](https://travis-ci.org/laher/toasties-galore.svg?branch=master)](https://travis-ci.org/laher/toasties-galore)
+
+## Monorepo
+
+This is a small monorepo with a naive implementation of some HTTP APIs, and some build tooling.
+
+For the purposes of the talk, there are also 3 Pull Requests open for discussion.
 
 ## Services
 
@@ -11,6 +17,8 @@ It attaches onto a chilly bin ('Chilly bin' is NZ English parlance - aka Esky, i
 There are 2 services, `jafflr` and the `chillybin`. Crucially, `jafflr` depends on `chillybin`.
 
 ## Endpoints
+
+Some of these endpoints use the wrong verb (GET instead of POST) - this has been left as "change needed":
 
  * chillybin:
   - [X] `/pick?name=cheese&quantity=1` - pick stock from chillybin
