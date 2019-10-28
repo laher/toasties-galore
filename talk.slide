@@ -4,53 +4,68 @@ Gophercon AU
 Tags: go, cd, tools, gophercon
 
 Am Laher
-Lead Engineer (API), Vend 
+Vend 
 @amfastic
 
 * Begin with a Premise
 
-Continuous Deployment can benefit the design of your code, in subtle, but remarkable ways.
+Continuous Deployment can improve the design of your code in subtle, but remarkable ways.
 
-* Overview
-
-- 00:00 Bold Premise
-- 01:00 Defining terms
-- 07:00 *Set*a*scene*: Introduce Characters & Foundational Work
-- 17:00 *Conflict*and*Resolution*: Problematic Scenario -> Action 
-- 30:00 Various tidbits 
-- 38:00 Conclusion
-- 40:00 Questions
-
-* What is Continuous Deployment?
-
-Different things to different people.
-
-_For_the_purposes_of_this_talk_..._
+: Hmm, interesting. We're going to have to break this down.
+: This is a Go conference, so I'm going to go light on the theory, culture and tools surrounding CD.
+: I'll focus on code, on tips and pointers which are relevant to Go.
+: But first, ...
+:
+: * Overview
+: - 00:00 Premise
+: - 01:00 Defining terms
+: - 05:00 *Set*a*scene*: Introduce Characters & Foundational Work
+: - 17:00 *Conflict*and*Resolution*: Problematic Scenario -> Action 
+: - 30:00 Various tidbits 
+: - 38:00 Conclusion
+: - 40:00 Questions
 
 * What is Continuous Deployment?
 
-Continuous deployment is a release strategy: any main-branch commit that passes testing is automatically released into production.
+CD means different things to different people.
 
+_So,_for_the_purposes_of_this_talk_..._
 
-Pushing/merging to master will automatically put your working software, directly into production.
+* What is Continuous Deployment?
 
-* Some related concepts
+Continuous Deployment is a release strategy: any main-branch commit that passes testing is automatically released into production.
+
+A push or merge to master will automatically put your working software, directly into production.
+
+* One of three similar concepts 
+
+My technical distinction for CI/Cd/CD:
 
 	ContinuousIntegration := auto(test + build)
 	ContinuousDelivery    := auto(test + build + publish) + easy(deploy)
 	ContinuousDeployment  := auto(test + build + publish + deploy)
 
-
 _Continuous_Delivery_implies_readiness_to_release_working_software_at_any_given_time._
 _Continuous_Deployment_implies_immediate_release._
-_We're_talking_about_the_latter._
+
+: Hopefully you're familiar with CI and CI tools. Whenever you see a 'build|passing' on a git repository, or whenever you're seeing a jenkins pipeline, you're probably looking at a CI or CD system.
+: During my career, I've mostly worked with CI/Continuous Delivery. Both are great. 
+: More recently I've started striving towards, or implementing, Continuous Deployment. 
+: I view it as a goal worth pursuing.
+: However, I do understand it's not always easy to acheive - retrofitting can be challenging.
+: Let's talk about that.
+
+* Touted Benefits
+
+Continuous Deployment will empower you to make better choices, and encourage you to develop good practices early on.
+
+CD means [[https://continuousdelivery.com][reduced risk, faster time-to-market, higher quality, better products, *happier*teams*]]...
 
 : Creating a Pull Request triggers a test, and usually generates a build artifact.
 : * What does the internet say?
 : So many interpretations and variants ...
-: _From_ [[https://continuousdelivery.com]]_:_
 : .caption Continuous Delivery is the ability to get changes of all types — including new features, configuration changes, bug fixes and experiments — into production, or into the hands of users, safely and quickly in a sustainable way.
-: Benefits: Lowers risk, faster time-to-market, higher quality, better products, *happier*teams* 
+: Benefits: 
 : (Continuous Delivery is a similar concept)
 : * But ...
 : How about Continuous Integration, Continuous Delivery, Continuous Fish ...?
@@ -71,39 +86,19 @@ _We're_talking_about_the_latter._
 : In the same way that testable code benefits, CD can provide many benefits too.
 : The biggest change is how you change your code.
 
-* How will it change my code?
-
-_More_than_anything_else,_CD_changes_how_you_ *change* _your_code._
-
-- CD forces you to deal with Important Things, up front.
-- CD enables safe and easy changes.
-
-Impact:
-
-- Simpler: fewer contraptions in the code.
-- Tidyier: fewer cobwebby corners.
-- More dynamic: change is simpler -> more options.
-
 * ORLY
 
 .image https://media.giphy.com/media/5b5OU7aUekfdSAER5I/giphy.gif
 
-OK, OK, there's a cost and some caveats... Let's explore
+OK, OK, there's a cost and some caveats.
 
-: * What the?
+I'll _try_ to explain. 
+
+: I can hear what you're saying to yourself ...
 : - If I make a mistake, will everything break?
 : - What about PM approval? Design reviews?
-: - Breaking changes? I'm so ded
-: Maybe you deploy on a Monday. US is asleep, right?
-: Maybe you don't have time for this
-: Maybe your legacy software has tricky manual steps, I don't know
-: * Don't worry, Morty
-: - Manage risk up-front.
-: - Smaller Increments make the heart grow calmer.
-: - Re-think your change procedure.
-: - Unreleased code is risk.
 
-* Let's set the scene  ...
+* Let's make up a story ...
 
 * Toasties Galore
 
@@ -114,6 +109,12 @@ Meet our heroine, Gita the Gopher.
 _Gita_is_an_innovator,_with_a_passion_for_technology_and_melted_cheese._
 
 : .image https://cdn.imgbin.com/25/17/2/imgbin-ham-and-cheese-sandwich-toast-cheese-and-tomato-sandwich-grilled-cheese-sandwiches-grilled-cheese-sandwich-illustration-xVCJhHSVh7M9C2Lg3VsZKgZye.jpg _ 500
+
+* State of the art Techmology 
+
+.image ./diagrams/jafflr-chillybin-bw.jpg _ 800
+
+Gita builds her own machinery, it's software driven, and we build the software.
 
 * Toasties Galore codebase
 
@@ -140,10 +141,6 @@ See [[https://github.com/laher/toasties-galore]]
 : - Supporting scripts
 : - Downtimeless deploys
 
-* State of the art Techmology 
-
-.image ./diagrams/jafflr-chillybin-bw.jpg _ 800
-
 * Invoking Jafflr
 
 The Toasties Galore software architecture ...
@@ -166,6 +163,18 @@ In this case, we're using [[https://travis-ci.org/laher/toasties-galore/branches
 : .image https://media.npr.org/assets/img/2012/07/03/rubegoldberg_photo_gal_4153_photo_846993380_lr-1-_custom-ecf7c547a1f17966a258fa8bd21286bc9b6d3619-s1100-c15.jpg
 
 * Eek, auto-deploy is scary
+
+: - Breaking changes? I'm so ded
+: Maybe you deploy on a Monday. US is asleep, right?
+: Maybe you don't have time for this
+: Maybe your legacy software has tricky manual steps, I don't know
+: But ...
+: * Don't worry, Morty
+: - Manage risk up-front.
+: - Smaller Increments make the heart grow calmer.
+: - Re-think your change procedure.
+: - Unreleased code is risk.
+
 
 * The Baseline
 
@@ -405,19 +414,18 @@ Monorepos offer some challenges and some advantages
 - Benefit: easier to maintain CI/CD pipelines centrally.
 - Benefit: 1st party dependencies are all local.
 - Benefit: testing component combinations is easier.
-- Challenge: speed.
 - Challenge: identify what to build, test, deploy on each commit.
+- Challenge: speed.
 
 Q: Do we really redeploy everything on every change?
-A: Ideally, no.
+A: Depends on language and tooling
 
-* publish.sh
+
+* Publish / deploy conditionally
+
+See [[./scripts/publish.sh][publish.sh]] and [[./scripts/deploy.sh][deploy.sh]]
 
 .code -edit ./scripts/publish.sh
-
-* deploy.sh
-
-.code -edit ./scripts/deploy.sh
  
 * Last relevant commit
 
@@ -452,12 +460,25 @@ At Vend we have a slackbot, @overlord, which offers a number of CD-related utili
 
 * Conclusions
 
+* How will it change my code?
+
+_More_than_anything_else,_CD_changes_how_you_ *change* _your_code._
+
+- CD forces you to deal with Important Things, up front.
+- CD encourages good practices.
+- CD enables safe and easy changes.
+
+Impact:
+
+- Simpler: fewer contraptions in the code.
+- Tidyier: fewer cobwebby corners.
+- More dynamic: change is simpler -> more options.
+
 * Advice
 
-Start with CD, you won't look back.
+It can be hard to retrofit CD. Do it now.
 
-If you don't have it early on, you may have a lot more work to do, but each of these efforts has a payoff.
-
+: If you don't have it early on, you may have a lot more work to do, but each of these efforts has a payoff.
 : I've just tried to show you some go-specific hints about the CI/CD toolchain.
 : I skipped whole areas - CI systems, rollbacks, cultural obstacles, ...
 : I didn't even try to recommend a CI system
