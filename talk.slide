@@ -1,10 +1,10 @@
-Designing go services for CD
+Designing Go services for Continuous Deployment
 Gophercon AU
-10:00 1 Nov 2019
+1 Nov 2019
 Tags: go, cd, tools, gophercon
 
 Am Laher
-Vend 
+Lead Engineer, Vend 
 @amfastic
 
 * Begin with a Premise
@@ -15,15 +15,6 @@ Continuous Deployment can improve the design of your code in subtle, but remarka
 : This is a Go conference, so I'm going to go light on the theory, culture and tools surrounding CD.
 : I'll focus on code, on tips and pointers which are relevant to Go.
 : But first, ...
-:
-: * Overview
-: - 00:00 Premise
-: - 01:00 Defining terms
-: - 05:00 *Set*a*scene*: Introduce Characters & Foundational Work
-: - 17:00 *Conflict*and*Resolution*: Problematic Scenario -> Action 
-: - 30:00 Various tidbits 
-: - 38:00 Conclusion
-: - 40:00 Questions
 
 * What is Continuous Deployment?
 
@@ -33,70 +24,49 @@ _So,_for_the_purposes_of_this_talk_..._
 
 * What is Continuous Deployment?
 
-Continuous Deployment is a release strategy: any main-branch commit that passes testing is automatically released into production.
+Continuous Deployment is a release strategy: 
 
-A push or merge to master will automatically put your working software, directly into production.
+- Any main-branch commit that passes testing is automatically released into production.
 
-* One of three similar concepts 
+Contiuous Deployment will automatically put your working software in front of users.
 
-My technical distinction for CI/Cd/CD:
-
-	ContinuousIntegration := auto(test + build)
-	ContinuousDelivery    := auto(test + build + publish) + easy(deploy)
-	ContinuousDeployment  := auto(test + build + publish + deploy)
-
-_Continuous_Delivery_implies_readiness_to_release_working_software_at_any_given_time._
-_Continuous_Deployment_implies_immediate_release._
-
-: Hopefully you're familiar with CI and CI tools. Whenever you see a 'build|passing' on a git repository, or whenever you're seeing a jenkins pipeline, you're probably looking at a CI or CD system.
+: What's that, do I hear screaming?
+: * CD is one of three similar concepts 
+: My technical distinction for CI/Cd/CD:
+: CI := auto(test + build)                          // Continuous Integration
+: Cd := auto(test + build + publish) + easy(deploy) // Continuous Delivery
+: CD := auto(test + build + publish + deploy)       // Continuous Deployment
+: _Continuous_Delivery_implies_readiness_to_release_working_software_at_any_given_time._
+: _Continuous_Deployment_implies_automatic_release._
+: Hopefully you're familiar with CI and CI tools. 
+: Whenever you see a 'build|passing' on a git repository, or whenever you're seeing a jenkins pipeline, you're probably looking at a CI or CD system.
 : During my career, I've mostly worked with CI/Continuous Delivery. Both are great. 
 : More recently I've started striving towards, or implementing, Continuous Deployment. 
 : I view it as a goal worth pursuing.
 : However, I do understand it's not always easy to acheive - retrofitting can be challenging.
 : Let's talk about that.
-
-* Touted Benefits
-
-Continuous Deployment will empower you to make better choices, and encourage you to develop good practices early on.
-
-CD means [[https://continuousdelivery.com][reduced risk, faster time-to-market, higher quality, better products, *happier*teams*]]...
-
-: Creating a Pull Request triggers a test, and usually generates a build artifact.
-: * What does the internet say?
+: * Touted Benefits
+: Continuous Deployment will empower you to make better choices, and encourage you to develop good practices early on.
+: CD means [[https://continuousdelivery.com][reduced risk, faster time-to-market, higher quality, better products, *happier*teams*]]...
 : So many interpretations and variants ...
-: .caption Continuous Delivery is the ability to get changes of all types — including new features, configuration changes, bug fixes and experiments — into production, or into the hands of users, safely and quickly in a sustainable way.
-: Benefits: 
-: (Continuous Delivery is a similar concept)
-: * But ...
-: How about Continuous Integration, Continuous Delivery, Continuous Fish ...?
-: But honestly, there are so many interpretations out there, that I'm going to pick one and talk about that. Apologies in advance if this definition doesn't ring true...
-: * On Tools
-: So many tools for CI/CD, so many deployment scenarios
-: They all work, and they're all different. 
-: _My_examples_are_only_chosen_to_communicate_some_ideas._
-: * Touted Benefits of CD
-: - Lowers risk 
-: - Faster time-to-market
-: - Higher quality software
-: - Better products
-: - Happier teams
-: See [[https://continuousdelivery.com]] again
+: Definition: Continuous Delivery is the ability to get changes of all types — including new features, configuration changes, bug fixes and experiments — into production, or into the hands of users, safely and quickly in a sustainable way.
 : I mentioned this site because it has great business cases for CD. Go take a look, there's compelling cases for why you should do this...
-: * First TDD, then BDD, now ... CDDD
-: In the same way that testable code benefits, CD can provide many benefits too.
-: The biggest change is how you change your code.
 
 * ORLY
 
+OK, OK , I can hear your internal monologue. It does sound super risky.
+
 .image https://media.giphy.com/media/5b5OU7aUekfdSAER5I/giphy.gif
 
-OK, OK, there's a cost and some caveats.
-
-I'll _try_ to explain. 
+Let's explore...
 
 : I can hear what you're saying to yourself ...
 : - If I make a mistake, will everything break?
 : - What about PM approval? Design reviews?
+: - It sounds like chaos
+: There's a lot to get right, I encourage you read up about the tools and culture and ecosystems around CD.
+: - there's work to be done, some work culture implications, and some caveats.
+: Let's explore ...
 
 * Let's make up a story ...
 
@@ -108,13 +78,23 @@ Meet our heroine, Gita the Gopher.
 
 _Gita_is_an_innovator,_with_a_passion_for_technology_and_melted_cheese._
 
-: .image https://cdn.imgbin.com/25/17/2/imgbin-ham-and-cheese-sandwich-toast-cheese-and-tomato-sandwich-grilled-cheese-sandwiches-grilled-cheese-sandwich-illustration-xVCJhHSVh7M9C2Lg3VsZKgZye.jpg _ 500
+: This is her food stall, Toasties Galore.
+: She's starting a business, and she's going to beat the competition with technology.
 
 * State of the art Techmology 
 
+Gita builds her own machinery, it's software-driven. 
+
 .image ./diagrams/jafflr-chillybin-bw.jpg _ 800
 
-Gita builds her own machinery, it's software driven, and we build the software.
+We - *you*and*I* - build the software.
+
+: - Chillybin is where we store the ingredients. A chilly bin (NZ English), also known as an Esky in Australia
+: - Jafflr is a state of the art grilling machine.
+:   - It harnesses laser technology to melt the cheese just right
+:   - and a mechanical arm to fetch ingredients from the chillybin
+: Gita is a hardware freak.
+: She's also tech savvy and she told us to use CD. She knows her cheese.
 
 * Toasties Galore codebase
 
@@ -129,10 +109,6 @@ See [[https://github.com/laher/toasties-galore]]
 
 : For this presentation, let's look at the software for an imaginary food stall, "Toasties Galore".
 : - 2 services - chillybin & jafflr.
-: - Chillybin is where we store the ingredients. Chillybins (NZ), also known as an Esky in Australia
-: - Jafflr is a state of the art grilling machine.
-:   - It harnesses laser technology to melt the cheese to precisely 6.3 kilogoos ... 
-:   - and a mechanical arm to fetch ingredients from the chillybin
 : - Both components serve HTTP APIs. chillybin connects to a Postgres database. 
 : Testing:
 : - Per-service tests work on each service in isolation.
@@ -175,7 +151,6 @@ In this case, we're using [[https://travis-ci.org/laher/toasties-galore/branches
 : - Re-think your change procedure.
 : - Unreleased code is risk.
 
-
 * The Baseline
 
 Let's consider some Important Things in our code:
@@ -213,7 +188,7 @@ Continues processing in-flight requests, while making way for a newer deployment
 : Rolling Restarts
 : switch to code view. Show the tests in action and explain how K8s or ECS would work.
 
-* chillybinClient 
+* chillybinClient - An interaction
 
 .image ./diagrams/jafflr-arm.jpg _ 600
 
@@ -223,6 +198,11 @@ Few tests - verify the interactions
 
 .code -edit ./integration-tests/integration_test.go  /^func TestHappyPath/,/^}/
 
+: Invoke outer service, assert inner service
+: Doesn't assume state. Check before & after
+: Test is independent from environment. With appropriate 'demo customer' things, I could equally run this on prod, local, staging ...
+: Needs to be non-racy, non-flaky
+: Preferably, fast
 : CD is all about automated testing - _you_need_to_trust_those_tests._
 : - Repeatable and reliable - non-racy, non-flaky ... fast
 : - Environment - prod-like? Docker/docker-compose? k8s?
@@ -300,8 +280,6 @@ A 3-step dance:
 Three steps, or _stages_ ... with CD, it's easy, you'll consider it more often
 
 .image ./diagrams/pulls.png _ 600
-
-See [[https://github.com/laher/toasties-galore/pulls][Pull Requests]]
 
 : You could do it without CD, but you should try it with CD. 
 : It can be completed in a short time, and lined up just like this. 
@@ -458,6 +436,10 @@ At Vend we have a slackbot, @overlord, which offers a number of CD-related utili
 - feature flagging
 - service status
 
+* On Tools
+
+So many tools for CI/CD, so many deployment scenarios. They all work, and they're all different. _My_examples_are_only_chosen_to_communicate_some_ideas._
+
 * Conclusions
 
 * How will it change my code?
@@ -476,8 +458,14 @@ Impact:
 
 * Advice
 
-It can be hard to retrofit CD. Do it now.
+It can be hard to retrofit CD. Start early.
 
+See [[https://continuousdelivery.com]] for research and business speak.
+
+See Toasties Galore on [[github][https://github.com/laher/toasties-galore]] or [[travis][https://travis-ci.org/laher/toasties-galore]] to try this stuff out - maybe it'll help you.
+
+: Thanks
+: I hope that helped encourage you along this journey.
 : If you don't have it early on, you may have a lot more work to do, but each of these efforts has a payoff.
 : I've just tried to show you some go-specific hints about the CI/CD toolchain.
 : I skipped whole areas - CI systems, rollbacks, cultural obstacles, ...
