@@ -331,21 +331,26 @@ It's the easy part, but it's also easy to forget or fear it.
 
 When deployment is a non-thing:
 
-- you can make your releases safer
-- you code remains cleaner
+- you can make your releases safer.
+- you code remains cleaner.
+- more approaches, & better approaches, are feasible.
+
+* Tips and Tricks
+
+Some pointers to look up later
 
 * On DB Migrations
 
 Migrations are Challenging 
 
-- big tables - time-consuming
-- rollbacks are complex
+- Altering big tables - time-consuming, performance concerns.
+- Rollbacks are awkward.
 
 Where possible:
 
-- make them idempotent (`if not exists`)
-- use transactions
-- run them in advance
+- Use transactions (Postgres has transactional DDL) to *test* them in advance.
+- Make them idempotent (`if not exists`) to *run* them in advance.
+- Split them up?
 
 * Chillybin
 
@@ -355,21 +360,26 @@ Where possible:
 
 .code ./chillybin/main.go /^func runMigrationsSource/,/^}/
 
+: Using go-migrate
+: Can run this from the main file
+: Alternatively, run it manually in a 'job'
+: Deploy the migration scripts as part of the container
+
 * On Configuration 
 
 Extensive config files?
 
-- a popular pattern
-- Easy to reconfigure when supporting
+- a popular pattern - reconfigure all the things
+- Easier to reconfigure while on-call?
 - Knobs and twiddles are nice
 
 * But, with CD ...
 
 We can simplify. 
 
-- Just use constants into your code.
+- Mostly use constants into your code.
 - Deployment is fast. Just edit code/artifact
-- 12-factor Apps: 'just use ENV variables'.
+- Use Env variables for DSNs and such. [see 12-factor Apps]
 
 : Knobs and twiddles - why not bake them in:
 : - Where possible, compile it in - simplify your code.
@@ -390,22 +400,21 @@ We can simplify.
 Monorepos offer some challenges and some advantages
 
 - Benefit: easier to maintain CI/CD pipelines centrally.
-- Benefit: 1st party dependencies are all local.
+- Benefit: in-house dependencies are all local.
 - Benefit: testing component combinations is easier.
-- Challenge: identify what to build, test, deploy on each commit.
+- Challenge: identifying what to build, test, deploy on each commit.
 - Challenge: speed.
 
 Q: Do we really redeploy everything on every change?
 A: Depends on language and tooling
 
-
-* Publish / deploy conditionally
+* Publish / deploy conditionally - Go
 
 See [[./scripts/publish.sh][publish.sh]] and [[./scripts/deploy.sh][deploy.sh]]
 
 .code -edit ./scripts/publish.sh
  
-* Last relevant commit
+* Last relevant commit - Go
 
 Calculate changes affecting a service [in a monorepo]
 
@@ -427,7 +436,7 @@ Calculate changes affecting a service [in a monorepo]
 - Deploy only affected services.
 - Run relevant integration tests, post-deploy
 
-* Canaries, Rollbacks, Tooling
+* DIY Tooling
 
 At Vend we have a slackbot, @overlord, which offers a number of CD-related utilities. e.g.
 
@@ -436,9 +445,11 @@ At Vend we have a slackbot, @overlord, which offers a number of CD-related utili
 - feature flagging
 - service status
 
-* On Tools
+* On CI Platforms
 
-So many tools for CI/CD, so many deployment scenarios. They all work, and they're all different. _My_examples_are_only_chosen_to_communicate_some_ideas._
+So many tools for CI/CD, so many deployment scenarios. They all work, and they're all different. I've tried heaps. _My_examples_are_only_chosen_to_communicate_some_ideas._
+
+Just choose one.
 
 * Conclusions
 
