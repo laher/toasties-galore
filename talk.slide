@@ -11,25 +11,18 @@ Lead Engineer, Vend
 
 Continuous Deployment can improve the design of your code in subtle, but remarkable ways.
 
-: Hmm, interesting. We're going to have to break this down.
+: Hmm, sounds good, right.
 : This is a Go conference, so I'm going to go light on the theory, culture and tools surrounding CD.
 : I'll focus on code, on tips and pointers which are relevant to Go.
 : But first, ...
 
-* What is Continuous Deployment?
+* What is this, Continuous Deployment?
 
-CD means different things to different people.
+_For_the_purposes_of_this_talk_..._
 
-_So,_for_the_purposes_of_this_talk_..._
+Continuous Deployment is a release strategy: any mainline change [a commit on master] that passes testing, is automatically released into production.
 
-* What is Continuous Deployment?
-
-Continuous Deployment is a release strategy: 
-
-- Any main-branch commit that passes testing is automatically released into production.
-
-Contiuous Deployment will automatically put your working software in front of users.
-
+: Contiuous Deployment will automatically put your working software in front of users.
 : What's that, do I hear screaming?
 : * CD is one of three similar concepts 
 : My technical distinction for CI/Cd/CD:
@@ -38,16 +31,6 @@ Contiuous Deployment will automatically put your working software in front of us
 : CD := auto(test + build + publish + deploy)       // Continuous Deployment
 : _Continuous_Delivery_implies_readiness_to_release_working_software_at_any_given_time._
 : _Continuous_Deployment_implies_automatic_release._
-: Hopefully you're familiar with CI and CI tools. 
-: Whenever you see a 'build|passing' on a git repository, or whenever you're seeing a jenkins pipeline, you're probably looking at a CI or CD system.
-: During my career, I've mostly worked with CI/Continuous Delivery. Both are great. 
-: More recently I've started striving towards, or implementing, Continuous Deployment. 
-: I view it as a goal worth pursuing.
-: However, I do understand it's not always easy to acheive - retrofitting can be challenging.
-: Let's talk about that.
-: * Touted Benefits
-: Continuous Deployment will empower you to make better choices, and encourage you to develop good practices early on.
-: CD means [[https://continuousdelivery.com][reduced risk, faster time-to-market, higher quality, better products, *happier*teams*]]...
 : So many interpretations and variants ...
 : Definition: Continuous Delivery is the ability to get changes of all types — including new features, configuration changes, bug fixes and experiments — into production, or into the hands of users, safely and quickly in a sustainable way.
 : I mentioned this site because it has great business cases for CD. Go take a look, there's compelling cases for why you should do this...
@@ -79,7 +62,7 @@ Meet our heroine, Gita the Gopher.
 _Gita_is_an_innovator,_with_a_passion_for_technology_and_melted_cheese._
 
 : This is her food stall, Toasties Galore.
-: She's starting a business, and she's going to beat the competition with technology.
+: She's starting a business, and she's going to beat the competition with advanced cheese technology.
 
 * State of the art Techmology 
 
@@ -102,7 +85,8 @@ An overview
 
 - A monorepo
 - 2 HTTP services, which interact
-- Tests, tools, docker things ...
+- Tests, tooling, docker things ...
+- Scripts
 - A CI/CD pipeline
 
 See [[https://github.com/laher/toasties-galore]]
@@ -128,7 +112,6 @@ This simple deployment powers a 24-hour, high-throughput toasting service, with 
 * The Pipeline
 
 .image ./diagrams/pipeline.dot.svg
-
 
 * The pipeline
 
@@ -188,7 +171,7 @@ Continues processing in-flight requests, while making way for a newer deployment
 : Rolling Restarts
 : switch to code view. Show the tests in action and explain how K8s or ECS would work.
 
-* chillybinClient - An interaction
+* chillybin client - An interaction
 
 .image ./diagrams/jafflr-arm.jpg _ 600
 
@@ -198,17 +181,13 @@ Few tests - verify the interactions
 
 .code -edit ./integration-tests/integration_test.go  /^func TestHappyPath/,/^}/
 
+: Run tests against a 'prod-like' envirnment (could be docker-compose, k8s, ...)
 : Invoke outer service, assert inner service
 : Doesn't assume state. Check before & after
 : Test is independent from environment. With appropriate 'demo customer' things, I could equally run this on prod, local, staging ...
 : Needs to be non-racy, non-flaky
 : Preferably, fast
-: CD is all about automated testing - _you_need_to_trust_those_tests._
-: - Repeatable and reliable - non-racy, non-flaky ... fast
-: - Environment - prod-like? Docker/docker-compose? k8s?
-: - Write a few integration tests - test those interactions.
-: - "Happy Path and some error handling"
-: - Don't assume state.
+: "Happy Path and some error handling"
 
 * Success
 
@@ -225,8 +204,8 @@ But ...
 
 We're super busy, and some orders are going to the wrong gophers. 
 
-- Gary received cheese instead of Sheese (soy cheese)
 - Gwenda got pineapple instead of vegemite 
+- Gary received cheese instead of Sheese (soy cheese)
 
 Not good.
 
@@ -236,9 +215,9 @@ Decisions ...
 
 *Gita:* Track orders with customer's names
 
-*Gita:* change the Chillybin API to support richer request data
+*Us:* alter the Chillybin API to support richer request data
 
-* Planned changes
+* Planned changes to /pick
 
 .image diagrams/before.dot.svg _ 600
 
@@ -253,13 +232,7 @@ Decisions ...
 
 .image https://media.giphy.com/media/WrK9dwj8TNPr2/giphy.gif
 
-* Obstacles
-
-*Us*: Changes ready now but ... let's to wait for a quiet Monday?! 
-*Us*: Monday - other changes incoming, things be complicated
-*Us*: How to co-ordinate breaking changes - downtime?!
-*Us*: DB migrations - can take a long time, can interfere with deploys. 
-*Us*: How to rollback once other changes come in?!
+* Us: OMG
 
 *Gita*: s'all good. Let's dance.
 
@@ -292,8 +265,9 @@ Three steps, or _stages_ ... with CD, it's easy, you'll consider it more often
 * Step 1 - Add new feature implementation
 
 - Serve the new approach under a different URL, /v2/pick
-- v2 doesn't affect real users [yet], but you can test it
-- Now there are 2 versions of `pick`, side-by-side
+- Now there are 2 versions of `pick`, side-by-side.
+- v2 can be tested manually, but isn't invoked by any other service yet.
+- No changes to calling service (jafflr). Just chillybin.
 
 See [[https://github.com/laher/toasties-galore/pull/1/files]]
 
@@ -333,11 +307,9 @@ When deployment is a non-thing:
 
 - you can make your releases safer.
 - you code remains cleaner.
-- more approaches, & better approaches, are feasible.
+- When you have more viable options within reach, you're empowered to make better decisions.
 
 * Tips and Tricks
-
-Some pointers to look up later
 
 * On DB Migrations
 
@@ -369,17 +341,18 @@ Where possible:
 
 Extensive config files?
 
-- a popular pattern - reconfigure all the things
-- Easier to reconfigure while on-call?
+- Configurable-everything is a popular pattern - reconfigure all the things
+- Easier to reconfigure while an on-call emergency?
 - Knobs and twiddles are nice
 
 * But, with CD ...
 
 We can simplify. 
 
-- Mostly use constants into your code.
-- Deployment is fast. Just edit code/artifact
-- Use Env variables for DSNs and such. [see 12-factor Apps]
+- Use constants more often
+- Use $ENV variables for DSNs and such. [see 12-factor Apps]
+
+Deployment is fast. Just edit code/artifact
 
 : Knobs and twiddles - why not bake them in:
 : - Where possible, compile it in - simplify your code.
@@ -434,7 +407,7 @@ Calculate changes affecting a service [in a monorepo]
 * Why last_commit.sh ?
 
 - Deploy only affected services.
-- Run relevant integration tests, post-deploy
+- Decide which integration tests to run, post-deploy
 
 * DIY Tooling
 
@@ -445,9 +418,13 @@ At Vend we have a slackbot, @overlord, which offers a number of CD-related utili
 - feature flagging
 - service status
 
-* On CI Platforms
+: these are the kinds of tools which you may end up writing code for.
 
-So many tools for CI/CD, so many deployment scenarios. They all work, and they're all different. I've tried heaps. _My_examples_are_only_chosen_to_communicate_some_ideas._
+* On CI/CD Software
+
+They all work, and they're all different. I've tried heaps. 
+
+_My_examples_are_only_chosen_to_communicate_some_ideas._
 
 Just choose one.
 
@@ -455,7 +432,7 @@ Just choose one.
 
 * How will it change my code?
 
-_More_than_anything_else,_CD_changes_how_you_ *change* _your_code._
+_More_than_anything_else,_CD_affects_ *how* _you_ *change* _your_code._
 
 - CD forces you to deal with Important Things, up front.
 - CD encourages good practices.
@@ -473,7 +450,13 @@ It can be hard to retrofit CD. Start early.
 
 See [[https://continuousdelivery.com]] for research and business speak.
 
-See Toasties Galore on [[github][https://github.com/laher/toasties-galore]] or [[travis][https://travis-ci.org/laher/toasties-galore]] to try this stuff out - maybe it'll help you.
+: Touted Benefits
+: Continuous Deployment will empower you to make better choices, and encourage you to develop good practices early on.
+: CD means [[https://continuousdelivery.com][reduced risk, faster time-to-market, higher quality, better products, *happier*teams*]]...
+
+* Advice: Play with Toasties Galore
+
+See Toasties Galore on [[https://github.com/laher/toasties-galore][github]] or [[https://travis-ci.org/laher/toasties-galore][travis]] to try this stuff out - maybe it'll help you.
 
 : Thanks
 : I hope that helped encourage you along this journey.
