@@ -12,37 +12,30 @@ Lead Engineer, Vend
 Continuous Deployment can improve the design of your code in subtle, but remarkable ways.
 
 : Hmm, sounds good, right.
-: This is a Go conference, so I'm going to go light on the theory, culture and tools surrounding CD.
-: I'll focus on code, on tips and pointers which are relevant to Go.
+: Maybe a stretch?
+: I'm going to focus on the code aspect of CD - on the baseline, on tips and tricks which are relevant to Go.
+: I'm going to touch on a lot of topics, but don't worry, I'll provide some working samples which you can explore in your time.
 : But first, ...
 
-* What is this, Continuous Deployment?
+* What is this, "Continuous Deployment"?
 
 _For_the_purposes_of_this_talk_..._
 
-Continuous Deployment is a release strategy: any mainline change [a commit on master] that passes testing, is automatically released into production.
+Continuous Deployment is a release strategy: any mainline change that passes testing, is automatically released into production.
 
 : Contiuous Deployment will automatically put your working software in front of users.
-: What's that, do I hear screaming?
-: * CD is one of three similar concepts 
-: My technical distinction for CI/Cd/CD:
-: CI := auto(test + build)                          // Continuous Integration
-: Cd := auto(test + build + publish) + easy(deploy) // Continuous Delivery
-: CD := auto(test + build + publish + deploy)       // Continuous Deployment
-: _Continuous_Delivery_implies_readiness_to_release_working_software_at_any_given_time._
-: _Continuous_Deployment_implies_automatic_release._
-: So many interpretations and variants ...
-: Definition: Continuous Delivery is the ability to get changes of all types — including new features, configuration changes, bug fixes and experiments — into production, or into the hands of users, safely and quickly in a sustainable way.
-: I mentioned this site because it has great business cases for CD. Go take a look, there's compelling cases for why you should do this...
+: Yes, that means a push or merge to master.
+: Wonderful.
+: Just do that on your codebase, you'll love it.
 
 * ORLY
 
-OK, OK , I can hear your internal monologue. It does sound super risky.
-
 .image https://media.giphy.com/media/5b5OU7aUekfdSAER5I/giphy.gif
 
+OK, OK , it does sound a little bit super-risky.
 Let's explore...
 
+: What's that, do I hear screaming?
 : I can hear what you're saying to yourself ...
 : - If I make a mistake, will everything break?
 : - What about PM approval? Design reviews?
@@ -52,6 +45,8 @@ Let's explore...
 : Let's explore ...
 
 * Let's make up a story ...
+
+: I'm going to try to share my own learnings, with a story about gophers.
 
 * Toasties Galore
 
@@ -72,34 +67,28 @@ Gita builds her own machinery, it's software-driven.
 
 We - *you*and*I* - build the software.
 
+: Gita is a hardware freak.
+: She's also tech savvy and she told us to use CD. She knows her cheese.
 : - Chillybin is where we store the ingredients. A chilly bin (NZ English), also known as an Esky in Australia
 : - Jafflr is a state of the art grilling machine.
 :   - It harnesses laser technology to melt the cheese just right
 :   - and a mechanical arm to fetch ingredients from the chillybin
-: Gita is a hardware freak.
-: She's also tech savvy and she told us to use CD. She knows her cheese.
 
 * Toasties Galore codebase
 
 An overview
 
 - A monorepo
-- 2 HTTP services, which interact
-- Tests, tooling, docker things ...
-- Scripts
+- 2 HTTP services, which interact.
+- Tests
+- Docker things
+- Scripts and tooling
 - A CI/CD pipeline
 
 See [[https://github.com/laher/toasties-galore]]
 
-: For this presentation, let's look at the software for an imaginary food stall, "Toasties Galore".
-: - 2 services - chillybin & jafflr.
-: - Both components serve HTTP APIs. chillybin connects to a Postgres database. 
-: Testing:
-: - Per-service tests work on each service in isolation.
-: - Integration tests invoke the APIs and test the interactions.
-:   - test environment with docker-compose
-: - Supporting scripts
-: - Downtimeless deploys
+: For this presentation, let's look at the software supporting our imaginary food stall, "Toasties Galore".
+: There's a lot in there, more than I could hope to communicate in 30 minutes. Take a look. Toasties galore.
 
 * Invoking Jafflr
 
@@ -109,9 +98,17 @@ The Toasties Galore software architecture ...
 
 This simple deployment powers a 24-hour, high-throughput toasting service, with some agressive expectations. _Gophers_are_demanding._
 
-* The Pipeline
+: The main thing to note here is that there are contracts here between Jafflr and Chillybin (and Chillybin & Postgres)
+
+* The CI/CD Pipeline
 
 .image ./diagrams/pipeline.dot.svg
+
+: Here's the pipeline as simply as I can put it.
+: We're using github and travis, but you can substitute any number of alternatives.
+: Changes come into github via a merge or push, and github notifies Travis via a webhook.
+: The top box represents *any change*. Maybe a feature branch, where you develop something experimental.
+: The bottom box represents the deployment bit. If everything builds successfully, then it'll go directly to prod.
 
 * The pipeline
 
@@ -119,20 +116,14 @@ In this case, we're using [[https://travis-ci.org/laher/toasties-galore/branches
 
 .code ./.travis.yml
 
-: .image https://media.npr.org/assets/img/2012/07/03/rubegoldberg_photo_gal_4153_photo_846993380_lr-1-_custom-ecf7c547a1f17966a258fa8bd21286bc9b6d3619-s1100-c15.jpg
+: Note how we have 'stages'. The main 'scripts', plus a 'deploy' section
+: If you fork and PR my code, it'll trigger a build. Try it out. Hell, set up a travis on your own fork.
 
 * Eek, auto-deploy is scary
 
-: - Breaking changes? I'm so ded
-: Maybe you deploy on a Monday. US is asleep, right?
-: Maybe you don't have time for this
-: Maybe your legacy software has tricky manual steps, I don't know
-: But ...
-: * Don't worry, Morty
-: - Manage risk up-front.
-: - Smaller Increments make the heart grow calmer.
-: - Re-think your change procedure.
-: - Unreleased code is risk.
+: What are you thinking?
+: You liked it until there was a 'deploy' section? Fair.
+: We're gonna need some things for this to work
 
 * The Baseline
 
@@ -142,23 +133,40 @@ Let's consider some Important Things in our code:
 - Seamless Deploys
 - Integration Tests
 
+: Observability: What's going on in production?
+: Seamless deploys: If I can't control _when_ we release, I at least want to know that it won't interrupt our service.
+: Testing: We already have tests in our services, right. But now I NEED to know they talk nicely to one another, without staging and manual tests.
+: So, let's look inside Jafflr
+
 * Jafflr schematic
 
 .image ./diagrams/jafflr-schematic-diagram.jpg _ 700
+
+: OMG Gita. That's one of her drawings she wanted you to see.
 
 * Jafflr
 
 .play ./jafflr/main.go /^func main/,/^}/
 
+: So, here's the main func in jafflr. Things to notice:
+: It's small
+: some config, some wiring and start some things.
+: In bold, some setup relating to the 3 things we were talking about
+
 * Observability & Instrumentation
 
-Use metrics to know what's happening in production. e.g.
+Use metrics to know what's happening in production. e.g. in a middleware ...
 
 .code -edit ./tpi/http.go /^func TracingMiddleware/,/^}/
 
-_There's_ [[https://github.com/laher/toasties-galore/blob/059053a/tpi/http.go#L65:L73][another middleware]] _for_logging._
 
-* Harnessing the Rolling Restart
+: The bulk of your observability should be provided by your platform, but you'll probably want to add some instrumentation itno your code.
+: Middlewares are a typical place you might add some instrumentation.
+: Also, jobs, startup, other timings.
+: Middleware is the name given to a wrapper around a http handler or group of handlers.
+: _There's_also_ [[https://github.com/laher/toasties-galore/blob/059053a/tpi/http.go#L65:L73][another middleware]] _for_logging._
+
+* Harnessing the Rolling Update
 
 Stop listening, keep handling ... e.g.
 
@@ -166,12 +174,14 @@ Stop listening, keep handling ... e.g.
 
 Continues processing in-flight requests, while making way for a newer deployment.
 
-: Stop listening on a port, while continuing to serve existing connections. 
-: Allow other [new] instances to listen instead.
-: Rolling Restarts
-: switch to code view. Show the tests in action and explain how K8s or ECS would work.
+: Your platform (e.g. ECS/K8s/...) will hopefully support some kind of load-balancing and rolling update process.
+: When you receive an interrupt from a 'kill' or similar:
+: Stop listening on the port, while continuing to fulfil existing connections. 
+: Exit as soon as your requests are completed OR once the context is done (timed out).
+: Allows other [new] instances to listen promptly.
+: Note: similar approach is possible for non-http services - not shown here.
 
-* chillybin client - An interaction
+* The Arm - An interaction
 
 .image ./diagrams/jafflr-arm.jpg _ 600
 
@@ -181,29 +191,28 @@ Few tests - verify the interactions
 
 .code -edit ./integration-tests/integration_test.go  /^func TestHappyPath/,/^}/
 
-: Run tests against a 'prod-like' envirnment (could be docker-compose, k8s, ...)
-: Invoke outer service, assert inner service
-: Doesn't assume state. Check before & after
-: Test is independent from environment. With appropriate 'demo customer' things, I could equally run this on prod, local, staging ...
-: Needs to be non-racy, non-flaky
-: Preferably, fast
-: "Happy Path and some error handling"
+: Run tests against a 'prod-like' environment (could be docker-compose, k8s, ...)
+: Things to note:
+: Invoke outer service (jafflr), assert response and inner service state (chillybin)
+: Doesn't assume state. Reset at the start, Check state before & after method-under-test
+: Test is independent from environment. With appropriate 'demo customer' constraints, I could equally run this on prod, local, staging ...
+: Needs to be non-racy, non-flaky. Preferably, fast
+: Few tests - "Happy Path and some error handling". Permutations are for service/unit tests
+: Yay, now we know that our services will play nicely. Halfway there.
 
 * Success
 
 Toasties Galore is now a highly successful operation ...
 
-- Gophers love the recipes.
-- Jafflr is busy 24-7
+Gophers love the recipes. Jafflr is busy 24-7
 
-But ...
+.image ./diagrams/toasties-galore-popular.jpg _ 600
 
-- Some users aren't happy
+* But ... Design problems
 
-* Design problems 
+Some gophers aren't happy ...
 
-We're super busy, and some orders are going to the wrong gophers. 
-
+- We're super busy, and some orders are going to the wrong gophers. 
 - Gwenda got pineapple instead of vegemite 
 - Gary received cheese instead of Sheese (soy cheese)
 
@@ -217,12 +226,18 @@ Decisions ...
 
 *Us:* alter the Chillybin API to support richer request data
 
+: We need to add new business logic.
+: We got some design flaws, we want to fix them too.
+
 * Planned changes to /pick
 
 .image diagrams/before.dot.svg _ 600
 
 .image diagrams/after.dot.svg _ 600
 
+: It's a POST instead of a GET. Imagine there's a lot more metadata; also, it really shouldn't be a GET. It's removing ingredients.
+: We're inserting a new entity, orders.
+: Sweeet.
 
 * Oh noes, Breaking Changes
 
@@ -231,6 +246,8 @@ Decisions ...
 - HaLp!
 
 .image https://media.giphy.com/media/WrK9dwj8TNPr2/giphy.gif
+
+: I'm scared Rick
 
 * Us: OMG
 
@@ -248,19 +265,18 @@ A 3-step dance:
 - Migrate comfortably
 - Delete old implementation
 
+: I chose the foxtrot. It could have been the waltz or something. I dunno, I just googled 3-step dance. Foxtrot.
+
 * The 3-step release dance
 
-Three steps, or _stages_ ... with CD, it's easy, you'll consider it more often
+Three steps, or _stages_ 
 
 .image ./diagrams/pulls.png _ 600
 
-: You could do it without CD, but you should try it with CD. 
-: It can be completed in a short time, and lined up just like this. 
-: Furthermore, the easier your deploy is, the more you can plan for releases
-: Part of the problem with the foxtrot is the 'planning ahead': 
-: When releasing is hard, people try to do all this in a single deploy
-: When less hard, people tend to aim for Step 2. Step 3 may never happen.
-: NOTE: variants include shadowing, canaries, blue-green
+... with CD, it's easy, you'll consider it more often
+
+: Hey, we just lined up 3 things, bottom to top, but each stage may take some time before we're ready to move on to the next.
+: Or not. The main thing is that we make them distinct, and follow the sequence.
 
 * Step 1 - Add new feature implementation
 
@@ -270,6 +286,11 @@ Three steps, or _stages_ ... with CD, it's easy, you'll consider it more often
 - No changes to calling service (jafflr). Just chillybin.
 
 See [[https://github.com/laher/toasties-galore/pull/1/files]]
+
+: Note the changes:
+: refactored the 'update' to an 'extracted method'
+: new route, /v2/pick
+: an additional integration test
 
 * Step 2 - Invoke new implementation
 
@@ -289,19 +310,23 @@ See [[https://github.com/laher/toasties-galore/pull/1/files]]
 
 See [[https://github.com/laher/toasties-galore/pull/2/files]]
 
-- This function could be backed by a service, a db, or by configuration.
+- HasFeature could be backed by a service, a db table, or by configuration.
 - Alternatives: Canary Deploys, Shadowing, Blue-Green deploys
+
+: We have a new PR
+: Now, jafflr *conditionally* invokes Chillybin
+: Switching this on and off is super chill.
 
 * Step 3 - Delete old implementation
 
-- Do it soon
-- Line it up in advance. Plan for it otherwise you'll forget
+- Do it soon.
+- Line it up in advance. Plan for it, otherwise you'll forget.
 
 See [[https://github.com/laher/toasties-galore/pull/3/files]]
 
-It's the easy part, but it's also easy to forget or fear it. 
+It's the easy part, but it's also easy to forget it, or fear it. 
 
-* The Foxtrot
+* Foxtrot - Conclusions
 
 When deployment is a non-thing:
 
@@ -327,6 +352,8 @@ Where possible:
 * Chillybin
 
 .image ./diagrams/chillybin.jpg _ 500
+
+: This is the original patent for the chillybin
 
 * Chilly bin - migrations
 
