@@ -47,14 +47,16 @@ func TestHappyPath(t *testing.T) {
 	if m := getChillybinStats(t); m["cheese"] != 10 { // assert initial state // HL
 		t.Fatalf("wrong amount of cheese after restocking: %v, %T", m, m["cheese"])
 	}
-	// Method under test: // HL
-	if resp, err := http.Post(fmt.Sprintf("%s/toastie?i=cheese&i=vegemite", jafflrAddr), "text/plain", nil); err != nil {
-		t.Fatalf("error fetching toastie: %v", err)
-	} else if resp.StatusCode != http.StatusOK {
-		body, _ := ioutil.ReadAll(resp.Body)
-		t.Fatalf("error fetching toastie (%s): %s", resp.Status, body)
+	customers := []string{"gordon", "gwyn"}
+	for _, customer := range customers {
+		if resp, err := http.Get(fmt.Sprintf("%s/toastie?i=cheese&i=vegemite&customer=%s", jafflrAddr, customer)); err != nil {
+			t.Fatalf("error fetching toastie: %v", err)
+		} else if resp.StatusCode != http.StatusOK {
+			body, _ := ioutil.ReadAll(resp.Body)
+			t.Fatalf("error fetching toastie (%s): %s", resp.Status, body)
+		}
 	}
-	if m := getChillybinStats(t); m["cheese"] != 9 { // assert resulting state // HL
+	if m := getChillybinStats(t); m["cheese"] != 8 { // assert resulting state // HL
 		t.Fatalf("wrong amount of cheese after grilling toastie: %v", m)
 	}
 }

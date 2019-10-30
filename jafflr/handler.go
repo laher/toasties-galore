@@ -35,6 +35,7 @@ func (h *handler) makeToastie(w http.ResponseWriter, r *http.Request) {
 		values      = r.URL.Query()
 		ingredients = values["i"]
 		doneness    = values.Get("doneness")
+		customer    = values.Get("customer")
 	)
 	if err := validate(ingredients); err != nil {
 		log.Printf("Error toasting toastie: %v", err)
@@ -44,11 +45,20 @@ func (h *handler) makeToastie(w http.ResponseWriter, r *http.Request) {
 	}
 	ingredients = append(ingredients, "bread", "bread")
 	for _, ingredient := range ingredients {
-		if err := h.client.pick(ingredient, 1); err != nil {
-			log.Printf("Error fetching ingredient: %v", err)
-			w.WriteHeader(http.StatusInternalServerError)
-			w.Write([]byte("Ingredient error"))
-			return
+		if HasFeature(customer, PickV2) {
+			if err := h.client.pickV2(ingredient, 1, customer); err != nil {
+				log.Printf("Error fetching ingredient: %v", err)
+				w.WriteHeader(http.StatusInternalServerError)
+				w.Write([]byte("Ingredient error"))
+				return
+			}
+		} else {
+			if err := h.client.pick(ingredient, 1); err != nil {
+				log.Printf("Error fetching ingredient: %v", err)
+				w.WriteHeader(http.StatusInternalServerError)
+				w.Write([]byte("Ingredient error"))
+				return
+			}
 		}
 	}
 	if err := h.cook(ingredients, doneness); err != nil {
