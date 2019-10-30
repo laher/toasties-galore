@@ -7,10 +7,7 @@ const (
 func HasFeature(customer string, feature string) bool {
 	switch feature {
 	case PickV2:
-		if customer == "gita" {
-			return true
-		}
-		return false
+		return true
 	default:
 		panic("unknown feature")
 	}
