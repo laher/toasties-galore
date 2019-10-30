@@ -1,109 +1,52 @@
-Designing go services for CD
+Designing Go services for Continuous Deployment
 Gophercon AU
-10:00 1 Nov 2019
+1 Nov 2019
 Tags: go, cd, tools, gophercon
 
 Am Laher
-Lead Engineer (API), Vend 
+Lead Engineer, Vend 
 @amfastic
 
 * Begin with a Premise
 
-Continuous Deployment can benefit the design of your code, in subtle, but remarkable ways.
+Continuous Deployment can improve the design of your code in subtle, but remarkable ways.
 
-* Overview
+: Hmm, sounds good, right.
+: Maybe a stretch?
+: I'm going to focus on the code aspect of CD - on the baseline, on tips and tricks which are relevant to Go.
+: I'm going to touch on a lot of topics, but don't worry, I'll provide some working samples which you can explore in your time.
+: But first, ...
 
-- 00:00 Bold Premise
-- 01:00 Defining terms
-- 07:00 *Set*a*scene*: Introduce Characters & Foundational Work
-- 17:00 *Conflict*and*Resolution*: Problematic Scenario -> Action 
-- 30:00 Various tidbits 
-- 38:00 Conclusion
-- 40:00 Questions
-
-* What is Continuous Deployment?
-
-Different things to different people.
+* What is this, "Continuous Deployment"?
 
 _For_the_purposes_of_this_talk_..._
 
-* What is Continuous Deployment?
+Continuous Deployment is a release strategy: any mainline change that passes testing, is automatically released into production.
 
-Continuous deployment is a release strategy: any main-branch commit that passes testing is automatically released into production.
-
-
-Pushing/merging to master will automatically put your working software, directly into production.
-
-* Some related concepts
-
-	ContinuousIntegration := auto(test + build)
-	ContinuousDelivery    := auto(test + build + publish) + easy(deploy)
-	ContinuousDeployment  := auto(test + build + publish + deploy)
-
-
-_Continuous_Delivery_implies_readiness_to_release_working_software_at_any_given_time._
-_Continuous_Deployment_implies_immediate_release._
-_We're_talking_about_the_latter._
-
-: Creating a Pull Request triggers a test, and usually generates a build artifact.
-: * What does the internet say?
-: So many interpretations and variants ...
-: _From_ [[https://continuousdelivery.com]]_:_
-: .caption Continuous Delivery is the ability to get changes of all types — including new features, configuration changes, bug fixes and experiments — into production, or into the hands of users, safely and quickly in a sustainable way.
-: Benefits: Lowers risk, faster time-to-market, higher quality, better products, *happier*teams* 
-: (Continuous Delivery is a similar concept)
-: * But ...
-: How about Continuous Integration, Continuous Delivery, Continuous Fish ...?
-: But honestly, there are so many interpretations out there, that I'm going to pick one and talk about that. Apologies in advance if this definition doesn't ring true...
-: * On Tools
-: So many tools for CI/CD, so many deployment scenarios
-: They all work, and they're all different. 
-: _My_examples_are_only_chosen_to_communicate_some_ideas._
-: * Touted Benefits of CD
-: - Lowers risk 
-: - Faster time-to-market
-: - Higher quality software
-: - Better products
-: - Happier teams
-: See [[https://continuousdelivery.com]] again
-: I mentioned this site because it has great business cases for CD. Go take a look, there's compelling cases for why you should do this...
-: * First TDD, then BDD, now ... CDDD
-: In the same way that testable code benefits, CD can provide many benefits too.
-: The biggest change is how you change your code.
-
-* How will it change my code?
-
-_More_than_anything_else,_CD_changes_how_you_ *change* _your_code._
-
-- CD forces you to deal with Important Things, up front.
-- CD enables safe and easy changes.
-
-Impact:
-
-- Simpler: fewer contraptions in the code.
-- Tidyier: fewer cobwebby corners.
-- More dynamic: change is simpler -> more options.
+: Contiuous Deployment will automatically put your working software in front of users.
+: Yes, that means a push or merge to master.
+: Wonderful.
+: Just do that on your codebase, you'll love it.
 
 * ORLY
 
 .image https://media.giphy.com/media/5b5OU7aUekfdSAER5I/giphy.gif
 
-OK, OK, there's a cost and some caveats... Let's explore
+OK, OK , it does sound a little bit super-risky.
+Let's explore...
 
-: * What the?
+: What's that, do I hear screaming?
+: I can hear what you're saying to yourself ...
 : - If I make a mistake, will everything break?
 : - What about PM approval? Design reviews?
-: - Breaking changes? I'm so ded
-: Maybe you deploy on a Monday. US is asleep, right?
-: Maybe you don't have time for this
-: Maybe your legacy software has tricky manual steps, I don't know
-: * Don't worry, Morty
-: - Manage risk up-front.
-: - Smaller Increments make the heart grow calmer.
-: - Re-think your change procedure.
-: - Unreleased code is risk.
+: - It sounds like chaos
+: There's a lot to get right, I encourage you read up about the tools and culture and ecosystems around CD.
+: - there's work to be done, some work culture implications, and some caveats.
+: Let's explore ...
 
-* Let's set the scene  ...
+* Let's make up a story ...
+
+: I'm going to try to share my own learnings, with a story about gophers.
 
 * Toasties Galore
 
@@ -113,36 +56,39 @@ Meet our heroine, Gita the Gopher.
 
 _Gita_is_an_innovator,_with_a_passion_for_technology_and_melted_cheese._
 
-: .image https://cdn.imgbin.com/25/17/2/imgbin-ham-and-cheese-sandwich-toast-cheese-and-tomato-sandwich-grilled-cheese-sandwiches-grilled-cheese-sandwich-illustration-xVCJhHSVh7M9C2Lg3VsZKgZye.jpg _ 500
+: This is her food stall, Toasties Galore.
+: She's starting a business, and she's going to beat the competition with advanced cheese technology.
+
+* State of the art Techmology 
+
+Gita builds her own machinery, it's software-driven. 
+
+.image ./diagrams/jafflr-chillybin-bw.jpg _ 800
+
+We - *you*and*I* - build the software.
+
+: Gita is a hardware freak.
+: She's also tech savvy and she told us to use CD. She knows her cheese.
+: - Chillybin is where we store the ingredients. A chilly bin (NZ English), also known as an Esky in Australia
+: - Jafflr is a state of the art grilling machine.
+:   - It harnesses laser technology to melt the cheese just right
+:   - and a mechanical arm to fetch ingredients from the chillybin
 
 * Toasties Galore codebase
 
 An overview
 
 - A monorepo
-- 2 HTTP services, which interact
-- Tests, tools, docker things ...
+- 2 HTTP services, which interact.
+- Tests
+- Docker things
+- Scripts and tooling
 - A CI/CD pipeline
 
 See [[https://github.com/laher/toasties-galore]]
 
-: For this presentation, let's look at the software for an imaginary food stall, "Toasties Galore".
-: - 2 services - chillybin & jafflr.
-: - Chillybin is where we store the ingredients. Chillybins (NZ), also known as an Esky in Australia
-: - Jafflr is a state of the art grilling machine.
-:   - It harnesses laser technology to melt the cheese to precisely 6.3 kilogoos ... 
-:   - and a mechanical arm to fetch ingredients from the chillybin
-: - Both components serve HTTP APIs. chillybin connects to a Postgres database. 
-: Testing:
-: - Per-service tests work on each service in isolation.
-: - Integration tests invoke the APIs and test the interactions.
-:   - test environment with docker-compose
-: - Supporting scripts
-: - Downtimeless deploys
-
-* State of the art Techmology 
-
-.image ./diagrams/jafflr-chillybin-bw.jpg _ 800
+: For this presentation, let's look at the software supporting our imaginary food stall, "Toasties Galore".
+: There's a lot in there, more than I could hope to communicate in 30 minutes. Take a look. Toasties galore.
 
 * Invoking Jafflr
 
@@ -152,19 +98,32 @@ The Toasties Galore software architecture ...
 
 This simple deployment powers a 24-hour, high-throughput toasting service, with some agressive expectations. _Gophers_are_demanding._
 
-* The Pipeline
+: The main thing to note here is that there are contracts here between Jafflr and Chillybin (and Chillybin & Postgres)
+
+* The CI/CD Pipeline
 
 .image ./diagrams/pipeline.dot.svg
 
+: Here's the pipeline as simply as I can put it.
+: We're using github and travis, but you can substitute any number of alternatives.
+: Changes come into github via a merge or push, and github notifies Travis via a webhook.
+: The top box represents *any change*. Maybe a feature branch, where you develop something experimental.
+: The bottom box represents the deployment bit. If everything builds successfully, then it'll go directly to prod.
+
 * The pipeline
 
-In this case, represented by a .travis.yml file
+In this case, we're using [[https://travis-ci.org/laher/toasties-galore/branches][Travis]]
 
 .code ./.travis.yml
 
-: .image https://media.npr.org/assets/img/2012/07/03/rubegoldberg_photo_gal_4153_photo_846993380_lr-1-_custom-ecf7c547a1f17966a258fa8bd21286bc9b6d3619-s1100-c15.jpg
+: Note how we have 'stages'. The main 'scripts', plus a 'deploy' section
+: If you fork and PR my code, it'll trigger a build. Try it out. Hell, set up a travis on your own fork.
 
 * Eek, auto-deploy is scary
+
+: What are you thinking?
+: You liked it until there was a 'deploy' section? Fair.
+: We're gonna need some things for this to work
 
 * The Baseline
 
@@ -174,23 +133,40 @@ Let's consider some Important Things in our code:
 - Seamless Deploys
 - Integration Tests
 
+: Observability: What's going on in production?
+: Seamless deploys: If I can't control _when_ we release, I at least want to know that it won't interrupt our service.
+: Testing: We already have tests in our services, right. But now I NEED to know they talk nicely to one another, without staging and manual tests.
+: So, let's look inside Jafflr
+
 * Jafflr schematic
 
 .image ./diagrams/jafflr-schematic-diagram.jpg _ 700
+
+: OMG Gita. That's one of her drawings she wanted you to see.
 
 * Jafflr
 
 .play ./jafflr/main.go /^func main/,/^}/
 
+: So, here's the main func in jafflr. Things to notice:
+: It's small
+: some config, some wiring and start some things.
+: In bold, some setup relating to the 3 things we were talking about
+
 * Observability & Instrumentation
 
-Use metrics to know what's happening in production. e.g.
+Use metrics to know what's happening in production. e.g. in a middleware ...
 
 .code -edit ./tpi/http.go /^func TracingMiddleware/,/^}/
 
-_There's_ [[https://github.com/laher/toasties-galore/blob/059053a/tpi/http.go#L65:L73][another middleware]] _for_logging._
 
-* Harnessing the Rolling Restart
+: The bulk of your observability should be provided by your platform, but you'll probably want to add some instrumentation itno your code.
+: Middlewares are a typical place you might add some instrumentation.
+: Also, jobs, startup, other timings.
+: Middleware is the name given to a wrapper around a http handler or group of handlers.
+: _There's_also_ [[https://github.com/laher/toasties-galore/blob/059053a/tpi/http.go#L65:L73][another middleware]] _for_logging._
+
+* Harnessing the Rolling Update
 
 Stop listening, keep handling ... e.g.
 
@@ -198,12 +174,14 @@ Stop listening, keep handling ... e.g.
 
 Continues processing in-flight requests, while making way for a newer deployment.
 
-: Stop listening on a port, while continuing to serve existing connections. 
-: Allow other [new] instances to listen instead.
-: Rolling Restarts
-: switch to code view. Show the tests in action and explain how K8s or ECS would work.
+: Your platform (e.g. ECS/K8s/...) will hopefully support some kind of load-balancing and rolling update process.
+: When you receive an interrupt from a 'kill' or similar:
+: Stop listening on the port, while continuing to fulfil existing connections. 
+: Exit as soon as your requests are completed OR once the context is done (timed out).
+: Allows other [new] instances to listen promptly.
+: Note: similar approach is possible for non-http services - not shown here.
 
-* chillybinClient 
+* The Arm - An interaction
 
 .image ./diagrams/jafflr-arm.jpg _ 600
 
@@ -213,30 +191,30 @@ Few tests - verify the interactions
 
 .code -edit ./integration-tests/integration_test.go  /^func TestHappyPath/,/^}/
 
-: CD is all about automated testing - _you_need_to_trust_those_tests._
-: - Repeatable and reliable - non-racy, non-flaky ... fast
-: - Environment - prod-like? Docker/docker-compose? k8s?
-: - Write a few integration tests - test those interactions.
-: - "Happy Path and some error handling"
-: - Don't assume state.
+: Run tests against a 'prod-like' environment (could be docker-compose, k8s, ...)
+: Things to note:
+: Invoke outer service (jafflr), assert response and inner service state (chillybin)
+: Doesn't assume state. Reset at the start, Check state before & after method-under-test
+: Test is independent from environment. With appropriate 'demo customer' constraints, I could equally run this on prod, local, staging ...
+: Needs to be non-racy, non-flaky. Preferably, fast
+: Few tests - "Happy Path and some error handling". Permutations are for service/unit tests
+: Yay, now we know that our services will play nicely. Halfway there.
 
 * Success
 
 Toasties Galore is now a highly successful operation ...
 
-- Gophers love the recipes.
-- Jafflr is busy 24-7
+Gophers love the recipes. Jafflr is busy 24-7
 
-But ...
+.image ./diagrams/toasties-galore-popular.jpg _ 600
 
-- Some users aren't happy
+* But ... Design problems
 
-* Design problems 
+Some gophers aren't happy ...
 
-We're super busy, and some orders are going to the wrong gophers. 
-
-- Gary received cheese instead of Sheese (soy cheese)
+- We're super busy, and some orders are going to the wrong gophers. 
 - Gwenda got pineapple instead of vegemite 
+- Gary received cheese instead of Sheese (soy cheese)
 
 Not good.
 
@@ -246,14 +224,20 @@ Decisions ...
 
 *Gita:* Track orders with customer's names
 
-*Gita:* change the Chillybin API to support richer request data
+*Us:* alter the Chillybin API to support richer request data
 
-* Planned changes
+: We need to add new business logic.
+: We got some design flaws, we want to fix them too.
+
+* Planned changes to /pick
 
 .image diagrams/before.dot.svg _ 600
 
 .image diagrams/after.dot.svg _ 600
 
+: It's a POST instead of a GET. Imagine there's a lot more metadata; also, it really shouldn't be a GET. It's removing ingredients.
+: We're inserting a new entity, orders.
+: Sweeet.
 
 * Oh noes, Breaking Changes
 
@@ -263,17 +247,11 @@ Decisions ...
 
 .image https://media.giphy.com/media/WrK9dwj8TNPr2/giphy.gif
 
-* Obstacles
+: I'm scared Rick
 
-*Us*: Changes ready now but ... let's to wait for a quiet Monday?! 
-*Us*: Monday - other changes incoming, things be complicated
-*Us*: How to co-ordinate breaking changes - downtime?!
-*Us*: DB migrations - can take a long time, can interfere with deploys. 
-*Us*: How to rollback once other changes come in?!
+* Us: OMG
 
 *Gita*: s'all good. Let's dance.
-
-* I'm scar:d, Rick
 
 * The Foxtrot
 
@@ -283,39 +261,42 @@ So, let's dance.
 
 A 3-step dance: 
 
-- Add
-- Migrate
-- Delete
+- Add new implementation 
+- Migrate comfortably
+- Delete old implementation
+
+: I chose the foxtrot. It could have been the waltz or something. I dunno, I just googled 3-step dance. Foxtrot.
 
 * The 3-step release dance
 
-Three steps, or _stages_ ... with CD, it's easy, you'll consider it more often
+Three steps, or _stages_ 
 
 .image ./diagrams/pulls.png _ 600
 
-See [[https://github.com/laher/toasties-galore/pulls][Pull Requests]]
+... with CD, it's easy, you'll consider it more often
 
-: You could do it without CD, but you should try it with CD. 
-: It can be completed in a short time, and lined up just like this. 
-: Furthermore, the easier your deploy is, the more you can plan for releases
-: Part of the problem with the foxtrot is the 'planning ahead': 
-: When releasing is hard, people try to do all this in a single deploy
-: When less hard, people tend to aim for Step 2. Step 3 may never happen.
-: NOTE: variants include shadowing, canaries, blue-green
+: Hey, we just lined up 3 things, bottom to top, but each stage may take some time before we're ready to move on to the next.
+: Or not. The main thing is that we make them distinct, and follow the sequence.
 
 * Step 1 - Add new feature implementation
 
 - Serve the new approach under a different URL, /v2/pick
-- v2 doesn't affect real users [yet], but you can test it
-- Now there are 2 versions of `pick`, side-by-side
+- Now there are 2 versions of `pick`, side-by-side.
+- v2 can be tested manually, but isn't invoked by any other service yet.
+- No changes to calling service (jafflr). Just chillybin.
 
 See [[https://github.com/laher/toasties-galore/pull/1/files]]
+
+: Note the changes:
+: refactored the 'update' to an 'extracted method'
+: new route, /v2/pick
+: an additional integration test
 
 * Step 2 - Invoke new implementation
 
 - Use Feature Flags?
 
-	func Has(customer string, feature string) bool {
+	func HasFeature(customer string, feature string) bool {
 		switch feature {
 		case "pick.v2":
 			if customer == "gita" {
@@ -329,61 +310,76 @@ See [[https://github.com/laher/toasties-galore/pull/1/files]]
 
 See [[https://github.com/laher/toasties-galore/pull/2/files]]
 
-- This function could be backed by a service, a db, or by configuration.
+- HasFeature could be backed by a service, a db table, or by configuration.
 - Alternatives: Canary Deploys, Shadowing, Blue-Green deploys
+
+: We have a new PR
+: Now, jafflr *conditionally* invokes Chillybin
+: Switching this on and off is super chill.
 
 * Step 3 - Delete old implementation
 
-- Do it soon
-- Line it up in advance. Plan for it otherwise you'll forget
+- Do it soon.
+- Line it up in advance. Plan for it, otherwise you'll forget.
 
 See [[https://github.com/laher/toasties-galore/pull/3/files]]
 
-It's the easy part, but it's also easy to forget or fear it. 
+It's the easy part, but it's also easy to forget it, or fear it. 
 
-* The Foxtrot
+* Foxtrot - Conclusions
 
 When deployment is a non-thing:
 
-- you can make your releases safer
-- you code remains cleaner
+- you can make your releases safer.
+- you code remains cleaner.
+- When you have more viable options within reach, you're empowered to make better decisions.
+
+* Tips and Tricks
 
 * On DB Migrations
 
 Migrations are Challenging 
 
-- big tables - time-consuming
-- rollbacks are complex
+- Altering big tables - time-consuming, performance concerns.
+- Rollbacks are awkward.
 
 Where possible:
 
-- make them idempotent (`if not exists`)
-- use transactions
-- run them in advance
+- Use transactions (Postgres has transactional DDL) to *test* them in advance.
+- Make them idempotent (`if not exists`) to *run* them in advance.
+- Split them up?
 
 * Chillybin
 
 .image ./diagrams/chillybin.jpg _ 500
 
+: This is the original patent for the chillybin
+
 * Chilly bin - migrations
 
 .code ./chillybin/main.go /^func runMigrationsSource/,/^}/
+
+: Using go-migrate
+: Can run this from the main file
+: Alternatively, run it manually in a 'job'
+: Deploy the migration scripts as part of the container
 
 * On Configuration 
 
 Extensive config files?
 
-- a popular pattern
-- Easy to reconfigure when supporting
+- Configurable-everything is a popular pattern - reconfigure all the things
+- Easier to reconfigure while an on-call emergency?
 - Knobs and twiddles are nice
 
 * But, with CD ...
 
 We can simplify. 
 
-- Just use constants into your code.
-- Deployment is fast. Just edit code/artifact
-- 12-factor Apps: 'just use ENV variables'.
+- Use constants more often
+- Use $ENV variables for DSNs and such. [see 12-factor Apps]
+
+Deployment is fast. Just edit code/artifact
 
 : Knobs and twiddles - why not bake them in:
 : - Where possible, compile it in - simplify your code.
@@ -404,18 +400,21 @@ We can simplify.
 Monorepos offer some challenges and some advantages
 
 - Benefit: easier to maintain CI/CD pipelines centrally.
-- Benefit: 1st party dependencies are all local.
+- Benefit: in-house dependencies are all local.
+- Benefit: testing component combinations is easier.
+- Challenge: identifying what to build, test, deploy on each commit.
 - Challenge: speed.
-- Challenge: identify what to build, test, deploy on each commit.
 
 Q: Do we really redeploy everything on every change?
-A: Ideally, no.
+A: Depends on language and tooling
 
-* deploy.sh
+* Publish / deploy conditionally - Go
 
-.code -edit ./scripts/deploy.sh
+See [[./scripts/publish.sh][publish.sh]] and [[./scripts/deploy.sh][deploy.sh]]
+
+.code -edit ./scripts/publish.sh
  
-* Last relevant commit
+* Last relevant commit - Go
 
 Calculate changes affecting a service [in a monorepo]
 
@@ -435,9 +434,9 @@ Calculate changes affecting a service [in a monorepo]
 * Why last_commit.sh ?
 
 - Deploy only affected services.
-- Run relevant integration tests, post-deploy
+- Decide which integration tests to run, post-deploy
 
-* Canaries, Rollbacks
+* DIY Tooling
 
 At Vend we have a slackbot, @overlord, which offers a number of CD-related utilities. e.g.
 
@@ -446,8 +445,49 @@ At Vend we have a slackbot, @overlord, which offers a number of CD-related utili
 - feature flagging
 - service status
 
+: these are the kinds of tools which you may end up writing code for.
+
+* On CI/CD Software
+
+They all work, and they're all different. I've tried heaps. 
+
+_My_examples_are_only_chosen_to_communicate_some_ideas._
+
+Just choose one.
+
 * Conclusions
 
+* How will it change my code?
+
+_More_than_anything_else,_CD_affects_ *how* _you_ *change* _your_code._
+
+- CD forces you to deal with Important Things, up front.
+- CD encourages good practices.
+- CD enables safe and easy changes.
+
+Impact:
+
+- Simpler: fewer contraptions in the code.
+- Tidyier: fewer cobwebby corners.
+- More dynamic: change is simpler -> more options.
+
+* Advice
+
+It can be hard to retrofit CD. Start early.
+
+See [[https://continuousdelivery.com]] for research and business speak.
+
+: Touted Benefits
+: Continuous Deployment will empower you to make better choices, and encourage you to develop good practices early on.
+: CD means [[https://continuousdelivery.com][reduced risk, faster time-to-market, higher quality, better products, *happier*teams*]]...
+
+* Advice: Play with Toasties Galore
+
+See Toasties Galore on [[https://github.com/laher/toasties-galore][github]] or [[https://travis-ci.org/laher/toasties-galore][travis]] to try this stuff out - maybe it'll help you.
+
+: Thanks
+: I hope that helped encourage you along this journey.
+: If you don't have it early on, you may have a lot more work to do, but each of these efforts has a payoff.
 : I've just tried to show you some go-specific hints about the CI/CD toolchain.
 : I skipped whole areas - CI systems, rollbacks, cultural obstacles, ...
 : I didn't even try to recommend a CI system

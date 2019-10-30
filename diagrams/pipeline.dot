@@ -5,10 +5,13 @@ digraph G {
   Changes;
 
   subgraph cluster_0 {
-    label="any change"
+    label="Any change"
     Verify;
     Test;
     Build;
+    Publish;
+    node[style=filled,shape="box"];
+    DockerHub;
   }
 
   node[style=filled,shape="box"];
@@ -16,16 +19,24 @@ digraph G {
   Travis;
 
   subgraph cluster_1 {
-    node [style=filled];
-    label="master only"
+    label="Master only"
+    style="dashed"
+    node[shape=circle,style=none];
+    Deploy;
+    node[style=filled,shape="box"];
     Production;
   }
-  Changes -> Github[label="merge PR"];
+
+  Changes -> Github[label="Merge/Push"];
   Github -> Travis[label="Webhook"];
-  Travis -> Verify[label="Test and Build"];
+  Travis -> Verify;
   Verify -> Test;
   Verify -> Build;
-  Travis -> Production[style=dashed,label="Publish & Redeploy"];
+  Travis -> Publish;
+  Publish -> DockerHub[label=""];
+
+  Travis -> Deploy[style=dashed,label=""];
+  Deploy -> Production[label=""];
 
   labelloc=t;
   fontsize=24;
