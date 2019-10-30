@@ -13,8 +13,8 @@ Continuous Deployment can improve the design of your code in subtle, but remarka
 
 : Hmm, sounds good, right.
 : Maybe a stretch?
-: I'm going to focus on the code aspect of CD - on the baseline, on tips and tricks which are relevant to Go.
-: I'm going to touch on a lot of topics, but don't worry, I'll provide some working samples which you can explore in your time.
+: I'm going to focus on the code aspect of CD - on building blocks, and then on tips and tricks which are relevant to Go.
+: I'm going to touch on a lot of topics, but don't worry if it's too rushed to capture the details - I'm providing some working code, which you can explore in your time.
 : But first, ...
 
 * What is this, "Continuous Deployment"?
@@ -26,7 +26,7 @@ Continuous Deployment is a release strategy: any mainline change that passes tes
 : Contiuous Deployment will automatically put your working software in front of users.
 : Yes, that means a push or merge to master.
 : Wonderful.
-: Just do that on your codebase, you'll love it.
+: Just think about applying some this approach to your codebase - a calm and happy thought, right.
 
 * ORLY
 
@@ -187,7 +187,7 @@ Continues processing in-flight requests, while making way for a newer deployment
 
 * Integration Tests
 
-Few tests - verify the interactions
+Few tests - verify the interactions.
 
 .code -edit ./integration-tests/integration_test.go  /^func TestHappyPath/,/^}/
 
@@ -202,9 +202,7 @@ Few tests - verify the interactions
 
 * Success
 
-Toasties Galore is now a highly successful operation ...
-
-Gophers love the recipes. Jafflr is busy 24-7
+Toasties Galore is now a highly successful operation. Gophers *love* the recipes. Jafflr is busy 24-7.
 
 .image ./diagrams/toasties-galore-popular.jpg _ 600
 
@@ -213,8 +211,8 @@ Gophers love the recipes. Jafflr is busy 24-7
 Some gophers aren't happy ...
 
 - We're super busy, and some orders are going to the wrong gophers. 
-- Gwenda got pineapple instead of vegemite 
-- Gary received cheese instead of Sheese (soy cheese)
+- Gwenda got pineapple instead of vegemite.
+- Gary received cheese instead of Sheese (soy cheese).
 
 Not good.
 
@@ -222,9 +220,9 @@ Not good.
 
 Decisions ...
 
-*Gita:* Track orders with customer's names
+*Gita:* Track orders with customer's names.
 
-*Us:* alter the Chillybin API to support richer request data
+*Us:* alter the Chillybin API to support richer request data.
 
 : We need to add new business logic.
 : We got some design flaws, we want to fix them too.
@@ -241,13 +239,13 @@ Decisions ...
 
 * Oh noes, Breaking Changes
 
-- API signature needs to change
-- DB structure changes
+- API signature needs to change.
+- DB structure changes.
 - HaLp!
 
 .image https://media.giphy.com/media/WrK9dwj8TNPr2/giphy.gif
 
-: I'm scared Rick
+: I'm scared, Rick.
 
 * Us: OMG
 
@@ -261,9 +259,9 @@ So, let's dance.
 
 A 3-step dance: 
 
-- Add new implementation 
-- Migrate comfortably
-- Delete old implementation
+- Add new implementation.
+- Migrate comfortably.
+- Delete old implementation.
 
 : I chose the foxtrot. It could have been the waltz or something. I dunno, I just googled 3-step dance. Foxtrot.
 
@@ -273,9 +271,10 @@ Three steps, or _stages_
 
 .image ./diagrams/pulls.png _ 600
 
-with CD, it's easy, you'll consider it more often
+With CD, it's easy, you'll consider it more often.
 
-: Hey, we just lined up 3 things, bottom to top, but each stage may take some time before we're ready to move on to the next.
+: We just lined up 3 changes, bottom to top. 
+: Each stage may take some time before we're ready to move on to the next.
 : Or not. The main thing is that we make them distinct, and follow the sequence.
 
 * Step 1 - Add new feature implementation
@@ -471,7 +470,7 @@ Impact:
 
 * Advice
 
-It can be hard to retrofit CD. Start early.
+It can be hard to retrofit CD. Start early or add it incrementally.
 
 See [[https://continuousdelivery.com]] for research and business speak.
 
