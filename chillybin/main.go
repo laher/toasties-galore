@@ -74,15 +74,13 @@ func runMigrationsSource(db *sql.DB) error {
 	if err != nil {
 		return err
 	}
-
 	m, err := migrate.NewWithDatabaseInstance(
-		"file://resources/migrations",
+		"file://resources/migrations", // <- local files, bundled in container // HL
 		"postgres", driver)
 	if err != nil {
 		return err
 	}
-	err = m.Up()
-	if err != nil {
+	if err := m.Up(); err != nil {
 		if err == migrate.ErrNoChange {
 			return nil
 		}

@@ -273,7 +273,7 @@ Three steps, or _stages_
 
 .image ./diagrams/pulls.png _ 600
 
-... with CD, it's easy, you'll consider it more often
+with CD, it's easy, you'll consider it more often
 
 : Hey, we just lined up 3 things, bottom to top, but each stage may take some time before we're ready to move on to the next.
 : Or not. The main thing is that we make them distinct, and follow the sequence.
@@ -328,17 +328,36 @@ It's the easy part, but it's also easy to forget it, or fear it.
 
 * Foxtrot - Conclusions
 
-When deployment is a non-thing:
+When deployment is a non-event:
 
 - you can make your releases safer.
 - you code remains cleaner.
-- When you have more viable options within reach, you're empowered to make better decisions.
+
+When you have more viable options within easy reach, you're empowered to make better decisions.
 
 * Tips and Tricks
 
+* On Configuration 
+
+Deprecate extensive config files...
+
+- Configurable-everything is a popular pattern
+- Makes it easier to reconfigure while an on-call emergency?
+- Knobs and twiddles are nice.
+
+* But, with CD, we can simplify 
+
+- Use $ENV variables for DSNs and such. [see 12-factor Apps]
+- Use constants more often.
+
+Deployment is fast. Just edit code/artifact
+
+: - Where possible, compile it in - simplify your code.
+: - In other cases, it can live in the artifact (file in docker image).
+
 * On DB Migrations
 
-Migrations are Challenging 
+Migrations will always be challenging 
 
 - Altering big tables - time-consuming, performance concerns.
 - Rollbacks are awkward.
@@ -347,7 +366,9 @@ Where possible:
 
 - Use transactions (Postgres has transactional DDL) to *test* them in advance.
 - Make them idempotent (`if not exists`) to *run* them in advance.
-- Split them up?
+- Split them up - 'create table' is cheap. Isolate the tricky stuff.
+
+: So, let's take a look at chillybin
 
 * Chillybin
 
@@ -359,41 +380,10 @@ Where possible:
 
 .code ./chillybin/main.go /^func runMigrationsSource/,/^}/
 
-: Using go-migrate
-: Can run this from the main file
+: This is using go-migrate
+: Can run this from func main() but I can understand why you wouldn't
 : Alternatively, run it manually in a 'job'
 : Deploy the migration scripts as part of the container
-
-* On Configuration 
-
-Extensive config files?
-
-- Configurable-everything is a popular pattern - reconfigure all the things
-- Easier to reconfigure while an on-call emergency?
-- Knobs and twiddles are nice
-
-* But, with CD ...
-
-We can simplify. 
-
-- Use constants more often
-- Use $ENV variables for DSNs and such. [see 12-factor Apps]
-
-Deployment is fast. Just edit code/artifact
-
-: Knobs and twiddles - why not bake them in:
-: - Where possible, compile it in - simplify your code.
-: - In other cases, it can live in the artifact (file in docker image).
-: - To reconfigure, change your code - redeploy is as fast as a config change.
-: * CD does what?
-: 12-Factor Apps 'Environment Variables are enough'
-: * Per-environment config
-: Things we need to configure boil down to env-specific params 
-: - Database DSNs
-: - scale-dependent variables
-: - Feature flags?
-: * Tooling
-: What other tools will we want to build?
 
 * On Monorepos
 
@@ -404,11 +394,18 @@ Monorepos offer some challenges and some advantages
 - Benefit: testing component combinations is easier.
 - Challenge: identifying what to build, test, deploy on each commit.
 - Challenge: speed.
+- Challenge: 3p deps: _See toasties-galore for top-level go-mod w Docker_
+
+: Monorepos are source code repositories containing multiple services
+
+* Deploying services in a monorepo
 
 Q: Do we really redeploy everything on every change?
-A: Depends on language and tooling
+A: Depends on language and tooling available. 
 
-* Publish / deploy conditionally - Go
+: Care needed to ensure we trigger builds exactly when we should.
+
+* Publish / deploy monorepo service - Go
 
 See [[./scripts/publish.sh][publish.sh]] and [[./scripts/deploy.sh][deploy.sh]]
 
@@ -428,13 +425,14 @@ Calculate changes affecting a service [in a monorepo]
 : - calls `go list -deps` and eventually `| git rev-list`
 : - Allows us to run regression tests at the right time.
 : - Report that the deploy was really successful.
-: This was really just a bash script parsing the json output of `kubectl get pod`. 
-: To me this kind of thing is crucial for regression testing.
 
 * Why last_commit.sh ?
 
 - Deploy only affected services.
 - Decide which integration tests to run, post-deploy
+
+: I've previously scripted up version checks against k8s, to determine when to run tests. 
+: To me this kind of thing is crucial for regression testing.
 
 * DIY Tooling
 
