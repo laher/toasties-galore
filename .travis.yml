@@ -7,10 +7,8 @@ env:
 script:
 - go test -mod=vendor ./chillybin ./jafflr ./tpi # <- run unit/functional tests // HL
 - docker-compose up -d # <- prepare for integration tests
-- docker-compose ps
 - go test -mod=vendor -v ./integration-tests # <- run integration tests // HL
 - bash ./scripts/publish.sh # <- complex because monorepo // HL
-  # alternative: - docker-compose -f docker-compose.yml -f docker-compose.test.yml run test
 deploy:
   provider: script
   script: bash ./scripts/deploy.sh prod # <- 'tag as prod' for now // HL
