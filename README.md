@@ -2,11 +2,15 @@
 
 Code and resources for a talk about Continuous Deployment for Gophercon AU [![Build Status](https://travis-ci.org/laher/toasties-galore.svg?branch=master)](https://travis-ci.org/laher/toasties-galore)
 
+![toasties-galore](./diagrams/toasties-galore-bw.jpg)
+
 ## Monorepo
 
 This is a small monorepo with a naive implementation of some HTTP APIs, and some build tooling.
 
 For the purposes of the talk, there are also 3 Pull Requests open for discussion.
+
+![service diagram](./diagrams/jafflr-chillybin-bw.jpg)
 
 ## Services
 
@@ -15,6 +19,8 @@ The jafflr is an imaginary machine which assembles and cooks toasted sandwiches.
 It attaches onto a chilly bin ('Chilly bin' is NZ English parlance - aka Esky, in Australian).
 
 There are 2 services, `jafflr` and the `chillybin`. Crucially, `jafflr` depends on `chillybin`.
+
+![service diagram](./diagrams/toasties.dot.svg)
 
 ## Endpoints
 
