@@ -10,9 +10,11 @@ Lead Engineer, Vend
 
 ---
 
-# Begin with a Premise
+@title[Begin with a Premise]
 
 Continuous Deployment can improve the design of your code in subtle, but remarkable ways.
+
+Note:
 
 : Hmm, sounds good, right.
 : Maybe a stretch? Let's test the premise.
@@ -21,11 +23,13 @@ Continuous Deployment can improve the design of your code in subtle, but remarka
 
 ---
 
-# What is this, "Continuous Deployment"?
+@title[What is this, "Continuous Deployment"?]
 
 _For_the_purposes_of_this_talk_..._
 
 Continuous Deployment is a release strategy: any mainline change that passes testing, is automatically released into production.
+
+Note:
 
 : Contiuous Deployment will automatically put your working software in front of users.
 : Yes, that means a push or merge to master.
@@ -34,12 +38,14 @@ Continuous Deployment is a release strategy: any mainline change that passes tes
 
 ---
 
-# Calm & Peaceful, right?
+@title[Calm & Peaceful, right?]
 
 .image https://media.giphy.com/media/5b5OU7aUekfdSAER5I/giphy.gif
 
 OK, OK , it does sound a little bit super-risky.
 Let's explore...
+
+Note:
 
 : Yup, there's some things to get right:
 : - there's work to be done up-front,  some work culture implications, and some caveats.
@@ -47,13 +53,15 @@ Let's explore...
 
 ---
 
-# Let's make up a story ...
+@title[Let's make up a story ...]
+
+Note:
 
 : I'm going to try to share my own learnings, with a story about gophers.
 
 ---
 
-# Toasties Galore
+@title[Toasties Galore]
 
 Meet our heroine, Gita the Gopher.
 
@@ -61,18 +69,22 @@ Meet our heroine, Gita the Gopher.
 
 _Gita_is_an_innovator,_with_a_passion_for_technology_and_melted_cheese._
 
+Note:
+
 : This is her food stall, Toasties Galore.
 : She's starting a business, and she's going to beat the competition with advanced cheese technology.
 
 ---
 
-# State of the art Techmology 
+@title[State of the art Techmology ]
 
 Gita builds her own machinery, it's software-driven. 
 
 .image ./diagrams/jafflr-chillybin-bw.jpg _ 800
 
 We - *you*and*I* - build the software.
+
+Note:
 
 : Gita is a hardware freak.
 : She's also tech savvy and she advised us to use CD. She knows her cheese.
@@ -83,7 +95,7 @@ We - *you*and*I* - build the software.
 
 ---
 
-# Toasties Galore software
+@title[Toasties Galore software]
 
 An overview of the codebase:
 
@@ -96,13 +108,15 @@ An overview of the codebase:
 
 See [[https://github.com/laher/toasties-galore]]
 
+Note:
+
 : For this presentation, let's look at the software supporting our imaginary food stall, "Toasties Galore".
 : Monorepo - multiple services in one code repository.
 : There's a lot in there, more than I could hope to communicate in 30 minutes. Take a look. Toasties galore.
 
 ---
 
-# The Toasties Galore software architecture
+@title[The Toasties Galore software architecture]
 
 Invoking Jafflr: `POST /toastie`
 
@@ -110,14 +124,18 @@ Invoking Jafflr: `POST /toastie`
 
 This simple deployment powers a 24-hour, high-throughput toasting service, with some agressive expectations. _Gophers_are_demanding._
 
+Note:
+
 : Gita sends an HTTP request via a basic UI, ... 
 : The main thing to note here is that there are contracts here between Jafflr and Chillybin (and Chillybin & Postgres)
 
 ---
 
-# The CI/CD Pipeline
+@title[The CI/CD Pipeline]
 
 .image ./diagrams/pipeline.dot.svg
+
+Note:
 
 : Here's the pipeline as a flow chart.
 : We're using github, travis and dockerhub, but you can substitute any number of alternatives.
@@ -127,11 +145,13 @@ This simple deployment powers a 24-hour, high-throughput toasting service, with 
 
 ---
 
-# The pipeline
+@title[The pipeline]
 
 In this case, we're using [[https://travis-ci.org/laher/toasties-galore/branches][Travis]]
 
 .code ./.travis.yml
+
+Note:
 
 : Note how we have 'stages'. The main 'scripts', plus a 'deploy' section
 : If you fork and PR my code, it'll trigger a build. 
@@ -140,7 +160,9 @@ In this case, we're using [[https://travis-ci.org/laher/toasties-galore/branches
 
 ---
 
-# Eek, auto-deploy is scary
+@title[Eek, auto-deploy is scary]
+
+Note:
 
 : What are you thinking?
 : You liked it until there was a 'deploy' section? Fair.
@@ -148,13 +170,15 @@ In this case, we're using [[https://travis-ci.org/laher/toasties-galore/branches
 
 ---
 
-# The Baseline
+@title[The Baseline]
 
 Let's consider some Important Things in our code:
 
 - Observability
 - Seamless Deploys
 - Integration Tests
+
+Note:
 
 : What's the bare minimum to start feeling more comfortable?
 : Observability: What's going on in production?
@@ -164,17 +188,21 @@ Let's consider some Important Things in our code:
 
 ---
 
-# Jafflr schematic
+@title[Jafflr schematic]
 
 .image ./diagrams/jafflr-schematic-diagram.jpg _ 700
+
+Note:
 
 : OMG Gita. That's one of her drawings she wanted you to see.
 
 ---
 
-# Jafflr
+@title[Jafflr]
 
 .play ./jafflr/main.go /^func main/,/^}/
+
+Note:
 
 : So, here's the main func in jafflr. Things to notice:
 : It's small
@@ -183,12 +211,13 @@ Let's consider some Important Things in our code:
 
 ---
 
-# Observability: Instrumentation
+@title[Observability: Instrumentation]
 
 Use metrics to know what's happening in production. e.g. in a middleware ...
 
 .code -edit ./tpi/http.go /^func TracingMiddleware/,/^}/
 
+Note:
 
 : The bulk of your observability should be provided by your platform, but you'll probably want to add some instrumentation itno your code.
 : Middlewares are a typical place you might add some instrumentation.
@@ -198,13 +227,15 @@ Use metrics to know what's happening in production. e.g. in a middleware ...
 
 ---
 
-# Seamless Deploys: The Rolling Update
+@title[Seamless Deploys: The Rolling Update]
 
 Stop listening, keep handling ... e.g.
 
 .code -edit ./tpi/http.go /^func GracefulShutdown/,/^}/
 
 Continues processing in-flight requests, while making way for a newer deployment.
+
+Note:
 
 : Your platform (e.g. ECS/K8s/...) will hopefully support some kind of load-balancing and rolling update process.
 : When you receive an interrupt from a 'kill' or similar:
@@ -216,19 +247,23 @@ Continues processing in-flight requests, while making way for a newer deployment
 
 ---
 
-# The Arm - An interaction
+@title[The Arm - An interaction]
 
 .image ./diagrams/jafflr-arm.jpg _ 600
+
+Note:
 
 : Next: let's look at that interaction
 
 ---
 
-# Integration Tests
+@title[Integration Tests]
 
 Few tests - verify the interactions.
 
 .code -edit ./integration-tests/integration_test.go  /^func TestHappyPath/,/^}/
+
+Note:
 
 : Run tests against a 'prod-like' environment (could be docker-compose, k8s, ...)
 : Things to note:
@@ -241,17 +276,19 @@ Few tests - verify the interactions.
 
 ---
 
-# Success
+@title[Success]
 
 Toasties Galore is now a highly successful operation. Gophers *love* the recipes. Jafflr is busy 24-7.
 
 .image ./diagrams/toasties-galore-popular.jpg _ 600
 
+Note:
+
 : See how much happier Gita looks. She's so excited.
 
 ---
 
-# But then ...
+@title[But then ...]
 
 Some gophers aren't happy ...
 
@@ -263,7 +300,7 @@ Not good.
 
 ---
 
-# Design Problems - What to do?
+@title[Design Problems - What to do?]
 
 Decisions ...
 
@@ -271,16 +308,20 @@ Decisions ...
 
 *Us:* alter the Chillybin API to support richer request data.
 
+Note:
+
 : We need to add new business logic.
 : We got some design flaws, we want to fix them too.
 
 ---
 
-# Planned changes to /pick
+@title[Planned changes to /pick]
 
 .image diagrams/before.dot.svg _ 600
 
 .image diagrams/after.dot.svg _ 600
+
+Note:
 
 : It's a POST instead of a GET. Imagine there's a lot more metadata; also, it really shouldn't be a GET. It's removing ingredients.
 : We're inserting a new entity, orders.
@@ -288,24 +329,26 @@ Decisions ...
 
 ---
 
-# Oh noes, Breaking Changes
+@title[Oh noes, Breaking Changes]
 
 - API signature needs to change.
 - DB structure changes.
 
 .image https://media.giphy.com/media/WrK9dwj8TNPr2/giphy.gif
 
+Note:
+
 : I'm scared, Rick.
 
 ---
 
-# Us: OMG
+@title[Us: OMG]
 
 *Gita*: s'all good. Let's dance.
 
 ---
 
-# The Foxtrot
+@title[The Foxtrot]
 
 So, let's dance.
 
@@ -317,11 +360,13 @@ A 3-step dance:
 - Migrate comfortably.
 - Delete old implementation.
 
+Note:
+
 : I chose the foxtrot. It could have been the waltz or something. I dunno, I just googled 3-step dance. Foxtrot.
 
 ---
 
-# The 3-step release dance
+@title[The 3-step release dance]
 
 Three steps, or _stages_ 
 
@@ -329,13 +374,15 @@ Three steps, or _stages_
 
 With CD, it's easy, you'll consider it more often.
 
+Note:
+
 : We just lined up 3 changes, bottom to top. 
 : Each stage may take some time before we're ready to move on to the next.
 : Or not. The main thing is that we make them distinct, and follow the sequence.
 
 ---
 
-# Step 1 - Add new feature implementation
+@title[Step 1 - Add new feature implementation]
 
 - Serve the new approach under a different URL, /v2/pick
 - Now there are 2 versions of `pick`, side-by-side.
@@ -344,6 +391,8 @@ With CD, it's easy, you'll consider it more often.
 
 See [[https://github.com/laher/toasties-galore/pull/1/files]]
 
+Note:
+
 : Note the changes:
 : refactored the 'update' to an 'extracted method'
 : new route, /v2/pick
@@ -351,7 +400,7 @@ See [[https://github.com/laher/toasties-galore/pull/1/files]]
 
 ---
 
-# Step 2 - Invoke new implementation
+@title[Step 2 - Invoke new implementation]
 
 - Use Feature Flags?
 
@@ -372,13 +421,15 @@ See [[https://github.com/laher/toasties-galore/pull/2/files]]
 - HasFeature could be backed by a service, a db table, or by configuration.
 - Alternatives: Canary Deploys, Shadowing, Blue-Green deploys
 
+Note:
+
 : We have a new PR
 : Now, jafflr *conditionally* invokes Chillybin
 : Switching this on and off is super chill.
 
 ---
 
-# Step 3 - Delete old implementation
+@title[Step 3 - Delete old implementation]
 
 - Do it soon.
 - Line it up in advance. Plan for it, otherwise you'll forget.
@@ -389,7 +440,7 @@ It's the easy part, but it's also easy to forget it, or fear it.
 
 ---
 
-# Foxtrot - Conclusions
+@title[Foxtrot - Conclusions]
 
 When deployment is a non-event:
 
@@ -400,11 +451,11 @@ When you have more viable options within easy reach, you're empowered to make be
 
 ---
 
-# Tips and Tricks
+@title[Tips and Tricks]
 
 ---
 
-# On Configuration 
+@title[On Configuration ]
 
 Deprecate extensive config files...
 
@@ -414,19 +465,21 @@ Deprecate extensive config files...
 
 ---
 
-# But, with CD, we can simplify 
+@title[But, with CD, we can simplify ]
 
 - Use $ENV variables for DSNs and such. [see 12-factor Apps]
 - Use constants more often.
 
 Deployment is fast. Just edit code/artifact
 
+Note:
+
 : - Where possible, compile it in - simplify your code.
 : - In other cases, it can live in the artifact (file in docker image).
 
 ---
 
-# On Monorepos
+@title[On Monorepos]
 
 Monorepos offer some challenges and some advantages
 
@@ -437,20 +490,24 @@ Monorepos offer some challenges and some advantages
 - Challenge: speed.
 - Challenge: 3p deps: _See toasties-galore for top-level go-mod w Docker_
 
+Note:
+
 : Monorepos are source code repositories containing multiple services
 
 ---
 
-# Deploying services in a monorepo
+@title[Deploying services in a monorepo]
 
 Q: Do we really redeploy everything on every change?
 A: Depends on language and tooling available. 
+
+Note:
 
 : Care needed to ensure we trigger builds exactly when we should.
 
 ---
 
-# Publish / deploy monorepo service - Go
+@title[Publish / deploy monorepo service - Go]
 
 See [[./scripts/publish.sh][publish.sh]] and [[./scripts/deploy.sh][deploy.sh]]
 
@@ -458,9 +515,11 @@ See [[./scripts/publish.sh][publish.sh]] and [[./scripts/deploy.sh][deploy.sh]]
  
 ---
 
-# Last relevant commit - Go
+@title[Last relevant commit - Go]
 
 Calculate changes affecting a service [in a monorepo]
+
+Note:
 
 : In a monorepo, it's real useful to know which services are affected by a commit.
 : Or put another way, which services have been affected since current production.
@@ -469,23 +528,27 @@ Calculate changes affecting a service [in a monorepo]
 
 .code ./scripts/last_commit.sh
 
+Note:
+
 : - calls `go list -deps` and eventually `| git rev-list`
 : - Allows us to run regression tests at the right time.
 : - Report that the deploy was really successful.
 
 ---
 
-# Why last_commit.sh ?
+@title[Why last_commit.sh ?]
 
 - Deploy only affected services.
 - Decide which integration tests to run, post-deploy
+
+Note:
 
 : I've previously scripted up version checks against k8s, to determine when to run tests. 
 : To me this kind of thing is crucial for regression testing.
 
 ---
 
-# On DB Migrations
+@title[On DB Migrations]
 
 Migrations will always be challenging 
 
@@ -498,21 +561,27 @@ Where possible:
 - Make them idempotent (`if not exists`) to *run* them in advance.
 - Split them up - 'create table' is cheap. Isolate the tricky stuff.
 
+Note:
+
 : So, let's take a look at chillybin
 
 ---
 
-# Chillybin
+@title[Chillybin]
 
 .image ./diagrams/chillybin.jpg _ 500
+
+Note:
 
 : This is the original patent for the chillybin
 
 ---
 
-# Chilly bin - migrations
+@title[Chilly bin - migrations]
 
 .code ./chillybin/main.go /^func runMigrationsSource/,/^}/
+
+Note:
 
 : This is using go-migrate
 : Can run this from func main() but I can understand why you wouldn't
@@ -521,7 +590,7 @@ Where possible:
 
 ---
 
-# On DIY Tooling
+@title[On DIY Tooling]
 
 At Vend we have a slackbot, @overlord, which offers a number of CD-related utilities. e.g.
 
@@ -530,11 +599,13 @@ At Vend we have a slackbot, @overlord, which offers a number of CD-related utili
 - feature flagging
 - service status
 
+Note:
+
 : these are the kinds of tools which you may end up writing the code for.
 
 ---
 
-# On CI/CD Software
+@title[On CI/CD Software]
 
 They all work, and they're all different. I've tried heaps. 
 
@@ -544,11 +615,11 @@ Just choose one.
 
 ---
 
-# Conclusions
+@title[Conclusions]
 
 ---
 
-# How will it change my code?
+@title[How will it change my code?]
 
 _More_than_anything_else,_CD_affects_ *how* _you_ *change* _your_code._
 
@@ -564,11 +635,13 @@ Impact:
 
 ---
 
-# Advice
+@title[Advice]
 
 It can be hard to retrofit CD. Start early or add it incrementally.
 
 For research and business speak, see [[https://continuousdelivery.com]].
+
+Note:
 
 : Touted Benefits
 : Continuous Deployment will empower you to make better choices, and encourage you to develop good practices early on.
@@ -576,9 +649,11 @@ For research and business speak, see [[https://continuousdelivery.com]].
 
 ---
 
-# Advice: Play with Toasties Galore
+@title[Advice: Play with Toasties Galore]
 
 See Toasties Galore on [[https://github.com/laher/toasties-galore][github]] or [[https://travis-ci.org/laher/toasties-galore][travis]] to try this stuff out - maybe it'll help you.
+
+Note:
 
 : Thanks
 : I hope that helped encourage you along this journey.
