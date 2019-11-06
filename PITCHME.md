@@ -1,13 +1,15 @@
 
-Designing Go services for Continuous Deployment
-Gophercon AU
-1 Nov 2019
-Tags: go, cd, tools, gophercon
+@snap[north headline span-80]
+@css[heading](Designing Go Services for Continuous Deployment)
+@snapend
+
+@snap[south byline]
+A @color[#e49436](Gophercon AU) talk: 1 Nov 2019
 
 Am Laher
 Lead Engineer, Vend 
 @amfastic
-
+@snapend
 ---
 
 @title[Begin with a Premise]
@@ -40,7 +42,7 @@ Note:
 
 @title[Calm & Peaceful, right?]
 
-.image https://media.giphy.com/media/5b5OU7aUekfdSAER5I/giphy.gif
+![](https://media.giphy.com/media/5b5OU7aUekfdSAER5I/giphy.gif)
 
 OK, OK , it does sound a little bit super-risky.
 Let's explore...
@@ -65,7 +67,7 @@ Note:
 
 Meet our heroine, Gita the Gopher.
 
-.image ./diagrams/toasties-galore-bw.jpg _ 600
+![](./diagrams/toasties-galore-bw.jpg) 600
 
 _Gita_is_an_innovator,_with_a_passion_for_technology_and_melted_cheese._
 
@@ -80,7 +82,7 @@ Note:
 
 Gita builds her own machinery, it's software-driven. 
 
-.image ./diagrams/jafflr-chillybin-bw.jpg _ 800
+![](./diagrams/jafflr-chillybin-bw.jpg) 800
 
 We - *you*and*I* - build the software.
 
@@ -120,7 +122,7 @@ Note:
 
 Invoking Jafflr: `POST /toastie`
 
-.image diagrams/toasties.dot.svg _ 600
+![](diagrams/toasties.dot.svg) 600
 
 This simple deployment powers a 24-hour, high-throughput toasting service, with some agressive expectations. _Gophers_are_demanding._
 
@@ -133,7 +135,7 @@ Note:
 
 @title[The CI/CD Pipeline]
 
-.image ./diagrams/pipeline.dot.svg
+![](./diagrams/pipeline.dot.svg)
 
 Note:
 
@@ -190,7 +192,7 @@ Note:
 
 @title[Jafflr schematic]
 
-.image ./diagrams/jafflr-schematic-diagram.jpg _ 700
+![](./diagrams/jafflr-schematic-diagram.jpg) 700
 
 Note:
 
@@ -249,7 +251,7 @@ Note:
 
 @title[The Arm - An interaction]
 
-.image ./diagrams/jafflr-arm.jpg _ 600
+![](./diagrams/jafflr-arm.jpg) 600
 
 Note:
 
@@ -280,7 +282,7 @@ Note:
 
 Toasties Galore is now a highly successful operation. Gophers *love* the recipes. Jafflr is busy 24-7.
 
-.image ./diagrams/toasties-galore-popular.jpg _ 600
+![](./diagrams/toasties-galore-popular.jpg) 600
 
 Note:
 
@@ -317,9 +319,9 @@ Note:
 
 @title[Planned changes to /pick]
 
-.image diagrams/before.dot.svg _ 600
+![](diagrams/before.dot.svg) 600
 
-.image diagrams/after.dot.svg _ 600
+![](diagrams/after.dot.svg) 600
 
 Note:
 
@@ -334,7 +336,7 @@ Note:
 - API signature needs to change.
 - DB structure changes.
 
-.image https://media.giphy.com/media/WrK9dwj8TNPr2/giphy.gif
+![](https://media.giphy.com/media/WrK9dwj8TNPr2/giphy.gif)
 
 Note:
 
@@ -352,7 +354,7 @@ Note:
 
 So, let's dance.
 
-.image https://media.giphy.com/media/BiA0154sSljkA/giphy.gif
+![](https://media.giphy.com/media/BiA0154sSljkA/giphy.gif)
 
 A 3-step dance: 
 
@@ -370,7 +372,7 @@ Note:
 
 Three steps, or _stages_ 
 
-.image ./diagrams/pulls.png _ 600
+![](./diagrams/pulls.png) 600
 
 With CD, it's easy, you'll consider it more often.
 
@@ -569,7 +571,7 @@ Note:
 
 @title[Chillybin]
 
-.image ./diagrams/chillybin.jpg _ 500
+![](./diagrams/chillybin.jpg)
 
 Note:
 
