@@ -46,7 +46,7 @@ Let's explore...
 
 Meet our heroine, Gita the Gopher.
 
-.image ./diagrams/toasties-galore-bw.jpg _ 600
+.image ./diagrams/toasties-galore.svg _ 600
 
 _Gita_is_an_innovator,_with_a_passion_for_technology_and_melted_cheese._
 
@@ -74,9 +74,7 @@ An overview of the codebase:
 
 - A monorepo.
 - 2 HTTP services, jafflr+chillybin, which interact.
-- Tests.
-- Docker things.
-- Scripts and tooling.
+- Tests, Docker things, scripts and tooling.
 - A CI/CD pipeline.
 
 See [[https://github.com/laher/toasties-galore]]

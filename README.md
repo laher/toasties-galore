@@ -2,7 +2,7 @@
 
 Code and resources for a talk about Continuous Deployment for Gophercon AU [![Build Status](https://travis-ci.org/laher/toasties-galore.svg?branch=master)](https://travis-ci.org/laher/toasties-galore)
 
-![toasties-galore](./diagrams/toasties-galore-bw.jpg)
+![toasties-galore](./diagrams/toasties-galore.svg)
 
 ## Monorepo
 
@@ -10,7 +10,7 @@ This is a small monorepo with a naive implementation of some HTTP APIs, and some
 
 For the purposes of the talk, there are also 3 Pull Requests open for discussion.
 
-![service diagram](./diagrams/jafflr-chillybin-bw.jpg)
+![service diagram](./diagrams/jafflr-chillybin.svg)
 
 ## Services
 
