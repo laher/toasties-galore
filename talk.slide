@@ -44,22 +44,19 @@ Let's explore...
 
 * Toasties Galore
 
-Meet our heroine, Gita the Gopher.
+Meet our heroine, Gita the Gopher. _Gita_is_an_innovator,_with_a_passion_for_technology_and_melted_cheese._
 
-.image ./diagrams/toasties-galore.svg _ 600
+.image ./diagrams/toasties-galore.svg _ 500
 
-_Gita_is_an_innovator,_with_a_passion_for_technology_and_melted_cheese._
 
 : This is her food stall, Toasties Galore.
 : She's starting a business, and she's going to beat the competition with advanced cheese technology.
 
 * State of the art Techmology 
 
-Gita builds her own machinery, it's software-driven. 
+Gita builds her own machinery, it's software-driven._We_ - *you*and*I* - _build_the_software._
 
 .image ./diagrams/jafflr-chillybin.svg _ 800
-
-We - *you*and*I* - build the software.
 
 : Gita is a hardware freak.
 : She's also tech savvy and she advised us to use CD. She knows her cheese.
@@ -116,6 +113,10 @@ In this case, we're using [[https://travis-ci.org/laher/toasties-galore/branches
 : Click on travis to see some builds.
 
 * Eek, auto-deploy is scary
+
+* The Auto-Deploy Baseline
+
+What kind of things should we have in place?
 
 : What are you thinking?
 : You liked it until there was a 'deploy' section? Fair.

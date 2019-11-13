@@ -35,11 +35,13 @@ func main() {
 			Handler: tpi.Middleware(routes(h, version)),
 		}
 	)
-	go tpi.GracefulShutdown(server)
-	log.Println("Server is ready to handle requests at", listenAddr)
-	if err := server.ListenAndServe(); err != nil && err != http.ErrServerClosed {
-		log.Fatalf("Could not listen on %s: %v\n", listenAddr, err)
-	}
+	log.Println("Server is about to listen for requests at", listenAddr)
+	go func() {
+		if err := server.ListenAndServe(); err != nil && err != http.ErrServerClosed {
+			log.Fatalf("Could not listen on %s: %v\n", listenAddr, err)
+		}
+	}()
+	tpi.GracefulShutdown(server) // <- for downtimeless deploy // HL
 	log.Println("Shutdown complete - stop")
 }
 

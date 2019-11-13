@@ -19,11 +19,14 @@ func main() {
 			Handler: tpi.Middleware(newRouter(h)), // <- middleware for observability // HL
 		}
 	)
-	go tpi.GracefulShutdown(server) // <- for downtimeless deploy // HL
 	log.Println("Server is about to listen for requests at", listenAddr)
-	if err := server.ListenAndServe(); err != nil && err != http.ErrServerClosed {
-		log.Fatalf("Could not listen on %s: %v\n", listenAddr, err)
-	}
+	go func() {
+		if err := server.ListenAndServe(); err != nil && err != http.ErrServerClosed {
+			log.Fatalf("Could not listen on %s: %v\n", listenAddr, err)
+		}
+	}()
+
+	tpi.GracefulShutdown(server) // <- for downtimeless deploy // HL
 	log.Println("Shutdown complete - stop")
 }
 
