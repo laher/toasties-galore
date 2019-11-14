@@ -12,7 +12,7 @@ type chillybinClient struct {
 }
 
 func (c chillybinClient) pick(ingredient string, quantity int) error {
-	resp, err := http.Get(fmt.Sprintf("%s/pick?name=%s&quantity=%d", c.base, ingredient, quantity))
+	resp, err := http.Get(fmt.Sprintf("%s/pick?nome=%s&quantity=%d", c.base, ingredient, quantity))
 	if err != nil {
 		return err
 	}
