@@ -1,6 +1,7 @@
 package main
 
 import (
+	"bytes"
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
@@ -102,4 +103,17 @@ func getChillybinStats(t *testing.T) map[string]int {
 	}
 	t.Logf("Amounts: %v", m)
 	return m
+}
+
+func TestPickV2(t *testing.T) {
+	p := []byte(`{"ingredient": "cheese", "quantity": 2, "customer": "gita"}`)
+	// reset environment
+	resp, err := http.Post(fmt.Sprintf("%s/v2/pick", chillybinAddr), "application/json", bytes.NewBuffer(p))
+	if err != nil {
+		t.Fatalf("error running /v2/pick: %v", err)
+	}
+	if resp.StatusCode != http.StatusOK {
+		body, _ := ioutil.ReadAll(resp.Body)
+		t.Fatalf("error picking v2 (%s): %s", resp.Status, body)
+	}
 }
